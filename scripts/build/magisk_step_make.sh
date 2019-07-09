@@ -4,6 +4,8 @@ magisk_step_make() {
 		QUIET_BUILD="-s"
 	fi
 
+	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
+
 	if test -f build.ninja; then
 		ninja -w dupbuild=warn -j $MAGISK_MAKE_PROCESSES
 	elif ls ./*akefile &> /dev/null || [ ! -z "$MAGISK_MODULE_EXTRA_MAKE_ARGS" ]; then
@@ -23,7 +25,7 @@ magisk_step_make() {
 		mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
 		OUT_FILE="target/$CARGO_TARGET_NAME/release/$out_str"
 		#$STRIP $OUT_FILE
-		cp -r $OUT_FILE $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/$out_str
+		cp -r $OUT_FILE "$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/$out_str"
 		tree $MAGISK_MODULE_MASSAGEDIR
                 # https://github.com/rust-lang/cargo/issues/3316:
 	fi
