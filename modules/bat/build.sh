@@ -1,0 +1,10 @@
+MAGISK_MODULE_HOMEPAGE=https://github.com/sharkdp/bat
+MAGISK_MODULE_DESCRIPTION="A cat(1) clone with wings"
+MAGISK_MODULE_LICENSE="Apache-2.0"
+MAGISK_MODULE_VERSION=0.11.0
+MAGISK_MODULE_REVISION=2
+MAGISK_MODULE_SHA256=02fe2cfca57d39096f7959036d894c2393235774534529ae59ed235fba272e05
+MAGISK_MODULE_SRCURL=https://github.com/sharkdp/bat/archive/master.zip
+MAGISK_MODULE_BUILD_IN_SRC=yes
+# bat calls less with '--RAW-CONTROL-CHARS' which busybox less does not support:
+#MAGISK_MODULE_DEPENDS="less"

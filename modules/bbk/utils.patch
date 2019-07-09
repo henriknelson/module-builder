@@ -1,0 +1,10 @@
+--- ../src/cli/utils.cpp	2019-06-27 13:24:26.000000000 +0200
++++ src/cli/utils.cpp	2019-07-06 06:19:47.100007206 +0200
+@@ -91,6 +91,7 @@
+         } else if (arg == "--version") {
+             std::cout << measurement::appName << ' '
+                       << measurement::appVersion << '\n';
++	    std::cout << "Compiled for Android by nelshh @ XDA\n";
+             return false;
+         } else if (arg == "--quiet") {
+             client_cfg.set("quiet", "1");

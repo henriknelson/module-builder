@@ -1,0 +1,48 @@
+MAGISK_MODULE_HOMEPAGE=https://github.com/sharkdp/bat
+MAGISK_MODULE_DESCRIPTION="A cat(1) clone with wings"
+MAGISK_MODULE_LICENSE="Apache-2.0"
+MAGISK_MODULE_VERSION=5.0
+MAGISK_MODULE_SHA256=b4a80f2ac66170b2913efbfb9f2594f1f76c7b1afd11f799e22035d63077fb4d
+MAGISK_MODULE_SRCURL=http://mirrors.kernel.org/gnu/bash/bash-$MAGISK_MODULE_VERSION.tar.gz
+MAGISK_MODULE_DEPENDS="openssl, zlib"
+MAGISK_MODULE_BUILD_IN_SRC=yes
+
+magisk_step_configure() {
+        cd $MAGISK_MODULE_SRCDIR
+	target_host=aarch64-linux-gnu
+	./configure --host=$target_host --disable-nls --enable-static-link --without-bash-malloc bash_cv_dev_fd=whacky bash_cv_getcwd_malloc=yes --enable-largefile --enable-alias --enable-history --enable-readline --enable-multibyte --enable-job-control --enable-array-variables CFLAGS="-g -O2 -static" LDFLAGS="-g -O2 -static"
+	make -j $(nproc)
+	mv $MAGISK_MODULE_SRCDIR/bash $MAGISK_MODULE_BUILDDIR
+}
+
+magisk_step_patch_module() {
+	PVER=$(echo $MAGISK_MODULE_VERSION | sed 's/\.//')
+	PVER="50"
+	cd $MAGISK_MODULE_SRCDIR
+  	echo "Applying patches"
+
+	for i in {001..007}; do
+		echo $i
+    		wget https://mirrors.kernel.org/gnu/bash/bash-$MAGISK_MODULE_VERSION-patches/bash$PVER-$i 2>/dev/null
+    		if [ -f "bash$PVER-$i" ]; then
+			patch -p0 -i bash$PVER-$i
+			rm -f bash$PVER-$i
+		#else
+		#  break
+		fi
+	done
+
+	echo "$MAGISK_MODULE_BUILDER_DIR"
+	for i in $MAGISK_MODULE_BUILDER_DIR/*.patch ; do
+    		PFILE=$(basename $i)
+		echo "PFILE=$PFILE"
+		cp -f $i $PFILE
+		patch -p0 -i $PFILE
+		[ $? -ne 0 ] && { echo "Patching failed! Did you verify line numbers? See README for more info"; exit 1; }
+		rm -f $PFILE
+  	done
+}
+
+magisk_step_make_install() {
+	return
+}

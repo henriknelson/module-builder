@@ -1,0 +1,4 @@
+magisk_step_host_build() {
+	"$MAGISK_MODULE_SRCDIR/configure" ${MAGISK_MODULE_EXTRA_HOSTBUILD_CONFIGURE_ARGS}
+	make -j "$MAGISK_MAKE_PROCESSES"
+}

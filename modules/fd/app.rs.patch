@@ -1,0 +1,11 @@
+--- ../src/app.rs	2019-02-13 19:04:37.000000000 +0000
++++ ./src/app.rs	2019-07-06 01:06:59.094925565 +0000
+@@ -38,7 +38,7 @@
+     };
+ 
+     App::new("fd")
+-        .version(crate_version!())
++	.version("7.3.0 - Compiled for Android by nelshh @ XDA")
+         .usage("fd [FLAGS/OPTIONS] [<pattern>] [<path>...]")
+         .setting(AppSettings::ColoredHelp)
+         .setting(AppSettings::DeriveDisplayOrder)

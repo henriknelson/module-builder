@@ -1,0 +1,10 @@
+MAGISK_ANDROID_BUILD_TOOLS_VERSION=28.0.3
+MAGISK_NDK_VERSION_NUM=20
+MAGISK_NDK_REVISION=""
+MAGISK_NDK_VERSION=$MAGISK_NDK_VERSION_NUM$MAGISK_NDK_REVISION
+
+test -f "$HOME/.magiskrc" && . "$HOME/.magiskrc"
+
+: "${ANDROID_HOME:="${HOME}/lib/android-sdk"}"
+: "${NDK:="${HOME}/lib/android-ndk"}"
+: "${MUSL_TOOLCHAIN:="${HOME}/lib/android-musl"}"

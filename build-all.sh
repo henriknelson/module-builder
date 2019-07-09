@@ -1,0 +1,82 @@
+#!/bin/bash
+# build-all.sh - script to build all packages with a build order specified by buildorder.py
+
+set -e -u -o pipefail
+
+# Read settings from .magiskrc if existing
+test -f $HOME/.magiskrc && . $HOME/.magiskrc
+: ${MAGISK_TOPDIR:="$HOME/.magisk-build"}
+: ${MAGISK_ARCH:="aarch64"}
+: ${MAGISK_DEBUG:=""}
+: ${MAGISK_INSTALL_DEPS:="-s"}
+# Set MAGISK_INSTALL_DEPS to -s unless set to -i
+
+_show_usage() {
+	echo "Usage: ./build-all.sh [-a ARCH] [-d] [-i] [-o DIR]"
+	echo "Build all modules."
+	echo "  -a The architecture to build for: aarch64(default), arm, i686, x86_64 or all."
+	echo "  -d Build with debug symbols."
+	echo "  -i Build dependencies."
+	echo "  -o Specify zips directory. Default: zips/."
+	exit 1
+}
+
+while getopts :a:hdio: option; do
+case "$option" in
+	a) MAGISK_ARCH="$OPTARG";;
+	d) MAGISK_DEBUG='-d';;
+	i) MAGISK_INSTALL_DEPS='-i';;
+	o) MAGISK_ZIPDIR="$(realpath -m $OPTARG)";;
+	h) _show_usage;;
+esac
+done
+shift $((OPTIND-1))
+if [ "$#" -ne 0 ]; then _show_usage; fi
+
+if [[ ! "$MAGISK_ARCH" =~ ^(all|aarch64|arm|i686|x86_64)$ ]]; then
+	echo "ERROR: Invalid arch '$MAGISK_ARCH'" 1>&2
+	exit 1
+fi
+
+BUILDSCRIPT=$(dirname $0)/build-module.sh
+BUILDALL_DIR=$MAGISK_TOPDIR/_buildall-$MAGISK_ARCH
+BUILDORDER_FILE=$BUILDALL_DIR/buildorder.txt
+BUILDSTATUS_FILE=$BUILDALL_DIR/buildstatus.txt
+
+if [ -e $BUILDORDER_FILE ]; then
+	echo "Using existing buildorder file: $BUILDORDER_FILE"
+else
+	mkdir -p $BUILDALL_DIR
+	./scripts/buildorder.py > $BUILDORDER_FILE
+fi
+if [ -e $BUILDSTATUS_FILE ]; then
+	echo "Continuing build-all from: $BUILDSTATUS_FILE"
+fi
+
+exec >	>(tee -a $BUILDALL_DIR/ALL.out)
+exec 2> >(tee -a $BUILDALL_DIR/ALL.err >&2)
+trap "echo ERROR: See $BUILDALL_DIR/\${MODULE}.err" ERR
+
+while read MODULE MODULE_DIR; do
+	# Check build status (grepping is a bit crude, but it works)
+	if [ -e $BUILDSTATUS_FILE ] && grep "^$MODULE\$" $BUILDSTATUS_FILE >/dev/null; then
+		echo "Skipping $MODULE"
+		continue
+	fi
+
+	echo -n "Building $MODULE... "
+	BUILD_START=$(date "+%s")
+	bash -x $BUILDSCRIPT -a $MAGISK_ARCH $MAGISK_DEBUG \
+		${MAGISK_ZIPDIR+-o $MAGISK_ZIPDIR} $MAGISK_INSTALL_DEPS $MODULE_DIR \
+		> $BUILDALL_DIR/${MODULE}.out 2> $BUILDALL_DIR/${MODULE}.err
+	BUILD_END=$(date "+%s")
+	BUILD_SECONDS=$(( $BUILD_END - $BUILD_START ))
+	echo "done in $BUILD_SECONDS"
+
+	# Update build status
+	echo "$MODULE" >> $BUILDSTATUS_FILE
+done<${BUILDORDER_FILE}
+
+# Update build status
+rm -f $BUILDSTATUS_FILE
+echo "Finished"
