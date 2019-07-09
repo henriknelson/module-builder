@@ -1,10 +1,10 @@
 --- ../libbb/appletlib.c	2019-06-10 11:09:31.000000000 +0200
-+++ ./libbb/appletlib.c	2019-07-09 16:09:38.971628894 +0200
-@@ -150,6 +150,7 @@
- 		}
- 		full_write2_str(bb_banner);
- 		full_write2_str(" multi-call binary.\n"); /* common string */
++++ ./libbb/appletlib.c	2019-07-09 16:31:10.923592018 +0200
+@@ -831,6 +831,7 @@
+ 		dup2(1, 2);
+ 		full_write2_str(bb_banner); /* reuse const string */
+ 		full_write2_str(" multi-call binary.\n"); /* reuse */
 +		full_write2_str("\nCompiled for Android by nelshh @ xda-developers\n\n");
- 		if (*p == '\b')
- 			full_write2_str("\nNo help available\n");
- 		else {
+ 		full_write2_str(
+ 			"BusyBox is copyrighted by many authors between 1998-2015.\n"
+ 			"Licensed under GPLv2. See source distribution for detailed\n"
