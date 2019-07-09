@@ -6,6 +6,11 @@ set -e -o pipefail -u
 # Utility function to see if we are running inside a docker container or not
 source scripts/build/magisk_docker_check.sh
 
+if [ ! "$(magisk_running_in_docker)" -eq 1 ]; then
+	./scripts/run-docker.sh $0 "$@"
+	return
+fi
+
 # Utility function to log an error message and exit with an error code.
 source scripts/build/magisk_error_exit.sh
 
@@ -13,10 +18,6 @@ if [ "$(uname -o)" = Android ]; then
 	magisk_error_exit "On-device builds are not supported - see README.md"
 fi
 
-if [ ! "$(magisk_running_in_docker)" -eq 1 ]; then
-	./scripts/run-docker.sh "$0 $@"
-	return
-fi
 
 # Lock file to prevent parallel running in the same environment.
 MAGISK_BUILD_LOCK_FILE="/tmp/.magisk-build.lck"
