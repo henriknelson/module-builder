@@ -6,7 +6,7 @@ diff -u -r ../busybox-1.24.1/editors/diff.c ./editors/diff.c
  		 */
  		if (lseek(fd, 0, SEEK_SET) == -1 && errno == ESPIPE) {
 -			char name[] = "/tmp/difXXXXXX";
-+			char name[] = "@TERMUX_PREFIX@/tmp/difXXXXXX";
++			char name[] = "@MAGISK_PREFIX@/tmp/difXXXXXX";
  			int fd_tmp = xmkstemp(name);
  
  			unlink(name);

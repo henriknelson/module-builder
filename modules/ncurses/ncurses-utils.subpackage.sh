@@ -1,4 +1,4 @@
-TERMUX_SUBPKG_INCLUDE="
+MAGISK_SUBMODULE_INCLUDE="
 bin/toe
 bin/tput
 bin/clear
@@ -16,4 +16,4 @@ share/man/man1/infocmp.1.gz
 share/man/man1/reset.1.gz
 share/man/man1/tic.1.gz
 "
-TERMUX_SUBPKG_DESCRIPTION="Tools for working with terminals"
+MAGISK_SUBMODULE_DESCRIPTION="Tools for working with terminals"

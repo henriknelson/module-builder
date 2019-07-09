@@ -6,7 +6,7 @@ diff -u -r ../busybox-1.27.1/coreutils/mktemp.c ./coreutils/mktemp.c
  //usage:     "\n	-u	Do not create anything; print a name"
  //usage:     "\n"
 -//usage:     "\nBase directory is: -p DIR, else $TMPDIR, else /tmp"
-+//usage:     "\nBase directory is: -p DIR, else $TMPDIR, else @TERMUX_PREFIX@/tmp"
++//usage:     "\nBase directory is: -p DIR, else $TMPDIR, else @MAGISK_PREFIX@/tmp"
  //usage:
  //usage:#define mktemp_example_usage
  //usage:       "$ mktemp /tmp/temp.XXXXXX\n"
@@ -15,7 +15,7 @@ diff -u -r ../busybox-1.27.1/coreutils/mktemp.c ./coreutils/mktemp.c
  	path = getenv("TMPDIR");
  	if (!path || path[0] == '\0')
 -		path = "/tmp";
-+		path = "@TERMUX_PREFIX@/tmp";
++		path = "@MAGISK_PREFIX@/tmp";
  
  	opt_complementary = "?1"; /* 1 argument max */
  	opts = getopt32(argv, "dqtp:u", &path);
