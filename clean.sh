@@ -15,4 +15,4 @@ test -f $HOME/.magiskrc && . $HOME/.magiskrc
 : ${MAGISK_TOPDIR:="$HOME/.magisk-build"}
 
 echo "nelshh/module-builder - cleaning.."
-rm -Rf /data/* $MAGISK_TOPDIR
+sudo rm -Rf /data/* $MAGISK_TOPDIR
