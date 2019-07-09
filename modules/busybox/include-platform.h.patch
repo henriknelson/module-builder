@@ -1,6 +1,6 @@
 diff -uNr busybox-1.29.3/include/platform.h busybox-1.29.3.mod/include/platform.h
 --- busybox-1.29.3/include/platform.h	2018-07-02 14:23:06.000000000 +0300
-+++ busybox-1.29.3.mod/include/platform.h	2019-02-08 16:01:14.437858554 +0200
++++ ./include/platform.h	2019-02-08 16:01:14.437858554 +0200
 @@ -579,10 +579,6 @@
  extern char *strcasestr(const char *s, const char *pattern) FAST_FUNC;
  #endif

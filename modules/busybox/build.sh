@@ -30,21 +30,28 @@ magisk_step_make() {
 	export PATH=$MUSL_PATH:$PATH
 	export CC=$MUSL_PATH/${TARGET}-gcc
 	export CFLAGS=" -g -O0"
-	CC=$CC make -v --debug
+	CC=$CC make
+
+	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
+	tree "$MAGISK_MODULE_MASSAGEDIR" > ~/out.log
+	cp $MAGISK_MODULE_SRCDIR/busybox $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/
+	#for f in $(cat $MAGISK_MODULE_SRCDIR/busybox.links); do ln -s ../busybox $(basename $f); done
 }
 
 magisk_step_post_make_install() {
+	return
 	if [ "$MAGISK_DEBUG" == "true" ]; then
 		install busybox_unstripped $PREFIX/bin/busybox
 	fi
+
 	# Create symlinks in $PREFIX/bin/applets to $PREFIX/bin/busybox
-	rm -Rf $MAGISK_MODULE_MASSAGEDIR/bin/applets
-	mkdir -p $MAGISK_MODULE_MASSAGEDIR/bin/applets
-	cd $MAGISK_MODULE_MASSAGEDIR/bin/applets
+	rm -Rf $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/applets
+	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/applets
+	cd $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/applets
 	for f in $(cat $MAGISK_MODULE_SRCDIR/busybox.links); do ln -s ../busybox $(basename $f); done
 
 	# The 'env' applet is special in that it go into $PREFIX/bin:
-	cd $MAGISK_MODULE_MASSAGEDIR/bin
+	cd $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
 	ln -f -s busybox env
 
 	# Install busybox man page
@@ -52,13 +59,13 @@ magisk_step_post_make_install() {
 	#cp $MAGISK_MODULE_SRCDIR/docs/busybox.1 $MAGISK_PREFIX/share/man/man1
 
 	# Needed for 'crontab -e' to work out of the box:
-	local _CRONTABS=$MAGISK_MODULE_MASSAGEDIR/var/spool/cron/crontabs
+	local _CRONTABS=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/var/spool/cron/crontabs
 	mkdir -p $_CRONTABS
 	echo "Used by the busybox crontab and crond tools" > $_CRONTABS/README.magisk
 
 	# Setup some services
-	mkdir -p $MAGISK_MODULE_MASSAGEDIR/var/service
-	cd $MAGISK_MODULE_MASSAGEDIR/var/service
+	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/var/service
+	cd $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/var/service
 	mkdir -p ftpd telnetd
 	echo '#!/bin/sh' > ftpd/run
 	echo 'exec tcpsvd -vE 0.0.0.0 8021 ftpd /data/data/com.magisk/files/home' >> ftpd/run
