@@ -8,7 +8,7 @@ source scripts/build/magisk_docker_check.sh
 
 if [ ! "$(magisk_running_in_docker)" -eq 1 ]; then
 	./scripts/run-docker.sh $0 "$@"
-	return
+	exit 0
 fi
 
 # Utility function to log an error message and exit with an error code.
