@@ -1,5 +1,5 @@
---- old/libbb/appletlib.c	2019-06-10 11:09:31.000000000 +0200
-+++ new/libbb/appletlib.c	2019-07-09 16:40:36.265702325 +0200
+--- ../libbb/appletlib.c	2019-06-10 11:09:31.000000000 +0200
++++ ./libbb/appletlib.c	2019-07-09 16:40:36.265702325 +0200
 @@ -831,6 +831,7 @@
  		dup2(1, 2);
  		full_write2_str(bb_banner); /* reuse const string */
