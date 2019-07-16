@@ -1,10 +1,11 @@
 MAGISK_MODULE_HOMEPAGE=http://www.bzip.org/
 MAGISK_MODULE_DESCRIPTION="BZ2 format compression library"
 MAGISK_MODULE_LICENSE="BSD"
-MAGISK_MODULE_VERSION=1.0.7
+MAGISK_MODULE_VERSION=1.0.8
 MAGISK_MODULE_SRCURL=https://fossies.org/linux/misc/bzip2-${MAGISK_MODULE_VERSION}.tar.xz
-MAGISK_MODULE_SHA256=3a704a84a4b98fc88b0cfc5d3b6bab8edd658133fda4de09ec7512b2dfb49d81
+MAGISK_MODULE_SHA256=47fd74b2ff83effad0ddf62074e6fad1f6b4a77a96e121ab421c20a216371a1f
 MAGISK_MODULE_EXTRA_MAKE_ARGS="PREFIX=$MAGISK_PREFIX"
+MAGISK_MODULE_EXTRA_CONFIG_ARGS="--enable-static"
 MAGISK_MODULE_BUILD_IN_SRC=yes
 
 magisk_step_configure() {
@@ -12,14 +13,15 @@ magisk_step_configure() {
 	sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" $MAGISK_MODULE_SRCDIR/Makefile
 }
 
-magisk_step_make() {
+mmagisk_step_make() {
 	# bzip2 uses a separate makefile for the shared library
 	CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
 	LDFLAGS+=" --static"
-	make -f Makefile-libbz2_so
+	#make -f Makefile-libbz2_so
+	make
 }
 
-magisk_step_make_install() {
+mmagisk_step_make_install() {
 	# The shared library makefile contains no install makefile, so issue a normal install to get scripts
 	make $MAGISK_MODULE_EXTRA_MAKE_ARGS install
 
