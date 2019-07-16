@@ -1,0 +1,26 @@
+--- ../unix/Makefile	2008-05-07 06:33:56.000000000 +0000
++++ ./unix/Makefile	2019-07-16 11:04:21.319760585 +0000
+@@ -22,10 +22,7 @@
+ LN = ln -s
+ 
+ # (to use the GNU compiler, change cc to gcc in CC)
+-CC = cc
+ BIND = $(CC)
+-AS = $(CC) -c
+-CPP = /lib/cpp
+ E =
+ 
+ # probably can change this to 'install' if you have it
+@@ -38,10 +35,10 @@
+ MANFLAGS = 644
+ 
+ # target directories - where to install executables and man pages to
+-prefix = /usr/local
++prefix = $(MAGISK_PREFIX)
+ BINDIR = $(prefix)/bin
+ MANEXT=1
+-MANDIR = $(prefix)/man/man$(MANEXT)
++MANDIR = $(prefix)/share/man/man$(MANEXT)
+ ZIPMANUAL = zip.txt
+ ZIPMANUALcloak = zipcloak.txt
+ ZIPMANUALnote = zipnote.txt
