@@ -66,8 +66,6 @@ magisk_step_patch_module() {
 		fi
 	done
 
-	echo "\n\n"
-
 	echo "Applying local patches.."
 	for i in $MAGISK_MODULE_BUILDER_DIR/*.patch ; do
     		PFILE=$(basename $i)
@@ -84,5 +82,4 @@ magisk_step_post_make_install() {
 	ls $MAGISK_MODULE_SRCDIR
 	cp $MAGISK_MODULE_SRCDIR/bash $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/bash
 	rm -Rf $MAGISK_MODULE_MASSAGEDIR/bin
-	tree $MAGISK_MODULE_MASSAGEDIR
 }
