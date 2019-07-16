@@ -1,9 +1,8 @@
 export LS_OPTIONS='--color=auto'
 eval "`dircolors`"
 export LS_COLORS
-alias ls='ls $LS_OPTIONS -lA'
-alias ll='ls $LS_OPTIONS -l'
-alias l='ls $LS_OPTIONS'
-alias conn='adb connect galaxy:5555'
+alias ls='/usr/bin/ls $LS_OPTIONS -lA'
+alias ll='/usr/bin/ls $LS_OPTIONS -l'
+alias l='/usr/bin/ls $LS_OPTIONS'
 alias cat='bat --paging=never -p $@'
-alias mb='cd ~/Development/projects/magisk/magisk-modules'
+alias fd=fdfind

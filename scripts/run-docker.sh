@@ -1,30 +1,31 @@
 #!/bin/sh
 set -e -u
 
-HOME=/home/builder
-UNAME=$(uname)
-if [ "$UNAME" = Darwin ]; then
-	# Workaround for mac readlink not supporting -f.
-	REPOROOT=$PWD
-else
-	REPOROOT="$(dirname $(readlink -f $0))/../"
-fi
+APP_NAME="module-builder"
+APP_VERSION="1.0"
+APP_CREATOR="nelshh @ xda-developers"
+APP_CREATOR_EMAIL="henrik@cliffords.nu"
+
+export HOME=/home/builder
+export USER=builder
+
+REPOROOT="$(dirname $(readlink -f $0))/../"
 
 IMAGE_NAME=nelshh/module-builder
 : ${CONTAINER_NAME:=nelshh-module-builder}
 
-USER=builder
-
-echo "module-builder v1.0 - by nelshh @ XDA-developers [henrik@cliffords.nu]"
+echo "\033[1m\033[38;5;4m$APP_NAME v$APP_VERSION\033[m\033[38;5;15m - \033[m\033[1mby $APP_CREATOR [$APP_CREATOR_EMAIL]\033[1m\n"
 echo "Running container '$CONTAINER_NAME' from image '$IMAGE_NAME'..."
 
 docker start $CONTAINER_NAME > /dev/null 2> /dev/null || {
 	echo "Creating new container..."
-	docker run --privileged -it -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):/usr/bin/docker --name $CONTAINER_NAME -d \
+	docker run  \
+		--detach \
+		--name $CONTAINER_NAME \
 		--volume $REPOROOT:$HOME/magisk-modules \
 		--tty \
 		$IMAGE_NAME
-    if [ "$UNAME" != Darwin ]; then
+
 	if [ $(id -u) -ne 1000 -a $(id -u) -ne 0 ]
 	then
 		echo "Changed builder uid/gid... (this may take a while)"
@@ -33,7 +34,6 @@ docker start $CONTAINER_NAME > /dev/null 2> /dev/null || {
 		docker exec --tty $CONTAINER_NAME sudo usermod -u $(id -u) builder
 		docker exec --tty $CONTAINER_NAME sudo groupmod -g $(id -g) builder
 	fi
-    fi
 }
 
 if [ "$#" -eq  "0" ]; then

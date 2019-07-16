@@ -96,7 +96,7 @@ magisk_step_setup_variables() {
 	MAGISK_MODULE_HOMEPAGE=""
 	MAGISK_MODULE_DESCRIPTION="FIXME:Add description"
 	MAGISK_MODULE_LICENSE_FILE="" # Relative path from $MAGISK_MODULE_SRCDIR to LICENSE file. It is installed to $PREFIX/share/$MAGISK_MODULE_NAME.
-	MAGISK_MODULE_KEEP_STATIC_LIBRARIES="false"
+	MAGISK_MODULE_KEEP_STATIC_LIBRARIES="true"
 	MAGISK_MODULE_ESSENTIAL=""
 	MAGISK_MODULE_CONFLICTS="" # https://www.debian.org/doc/debian-policy/ch-relationships.html#s-conflicts
 	MAGISK_MODULE_RECOMMENDS="" # https://www.debian.org/doc/debian-policy/ch-relationships.html#s-binarydeps

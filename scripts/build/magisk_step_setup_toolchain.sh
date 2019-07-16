@@ -27,6 +27,8 @@ magisk_step_setup_toolchain() {
 		export RANLIB=$MUSL_BIN-ranlib
 		export READELF=$MUSL_BIN-readelf
 		export STRIP=$MUSL_BIN-strip
+		export CFLAGS=""
+		export LDFLAGS="-L${MAGISK_PREFIX}/lib"
 	else
 		echo "Setting up clang toolchain"
 		export PATH=$MAGISK_STANDALONE_TOOLCHAIN/bin:$PATH
