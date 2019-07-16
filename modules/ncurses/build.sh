@@ -16,6 +16,7 @@ MAGISK_MODULE_SRCURL=(https://dl.bintray.com/termux/upstream/ncurses-${MAGISK_MO
 # --disable-stripping to disable -s argument to install which does not work when cross compiling:
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 ac_cv_header_locale_h=no
+--with-normal
 --enable-static
 --disable-stripping
 --enable-const
@@ -46,16 +47,31 @@ share/man/man7
 magisk_step_pre_configure() {
 	target=/usr/local/musl/bin/aarch64-linux-musl
 	cflag=" --enable-static"
-	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+="CROSS_COMPILE=aarch64-linux-musl- --host=aarch64-linux-musl CC=$target-gcc LD=$target-ld CXX=$target-g++ AR=$target-ar AS=$target-as NM=$target-nm RANLIB=$target-ranlib CPP=$target-cpp --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
+	export CROSS_COMPILE=aarch64-linux-musl-
+	# --host=aarch64-linux-musl
+	export CC=$target-gcc
+	export LD=$target-ld
+	export CXX=$target-g++
+	export AR=$target-ar
+	export AS=$target-as
+	export NM=$target-nm
+	export RANLIB=$target-ranlib
+	export CPP=$target-cpp
+	export LDFLAGS+=" --static"
+	#MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --host=aarch64-linux-musl --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
 }
 
 magisk_step_post_make_install() {
 	cd $MAGISK_PREFIX/lib
+	mkdir -p $MAGISK_MODULE_MASSAGEDIR/system/lib64
+	cp *.so $MAGISK_MODULE_MASSAGEDIR/system/lib64
+	cp *.a $MAGISK_MODULE_MASSAGEDIR/system/lib64
 	# we need the rm as we create(d) symlinks for the versioned so as well
 	for lib in form menu ncurses panel; do
-		rm -f lib${lib}.so*
+		rm -Rf lib${lib}.so*
 		for file in lib${lib}w.so*; do
 			ln -s $file ${file/w./.}
+			#cp ${file/w./.} $MAGISK_MODULE_MASSAGEDIR/system/lib64
 		done
 		(cd pkgconfig; ln -sf ${lib}w.pc $lib.pc)
 	done
@@ -63,6 +79,7 @@ magisk_step_post_make_install() {
 	rm -f libcurses.so*
 	for file in libncurses.so*; do
 		ln -s $file ${file/libn/lib}
+		#cp $file $MAGISK_MODULE_MASSAGEDIR/system/lib64
 	done
 
 	# Some packages want these:
@@ -73,7 +90,7 @@ magisk_step_post_make_install() {
 	ln -s ../{ncurses.h,termcap.h,panel.h,unctrl.h,menu.h,form.h,tic.h,nc_tparm.h,term.h,eti.h,term_entry.h,ncurses_dll.h,curses.h} ncursesw
 }
 
-magisk_step_post_massage() {
+mmagisk_step_post_massage() {
 	# Strip away 30 years of cruft to decrease size.
 	local TI=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/share/terminfo
 	mv $TI $MAGISK_MODULE_TMPDIR/full-terminfo
