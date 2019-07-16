@@ -14,7 +14,7 @@ MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 --enable-multibyte
 --host=aarch64-linux-musl
 bash_cv_wcwidth_broken=no"
-#MAGISK_MODULE_EXTRA_MAKE_ARGS="SHLIB_LIBS=-lncursesw"
+MAGISK_MODULE_EXTRA_MAKE_ARGS="SHLIB_LIBS=-lncursesw"
 MAGISK_MODULE_CONFFILES="etc/inputrc"
 
 mmagisk_step_configure() {
