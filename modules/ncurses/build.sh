@@ -31,7 +31,7 @@ ac_cv_header_locale_h=no
 --without-debug
 --without-tests
 "
-MAGISK_MODULE_INCLUDE_IN_DEVPACKAGE="
+MAGISK_MODULE_INCLUDE_IN_DEVMODULE="
 share/man/man1/ncursesw6-config.1*
 bin/ncursesw6-config
 "
@@ -58,15 +58,15 @@ magisk_step_pre_configure() {
 	export RANLIB=$target-ranlib
 	export CPP=$target-cpp
 	export LDFLAGS+=" --static"
-	#MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --host=aarch64-linux-musl --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
+	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --host=aarch64-linux-musl --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
 }
 
 magisk_step_post_make_install() {
-	cd $MAGISK_PREFIX/lib
 	mkdir -p $MAGISK_MODULE_MASSAGEDIR/system/lib64
-	cp *.so $MAGISK_MODULE_MASSAGEDIR/system/lib64
-	cp *.a $MAGISK_MODULE_MASSAGEDIR/system/lib64
+	cp $MAGISK_PREFIX/lib/*.so $MAGISK_MODULE_MASSAGEDIR/system/lib64
+	cp $MAGISK_PREFIX/lib/*.a $MAGISK_MODULE_MASSAGEDIR/system/lib64
 	# we need the rm as we create(d) symlinks for the versioned so as well
+	cd $MAGISK_PREFIX/lib
 	for lib in form menu ncurses panel; do
 		rm -Rf lib${lib}.so*
 		for file in lib${lib}w.so*; do
@@ -88,9 +88,11 @@ magisk_step_post_make_install() {
 	mkdir ncurses{,w}
 	ln -s ../{ncurses.h,termcap.h,panel.h,unctrl.h,menu.h,form.h,tic.h,nc_tparm.h,term.h,eti.h,term_entry.h,ncurses_dll.h,curses.h} ncurses
 	ln -s ../{ncurses.h,termcap.h,panel.h,unctrl.h,menu.h,form.h,tic.h,nc_tparm.h,term.h,eti.h,term_entry.h,ncurses_dll.h,curses.h} ncursesw
+	tree /system/lib
 }
 
-mmagisk_step_post_massage() {
+magisk_step_post_massage() {
+	return
 	# Strip away 30 years of cruft to decrease size.
 	local TI=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/share/terminfo
 	mv $TI $MAGISK_MODULE_TMPDIR/full-terminfo
