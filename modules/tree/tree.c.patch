@@ -1,0 +1,22 @@
+--- ../tree.c	2018-01-10 16:47:14.000000000 +0000
++++ ./tree.c	2019-07-11 15:36:44.381609242 +0000
+@@ -19,8 +19,8 @@
+ 
+ #include "tree.h"
+ 
+-static char *version ="$Version: $ tree v1.8.0 (c) 1996 - 2018 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro $";
+-static char *hversion="\t\t tree v1.8.0 %s 1996 - 2018 by Steve Baker and Thomas Moore <br>\n"
++static char *version ="$Version: $ tree v1.8.0 (c) 1996 - 2018 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro \n\nCompiled for Android by nelshh @ xda-developers \n$";
++static char *hversion="\t\t tree v1.8.0 %s 1996 - 2018 by Steve Baker and Thomas Moore <br>\n\nCompiled for Android by nelshh @ xda-developers\n"
+ 		      "\t\t HTML output hacked and copyleft %s 1998 by Francesc Rocher <br>\n"
+ 		      "\t\t JSON output hacked and copyleft %s 2014 by Florian Sesser <br>\n"
+ 		      "\t\t Charsets / OS/2 support %s 2001 by Kyosuke Tokoro\n";
+@@ -114,7 +114,7 @@
+   }
+ 
+ /* Until I get rid of this hack, make it linux/cygwin/HP nonstop only: */
+-#if defined (LINUX) || defined (CYGWIN) || defined (__TANDEM)
++#if defined (LINUX) || defined (CYGWIN) || defined (__TANDEM) || defined (__ANDROID__)
+   mb_cur_max = (int)MB_CUR_MAX;
+ #else
+   mb_cur_max = 1;
