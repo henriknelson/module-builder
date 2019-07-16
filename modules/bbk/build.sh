@@ -10,12 +10,8 @@ MAGISK_MODULE_ESSENTIAL=false
 
 magisk_step_make() {
   cd $MAGISK_MODULE_SRCDIR/src/cli
-  mkdir $MAGISK_MODULE_MASSAGEDIR/bin
+  mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
   make clean
-  make -j $(nproc) CXX=$CXX TARGET=$MAGISK_MODULE_MASSAGEDIR/bin/bbk_cli STATIC=2 LOGLEVEL=dbg
+  make -j $(nproc) CXX=$CXX TARGET=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/bbk_cli STATIC=2 LOGLEVEL=dbg
 }
 
-
-magisk_step_make_install() {
-	return
-}
