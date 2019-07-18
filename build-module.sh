@@ -14,6 +14,9 @@ fi
 # Utility function to log an error message and exit with an error code.
 source scripts/build/magisk_error_exit.sh
 
+# Utility function to log a message.
+source scripts/build/magisk_log.sh
+
 if [ "$(uname -o)" = Android ]; then
 	magisk_error_exit "On-device builds are not supported - see README.md"
 fi
@@ -118,6 +121,9 @@ magisk_step_post_configure() {
 	return
 }
 
+#Always runs after configure step
+source scripts/build/magisk_step_before_post_configure.sh
+
 # Make module, either with ninja or make
 source scripts/build/magisk_step_make.sh
 
@@ -161,26 +167,43 @@ source scripts/build/magisk_step_finish_build.sh
 	if ! $MAGISK_BUILD_IGNORE_LOCK; then
 		flock -n 5 || magisk_error_exit "Another build is already running within same environment."
 	fi
+	#magisk_log "handling arguments $@..\n"
 	magisk_step_handle_arguments "$@"
+	#magisk_log "setting up variables..\n"
 	magisk_step_setup_variables
+	#magisk_log "handling buildarch..\n"
 	magisk_step_handle_buildarch
+	#magisk_log_header "magisk_step_start_build()"
 	magisk_step_start_build
+	magisk_log_header "magisk_step_extract_module()"
 	magisk_step_extract_module
 	cd "$MAGISK_MODULE_SRCDIR"
+	#magisk_log "module extracted\n"
 	magisk_step_post_extract_module
+	#magisk_log "handling hostbuild..\n"
 	magisk_step_handle_hostbuild
+	#magisk_log "setting up toolchain..\n"
 	magisk_step_setup_toolchain
+	magisk_log_header "magisk_step_patch_module()"
 	magisk_step_patch_module
 	magisk_step_replace_guess_scripts
 	cd "$MAGISK_MODULE_SRCDIR"
+	#magisk_log "hook pre-configure\n"
 	magisk_step_pre_configure
 	cd "$MAGISK_MODULE_BUILDDIR"
+	magisk_log_header "magisk_step_configure()"
 	magisk_step_configure
 	cd "$MAGISK_MODULE_BUILDDIR"
+	#magisk_log "hook before post-configure\n"
+	magisk_step_before_post_configure
+	cd "$MAGISK_MODULE_BUILDDIR"
+	#magisk_log "hook post-configure\n"
 	magisk_step_post_configure
 	cd "$MAGISK_MODULE_BUILDDIR"
+	magisk_log_header "magisk_step_make()"
 	magisk_step_make
 	cd "$MAGISK_MODULE_BUILDDIR"
+	magisk_log_header "magisk_step_make_install()"
 	magisk_step_make_install
 	cd "$MAGISK_MODULE_BUILDDIR"
 	magisk_step_post_make_install
