@@ -6,7 +6,7 @@ MAGISK_MODULE_SRCURL=http://www.greenwoodsoftware.com/less/less-${MAGISK_MODULE_
 MAGISK_MODULE_SHA256=ff165275859381a63f19135a8f1f6c5a194d53ec3187f94121ecd8ef0795fe3d
 MAGISK_MODULE_DEPENDS="ncurses"
 
-magisk_step_pre_configure() {
+mmagisk_step_pre_configure() {
 	MUSL=/usr/local/musl/bin/aarch64-linux-musl
 	export CC=$MUSL-gcc
 	export CXX=$MUSL-g++
