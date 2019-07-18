@@ -1,0 +1,12 @@
+--- ../git-2.22.0/Makefile      2019-06-07 18:37:32.000000000 +0000
++++ ./Makefile  2019-07-18 00:33:08.193875533 +0000
+@@ -1400,7 +1400,7 @@
+        BASIC_CFLAGS += -I$(ZLIB_PATH)/include
+        EXTLIBS += -L$(ZLIB_PATH)/$(lib) $(CC_LD_DYNPATH)$(ZLIB_PATH)/$(lib)
+ endif
+-EXTLIBS += -lz
++EXTLIBS += -lz -lssl -lcrypto -lcares -lnghttp2 -ldl
+
+ ifndef NO_OPENSSL
+        OPENSSL_LIBSSL = -lssl
+
