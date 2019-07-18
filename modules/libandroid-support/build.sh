@@ -8,7 +8,7 @@ MAGISK_MODULE_SHA256=42e7b55c2e5fc91cc0447fa8bea432e7a75ec78b03469330668af17aea5
 MAGISK_MODULE_BUILD_IN_SRC=yes
 MAGISK_MODULE_ESSENTIAL=yes
 
-magisk_step_pre_configure() {
+mmagisk_step_pre_configure() {
 	MUSL=/usr/local/musl/bin
 	TARGET=aarch64-linux-musl
 	export CC=$MUSL/$TARGET-gcc
