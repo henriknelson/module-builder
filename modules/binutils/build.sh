@@ -5,7 +5,7 @@ MAGISK_MODULE_VERSION=2.32
 MAGISK_MODULE_REVISION=2
 MAGISK_MODULE_SHA256=9b0d97b3d30df184d302bced12f976aa1e5fbf4b0be696cdebc6cca30411a46e
 MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/binutils/binutils-${MAGISK_MODULE_VERSION}.tar.gz
-#MAGISK_MODULE_DEPENDS="zlib"
+MAGISK_MODULE_DEPENDS="zlib"
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--enable-gold --enable-plugins --disable-werror --with-system-zlib --enable-new-dtags"
 MAGISK_MODULE_EXTRA_MAKE_ARGS="tooldir=$MAGISK_PREFIX"
 MAGISK_MODULE_RM_AFTER_INSTALL="share/man/man1/windmc.1 share/man/man1/windres.1 bin/ld.bfd"
@@ -37,17 +37,13 @@ magisk_step_make() {
 	make CC=$PRE-gcc CXX=$PRE-c++ LD=$PRE-ld AR=$PRE-ar AS=$PRE-as LIB_PATH="/usr/local/musl/lib" CFLAGS+="-I/usr/local/musl/aarch64-linux-musl/include -static" LDFLAGS+="-L/usr/local/musl/aarch64-linux-musl/lib  --static"
 }
 
-magisk_step_make_install() {
-	return
-}
-
 magisk_step_post_make_install() {
 	#cp $MAGISK_MODULE_BUILDER_DIR/ldd $MAGISK_PREFIX/bin/ldd
 	#cd $MAGISK_PREFIX/bin
 	# Setup symlinks as these are used when building, so used by
 	# system setup in e.g. python, perl and libtool:
-	mkdir -p $MAGISK_MODULE_MASSAGEDIR/bin
+	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
 	for b in size strings bfdtest1 bfdtest2 objdump objcopy nm-new ranlib elfedit strip-new cxxfilt readelf addr2line libtool ar; do
-		cp $MAGISK_MODULE_SRCDIR/binutils/$b $MAGISK_MODULE_MASSAGEDIR/bin/$b
+		cp $MAGISK_MODULE_SRCDIR/binutils/$b $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/$b
 	done
 }
