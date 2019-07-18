@@ -11,21 +11,22 @@ MAGISK_MODULE_BUILD_IN_SRC=yes
 # We replace env in the old coreutils package:
 MAGISK_MODULE_CONFLICTS="coreutils (<< 8.25-4)"
 
-magisk_step_pre_configure() {
-	export TARGET=aarch64-linux-musl
-}
+#magisk_step_pre_configure() {
+#	export TARGET=aarch64-linux-musl
+#}
 
 magisk_step_configure() {
+	make clean
 	cp -f $MAGISK_MODULE_BUILDER_DIR/busybox.config .config
 	echo "CONFIG_SYSROOT=\"$MAGISK_STANDALONE_TOOLCHAIN/sysroot\"" >> .config
 	echo "CONFIG_PREFIX=\"$MAGISK_PREFIX\"" >> .config
-	echo "CONFIG_CROSS_COMPILER_PREFIX=\"$TARGET-\"" >> .config
+	echo "CONFIG_CROSS_COMPILER_PREFIX=\"$MAGISK_HOST_PLATFORM-\"" >> .config
 	echo "CONFIG_FEATURE_CROND_DIR=\"$MAGISK_PREFIX/var/spool/cron\"" >> .config
 	echo "CONFIG_SV_DEFAULT_SERVICE_DIR=\"$MAGISK_PREFIX/var/service\"" >> .config
 	make oldconfig
 }
 
-magisk_step_make() {
+mmagisk_step_make() {
 	MUSL_PATH=/usr/local/musl/bin
 	export PATH=$MUSL_PATH:$PATH
 	export CC=$MUSL_PATH/${TARGET}-gcc
@@ -39,9 +40,8 @@ magisk_step_make() {
 }
 
 magisk_step_post_make_install() {
-	return
 	if [ "$MAGISK_DEBUG" == "true" ]; then
-		install busybox_unstripped $PREFIX/bin/busybox
+		install busybox_unstripped $MAGISK_PREFIX/bin/busybox
 	fi
 
 	# Create symlinks in $PREFIX/bin/applets to $PREFIX/bin/busybox
