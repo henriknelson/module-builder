@@ -11,4 +11,8 @@ MAGISK_MODULE_DEVMODULE_BREAKS="ndk-sysroot (<< 19b-4)"
 MAGISK_MODULE_DEVMODULE_REPLACES="ndk-sysroot (<< 19b-4)"
 
 # Enable extra encodings (such as CP437) needed by some programs:
-MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--enable-extra-encodings"
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
+--enable-shared
+--enable-static
+--enable-extra-encodings
+"
