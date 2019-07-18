@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e -u
 
 APP_NAME="module-builder"
@@ -14,11 +14,13 @@ REPOROOT="$(dirname $(readlink -f $0))/../"
 IMAGE_NAME=nelshh/module-builder
 : ${CONTAINER_NAME:=nelshh-module-builder}
 
-echo "\033[1m\033[38;5;4m$APP_NAME v$APP_VERSION\033[m\033[38;5;15m - \033[m\033[1mby $APP_CREATOR [$APP_CREATOR_EMAIL]\033[1m\n"
-echo "Running container '$CONTAINER_NAME' from image '$IMAGE_NAME'..."
+source scripts/build/magisk_log.sh
+
+echo -e "\n\033[1m\033[38;5;4m$APP_NAME v$APP_VERSION\033[m\033[38;5;15m - \033[m\033[1mby $APP_CREATOR [$APP_CREATOR_EMAIL]\033[1m\n"
+magisk_log "Running container '$CONTAINER_NAME' from image '$IMAGE_NAME'..."
 
 docker start $CONTAINER_NAME > /dev/null 2> /dev/null || {
-	echo "Creating new container..."
+	magisk_log "Creating new container..."
 	docker run  \
 		--detach \
 		--name $CONTAINER_NAME \
@@ -28,7 +30,7 @@ docker start $CONTAINER_NAME > /dev/null 2> /dev/null || {
 
 	if [ $(id -u) -ne 1000 -a $(id -u) -ne 0 ]
 	then
-		echo "Changed builder uid/gid... (this may take a while)"
+		magisk_log "Changed builder uid/gid... (this may take a while)"
 		docker exec --tty $CONTAINER_NAME sudo chown -R $(id -u) $HOME
 		docker exec --tty $CONTAINER_NAME sudo chown -R $(id -u) /data
 		docker exec --tty $CONTAINER_NAME sudo usermod -u $(id -u) builder

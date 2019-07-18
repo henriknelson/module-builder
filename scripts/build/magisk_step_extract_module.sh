@@ -3,12 +3,14 @@ magisk_step_extract_module() {
 		mkdir -p "$MAGISK_MODULE_SRCDIR"
 		return
 	fi
+
 	cd "$MAGISK_MODULE_TMPDIR"
 	local MODULE_SRCURL=(${MAGISK_MODULE_SRCURL[@]})
 	local MODULE_SHA256=(${MAGISK_MODULE_SHA256[@]})
 	if  [ ! ${#MODULE_SRCURL[@]} == ${#MODULE_SHA256[@]} ] && [ ! ${#MODULE_SHA256[@]} == 0 ]; then
 		magisk_error_exit "Error: length of MAGISK_MODULE_SRCURL isn't equal to length of MAGISK_MODULE_SHA256."
 	fi
+
 	# STRIP=1 extracts archives straight into MAGISK_MODULE_SRCDIR while STRIP=0 puts them in subfolders. zip has same behaviour per default
 	# If this isn't desired then this can be fixed in magisk_step_post_extract_module.
 	local STRIP=1
@@ -24,6 +26,7 @@ magisk_step_extract_module() {
 
 		local folder
 		set +o pipefail
+		magisk_log "extracting $file.."
 		if [ "${file##*.}" = zip ]; then
 			folder=$(unzip -qql "$file" | head -n1 | tr -s ' ' | cut -d' ' -f5-)
 			rm -Rf $folder

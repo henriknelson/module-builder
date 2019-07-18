@@ -10,9 +10,9 @@ magisk_step_make() {
 		ninja -w dupbuild=warn -j $MAGISK_MAKE_PROCESSES
 	elif ls ./*akefile &> /dev/null || [ ! -z "$MAGISK_MODULE_EXTRA_MAKE_ARGS" ]; then
 		if [ -z "$MAGISK_MODULE_EXTRA_MAKE_ARGS" ]; then
-			make -j $MAGISK_MAKE_PROCESSES $QUIET_BUILD
+			make -j $MAGISK_MAKE_PROCESSES
 		else
-			make -j $MAGISK_MAKE_PROCESSES $QUIET_BUILD ${MAGISK_MODULE_EXTRA_MAKE_ARGS}
+			make -j $MAGISK_MAKE_PROCESSES ${MAGISK_MODULE_EXTRA_MAKE_ARGS}
 		fi
 	elif test -f Cargo.toml; then
                 magisk_setup_rust
@@ -26,7 +26,7 @@ magisk_step_make() {
 		OUT_FILE="target/$CARGO_TARGET_NAME/release/$out_str"
 		#$STRIP $OUT_FILE
 		cp -r $OUT_FILE "$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/$out_str"
-		tree $MAGISK_MODULE_MASSAGEDIR
+		#tree $MAGISK_MODULE_MASSAGEDIR
                 # https://github.com/rust-lang/cargo/issues/3316:
 	fi
 }

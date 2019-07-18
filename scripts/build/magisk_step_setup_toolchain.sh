@@ -1,11 +1,11 @@
 magisk_step_setup_toolchain() {
 	if test -f Cargo.toml; then
-		echo "Setting up rust toolchain.."
+		magisk_log "setting up rust toolchain.."
 		export MUSL_PATH=/usr/local/musl
 		export PATH=$MUSL_PATH/bin:$PATH
 		export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-musl-gcc
 		export CC_aarch64_unknown_linux_musl=aarch64-linux-musl-gcc
-		export CXX_aarch64_unknown_linux_musl=aarch64-linux-musl-g++ 
+		export CXX_aarch64_unknown_linux_musl=aarch64-linux-musl-g++
 		export OPENSSL_DIR=/openssl
 		export OPENSSL_INCLUDE_DIR=/openssl/include
 		export OPENSSL_LIB_DIR=/openssl/lib
@@ -30,7 +30,7 @@ magisk_step_setup_toolchain() {
 		export CFLAGS=""
 		export LDFLAGS="-L${MAGISK_PREFIX}/lib"
 	else
-		echo "Setting up clang toolchain"
+		magisk_log "setting up clang toolchain"
 		export PATH=$MAGISK_STANDALONE_TOOLCHAIN/bin:$PATH
 
 		export CFLAGS=""
@@ -95,6 +95,11 @@ magisk_step_setup_toolchain() {
 			LDFLAGS+=" -landroid-support"
 		fi
 
+
+		if [ "$MAGISK_MODULE_DEPENDS" != "${MAGISK_MODULE_DEPENDS/libcurl/}" ]; then
+			LDFLAGS+=" -lcurl"
+		fi
+
 		export ac_cv_func_getpwent=no
 		export ac_cv_func_getpwnam=no
 		export ac_cv_func_getpwuid=no
@@ -148,12 +153,12 @@ magisk_step_setup_toolchain() {
 			sed -i 's/clang/clang -E/' \
 			   $_MAGISK_TOOLCHAIN_TMPDIR/bin/$HOST_PLAT-cpp
 			cp $_MAGISK_TOOLCHAIN_TMPDIR/bin/$HOST_PLAT-clang \
-			   $_MAGISK_TOOLCHAIN_TMPDIR/bin/$HOST_PLAT-gcc 
+			   $_MAGISK_TOOLCHAIN_TMPDIR/bin/$HOST_PLAT-gcc
 			cp $_MAGISK_TOOLCHAIN_TMPDIR/bin/$HOST_PLAT-clang++ \
 			   $_MAGISK_TOOLCHAIN_TMPDIR/bin/$HOST_PLAT-gcc
 			done
 			cp $_MAGISK_TOOLCHAIN_TMPDIR/bin/armv7a-linux-androideabi$MAGISK_MODULE_API_LEVEL-clang \
-			   $_MAGISK_TOOLCHAIN_TMPDIR/bin/arm-linux-androideabi-clang			
+			   $_MAGISK_TOOLCHAIN_TMPDIR/bin/arm-linux-androideabi-clang
 			cp $_MAGISK_TOOLCHAIN_TMPDIR/bin/armv7a-linux-androideabi$MAGISK_MODULE_API_LEVEL-clang++ \
 			   $_MAGISK_TOOLCHAIN_TMPDIR/bin/arm-linux-androideabi-clang++
 			cp $_MAGISK_TOOLCHAIN_TMPDIR/bin/armv7a-linux-androideabi-cpp \

@@ -9,5 +9,6 @@ magisk_step_create_zipfile() {
 	MAGISK_MODULE_ZIPFILE=$MAGISK_ZIPDIR/${MAGISK_MODULE_NAME}${DEBUG}_${MAGISK_MODULE_FULLVERSION}_${MAGISK_ARCH}.zip
 	# Create the actual .zip file:
         cd "$MAGISK_MODULE_MASSAGEDIR"
-	zip -r "$MAGISK_MODULE_ZIPFILE" .
+	magisk_log "creating zip file $MAGISK_MODULE_ZIPFILE.."
+	zip --symlinks -r "$MAGISK_MODULE_ZIPFILE" .
 }

@@ -1,13 +1,13 @@
 magisk_step_handle_arguments() {
 	_show_usage() {
 	    echo "Usage: ./build-module.sh [-a ARCH] [-d] [-D] [-f] [-i] [-I] [-q] [-s] [-o DIR] MODULE"
-	    echo "Build a module by creating a .zip file in the debs/ folder."
+	    echo "Build a module by creating a .zip file in the zips/ folder."
 	    echo "  -a The architecture to build for: aarch64(default), arm, i686, x86_64 or all."
 	    echo "  -d Build with debug symbols."
 	    echo "  -D Build a disabled module in disabled-modules/."
 	    echo "  -f Force build even if module has already been built."
 	    echo "  -i Download and extract dependencies instead of building them."
-	    echo "  -I Download and extract dependencies instead of building them, keep existing /data/data/com.termux files."
+	    echo "  -I Download and extract dependencies instead of building them, keep existing files."
 	    echo "  -q Quiet build."
 	    echo "  -s Skip dependency check."
 	    echo "  -o Specify zip directory. Default: zips/."

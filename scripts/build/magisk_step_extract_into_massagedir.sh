@@ -5,11 +5,11 @@ magisk_step_extract_into_massagedir() {
 	cd $MAGISK_PREFIX
 	tar -N "$MAGISK_BUILD_TS_FILE" \
 		--exclude='lib/libutil.so' \
-		-czf "$TARBALL_ORIG" .
+		-cvzf "$TARBALL_ORIG" .
 
 	# Extract tar in order to massage it
 	mkdir -p "$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX"
 	cd "$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX"
-	tar xf "$TARBALL_ORIG"
+	tar -xf "$TARBALL_ORIG"
 	rm "$TARBALL_ORIG"
 }

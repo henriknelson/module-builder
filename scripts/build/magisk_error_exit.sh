@@ -1,5 +1,5 @@
 magisk_error_exit() {
-	echo "ERROR: $*" 1>&2
+	magisk_log "ERROR: $*" 1>&2
 	caller
 	exit 1
 }

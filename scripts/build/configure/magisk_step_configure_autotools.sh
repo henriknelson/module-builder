@@ -1,10 +1,10 @@
 magisk_step_configure_autotools() {
 	if [ ! -e "$MAGISK_MODULE_SRCDIR/configure" ]; then return; fi
 
-	local DISABLE_STATIC="--disable-static"
-	if [ "$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS" != "${MAGISK_MODULE_EXTRA_CONFIGURE_ARGS/--enable-static/}" ]; then
-		# Do not --disable-static if module explicitly enables it (e.g. gdb needs enable-static to build)
-		DISABLE_STATIC=""
+	local ENABLE_STATIC="--enable-static"
+	if [ "$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS" != "${MAGISK_MODULE_EXTRA_CONFIGURE_ARGS/--disable-static/}" ]; then
+		# Do not --enable-static if module explicitly enables it (e.g. a module needs disable-static to build)
+		ENABLE_STATIC=""
 	fi
 
 	local DISABLE_NLS="--disable-nls"
@@ -13,9 +13,9 @@ magisk_step_configure_autotools() {
 		DISABLE_NLS=""
 	fi
 
-	local ENABLE_SHARED="--enable-shared"
-	if [ "$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS" != "${MAGISK_MODULE_EXTRA_CONFIGURE_ARGS/--disable-shared/}" ]; then
-		ENABLE_SHARED=""
+	local DISABLE_SHARED="--disable-shared"
+	if [ "$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS" != "${MAGISK_MODULE_EXTRA_CONFIGURE_ARGS/--enable-shared/}" ]; then
+		DISABLE_SHARED=""
 	fi
 
 	local HOST_FLAG="--host=$MAGISK_HOST_PLATFORM"
@@ -31,6 +31,11 @@ magisk_step_configure_autotools() {
 	local QUIET_BUILD=
 	if [ $MAGISK_QUIET_BUILD = true ]; then
 		QUIET_BUILD="--enable-silent-rules --silent --quiet"
+	fi
+
+	local VERBOSE_BUILD="--enable-verbose"
+	if [ "$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS" != "${MAGISK_MODULE_EXTRA_CONFIGURE_ARGS/--disable--verbose/}" ]; then
+		VERBOSE_BUILD="--disable-verbose"
 	fi
 
 	# Some modules provides a $MODULE-config script which some configure scripts pickup instead of pkg-config:
@@ -93,18 +98,30 @@ magisk_step_configure_autotools() {
 	AVOID_GNULIB+=" gl_cv_header_working_fcntl_h=yes"
 	AVOID_GNULIB+=" gl_cv_C_locale_sans_EILSEQ=yes"
 
+	# Remove old config.log if it exists
+	if [ -e "$MAGISK_MODULE_SRCDIR/config.log" ]; then
+		rm -Rf $MAGISK_MODULE_SRCDIR/config.log;
+	fi
+
 	# NOTE: We do not want to quote AVOID_GNULIB as we want word expansion.
 	# shellcheck disable=SC2086
+
+	magisk_log "running ./configure"
 	env $AVOID_GNULIB "$MAGISK_MODULE_SRCDIR/configure" \
 		--disable-dependency-tracking \
 		--prefix=$MAGISK_PREFIX \
 		--libdir=$MAGISK_PREFIX/lib \
+		--includedir=$MAGISK_PREFIX/include \
 		--disable-rpath --disable-rpath-hack \
 		$HOST_FLAG \
 		$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS \
 		$DISABLE_NLS \
-		$ENABLE_SHARED \
-		$DISABLE_STATIC \
+		$ENABLE_STATIC \
+		$DISABLE_SHARED \
 		$LIBEXEC_FLAG \
-		$QUIET_BUILD
+		$VERBOSE_BUILD \
+		CFLAGS="${CFLAGS} -static" \
+		LDFLAGS="${LDFLAGS} --static"
+
+	magisk_log "./configure completed!"
 }

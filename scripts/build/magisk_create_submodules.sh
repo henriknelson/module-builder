@@ -22,6 +22,7 @@ magisk_create_submodules() {
 		test ! -f "$submodule" && continue
 		local SUB_MODULE_NAME
 		SUB_MODULE_NAME=$(basename "$submodule" .submodule.sh)
+		magisk_log "creating submodule $SUB_MODULE_NAME.."
 		# Default value is same as main module, but sub module may override:
 		local MAGISK_SUBMODULE_PLATFORM_INDEPENDENT=$MAGISK_MODULE_PLATFORM_INDEPENDENT
 		local SUB_MODULE_DIR=$MAGISK_TOPDIR/$MAGISK_MODULE_NAME/submodules/$SUB_MODULE_NAME
@@ -52,22 +53,22 @@ magisk_create_submodules() {
 		local SUB_MODULE_ARCH=$MAGISK_ARCH
 		test -n "$MAGISK_SUBMODULE_PLATFORM_INDEPENDENT" && SUB_MODULE_ARCH=all
 
-		cd "$SUB_MODULE_DIR/massage"
+		cd $SUB_MODULE_DIR/massage
 		local SUB_MODULE_INSTALLSIZE
 		SUB_MODULE_INSTALLSIZE=$(du -sk . | cut -f 1)
-		#tar -cJf "$SUB_MODULE_MODULE_DIR/data.tar.xz" .
+		tar -chJf $SUB_MODULE_MODULE_DIR/data.tar.xz -C $(pwd)/ system
 
-		mkdir -p DEBIAN
-		cd DEBIAN
+		#mkdir -p DEBIAN
+		#cd DEBIAN
 
-		cat > control <<-HERE
-			Package: $SUB_MODULE_NAME
-			Architecture: ${SUB_MODULE_ARCH}
-			Installed-Size: ${SUB_MODULE_INSTALLSIZE}
-			Maintainer: $MAGISK_MODULE_MAINTAINER
-			Version: $MAGISK_MODULE_FULLVERSION
-			Homepage: $MAGISK_MODULE_HOMEPAGE
-		HERE
+		#cat > control <<-HERE
+		#	Package: $SUB_MODULE_NAME
+		#	Architecture: ${SUB_MODULE_ARCH}
+		#	Installed-Size: ${SUB_MODULE_INSTALLSIZE}
+		#	Maintainer: $MAGISK_MODULE_MAINTAINER
+		#	Version: $MAGISK_MODULE_FULLVERSION
+		#	Homepage: $MAGISK_MODULE_HOMEPAGE
+		#HERE
 
 		local PKG_DEPS_SPC=" ${MAGISK_MODULE_DEPENDS//,/} "
 
@@ -79,19 +80,21 @@ magisk_create_submodules() {
 		    MAGISK_SUBMODULE_DEPENDS+=", $MAGISK_MODULE_DEPENDS"
 		fi
 
-		test ! -z "$MAGISK_SUBMODULE_DEPENDS" && echo "Depends: ${MAGISK_SUBMODULE_DEPENDS/#, /}" >> control
-		test ! -z "$MAGISK_SUBMODULE_BREAKS" && echo "Breaks: $MAGISK_SUBMODULE_BREAKS" >> control
-		test ! -z "$MAGISK_SUBMODULE_CONFLICTS" && echo "Conflicts: $MAGISK_SUBMODULE_CONFLICTS" >> control
-		test ! -z "$MAGISK_SUBMODULE_REPLACES" && echo "Replaces: $MAGISK_SUBMODULE_REPLACES" >> control
-		echo "Description: $MAGISK_SUBMODULE_DESCRIPTION" >> control
+		#test ! -z "$MAGISK_SUBMODULE_DEPENDS" && echo "Depends: ${MAGISK_SUBMODULE_DEPENDS/#, /}" >> control
+		#test ! -z "$MAGISK_SUBMODULE_BREAKS" && echo "Breaks: $MAGISK_SUBMODULE_BREAKS" >> control
+		#test ! -z "$MAGISK_SUBMODULE_CONFLICTS" && echo "Conflicts: $MAGISK_SUBMODULE_CONFLICTS" >> control
+		#test ! -z "$MAGISK_SUBMODULE_REPLACES" && echo "Replaces: $MAGISK_SUBMODULE_REPLACES" >> control
+		#echo "Description: $MAGISK_SUBMODULE_DESCRIPTION" >> control
 
 		for f in $MAGISK_SUBMODULE_CONFFILES; do echo "$MAGISK_PREFIX/$f" >> conffiles; done
 
 		# Create the actual .zip file:
 		MAGISK_SUBMODULE_ZIPFILE=$MAGISK_ZIPDIR/${SUB_MODULE_NAME}${DEBUG}_${MAGISK_MODULE_FULLVERSION}_${SUB_MODULE_ARCH}.zip
-		zip -r "$MAGISK_SUBMODULE_ZIPFILE" "$SUB_MODULE_MODULE_DIR"
+		cd "$SUB_MODULE_DIR/massage"
+		zip --symlinks -r "$MAGISK_SUBMODULE_ZIPFILE" .
 
 		# Go back to main module:
-		cd "$MAGISK_MODULE_MASSAGEDIR"
+		cd "$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX"
+		magisk_log "submodule $SUB_MODULE_NAME created"
 	done
 }

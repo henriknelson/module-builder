@@ -8,7 +8,7 @@ magisk_step_start_build() {
 	MAGISK_STANDALONE_TOOLCHAIN+="-v1"
 
 	if [ -n "${MAGISK_MODULE_BLACKLISTED_ARCHES:=""}" ] && [ "$MAGISK_MODULE_BLACKLISTED_ARCHES" != "${MAGISK_MODULE_BLACKLISTED_ARCHES/$MAGISK_ARCH/}" ]; then
-		echo "Skipping building $MAGISK_MODULE_NAME for arch $MAGISK_ARCH"
+		magisk_log "skipping building $MAGISK_MODULE_NAME for arch $MAGISK_ARCH - arch blacklisted"
 		exit 0
 	fi
 
@@ -22,7 +22,7 @@ magisk_step_start_build() {
 		if [ "$MAGISK_MODULE_HAS_DEBUG" == "yes" ]; then
 			DEBUG="-dbg"
 		else
-			echo "Skipping building debug build for $MAGISK_MODULE_NAME"
+			magisk_log "skipping building debug build for $MAGISK_MODULE_NAME - MAGISK_MODULE_HAS_DEBUG='no'"
 			exit 0
 		fi
 	else
@@ -33,7 +33,7 @@ magisk_step_start_build() {
 	   [ -z "${MAGISK_FORCE_BUILD+x}" ] &&
 	   [ -e "/data/data/.built-modules/$MAGISK_MODULE_NAME" ]; then
 		if [ "$(cat "/data/data/.built-modules/$MAGISK_MODULE_NAME")" = "$MAGISK_MODULE_FULLVERSION" ]; then
-			echo "$MAGISK_MODULE_NAME@$MAGISK_MODULE_FULLVERSION built - skipping (rm /data/data/.built-modules/$MAGISK_MODULE_NAME to force rebuild)"
+			magisk_log "$MAGISK_MODULE_NAME@$MAGISK_MODULE_FULLVERSION already built - skipping (rm /data/data/.built-modules/$MAGISK_MODULE_NAME to force rebuild)"
 			exit 0
 		fi
 	fi
@@ -43,7 +43,6 @@ magisk_step_start_build() {
 		magisk_get_repo_files
 		# Download dependencies
 		while read MODULE MODULE_DIR; do
-			echo $MODULE
 			if [ -z $MODULE ]; then
 				continue
 			elif [ "$MODULE" = "ERROR" ]; then
@@ -54,7 +53,7 @@ magisk_step_start_build() {
 			read DEP_ARCH DEP_VERSION <<< $(magisk_extract_dep_info $MODULE "${MODULE_DIR}")
 
 			if [ ! "$MAGISK_QUIET_BUILD" = true ]; then
-				echo "Downloading dependency $MODULE@$DEP_VERSION if necessary..."
+				magisk_log "downloading dependency $MODULE@$DEP_VERSION if necessary..."
 			fi
 
 			if [ -e "/data/data/.built-modules/$MODULE" ]; then
@@ -64,17 +63,17 @@ magisk_step_start_build() {
 			fi
 
 			if ! magisk_download_zip $MODULE $DEP_ARCH $DEP_VERSION; then
-				echo "Download of $MODULE@$DEP_VERSION from $MAGISK_REPO_URL failed, building instead"
+				magisk_log "download of $MODULE@$DEP_VERSION from $MAGISK_REPO_URL failed, building instead"
 				MAGISK_BUILD_IGNORE_LOCK=true ./build-module.sh -a $MAGISK_ARCH -I "${MODULE_DIR}"
 				continue
 			else
-				if [ ! "$MAGISK_QUIET_BUILD" = true ]; then 
-					echo "extracting $MODULE...";
+				if [ ! "$MAGISK_QUIET_BUILD" = true ]; then
+					magisk_log "extracting $MODULE...";
 				fi
 				(
 					cd $MAGISK_COMMON_CACHEDIR-$DEP_ARCH
-					#ar x ${MODULE}_${DEP_VERSION}_${DEP_ARCH}.deb data.tar.xz
-					#tar -xf data.tar.xz --no-overwrite-dir -C /
+					ar x ${MODULE}_${DEP_VERSION}_${DEP_ARCH}.deb data.tar.xz
+					tar -xf data.tar.xz --no-overwrite-dir -C /
 				)
 			fi
 
@@ -85,13 +84,12 @@ magisk_step_start_build() {
 	elif [ "$MAGISK_SKIP_DEPCHECK" = false ] && [ "$MAGISK_INSTALL_DEPS" = false ]; then
 		# Build dependencies
 		while read MODULE MODULE_DIR; do
-			echo "$MODULE"
 			if [ -z $MODULE ]; then
 				continue
 			elif [ "$MODULE" = "ERROR" ]; then
 				magisk_error_exit "Obtaining buildorder failed"
 			fi
-			echo "Building dependency $MODULE if necessary..."
+			magisk_log "trying to build dependency $MODULE if necessary..."
 			# Built dependencies are put in the default MAGISK_ZIPDIR instead of the specified one
 			MAGISK_BUILD_IGNORE_LOCK=true ./build-module.sh -a $MAGISK_ARCH -s "${MODULE_DIR}"
 		done<<<$(./scripts/buildorder.py "$MAGISK_MODULE_BUILDER_DIR" $MAGISK_MODULES_DIRECTORIES || echo "ERROR")
@@ -131,11 +129,11 @@ magisk_step_start_build() {
 	#fi
 
 	if [ -n "$MAGISK_MODULE_BUILD_IN_SRC" ]; then
-		echo "Building in src due to MAGISK_MODULE_BUILD_IN_SRC being set" > "$MAGISK_MODULE_BUILDDIR/BUILDING_IN_SRC.txt"
+		echo "building in src due to MAGISK_MODULE_BUILD_IN_SRC being set" > "$MAGISK_MODULE_BUILDDIR/BUILDING_IN_SRC.txt"
 		MAGISK_MODULE_BUILDDIR=$MAGISK_MODULE_SRCDIR
 	fi
 
-	echo "nelshh/module-builder - building $MAGISK_MODULE_NAME for arch $MAGISK_ARCH..."
+	magisk_log "trying to build module '$MAGISK_MODULE_NAME' for arch $MAGISK_ARCH..."
 	test -t 1 && printf "\033]0;%s...\007" "$MAGISK_MODULE_NAME"
 
 	# Avoid exporting MODULE_CONFIG_LIBDIR until after magisk_step_host_build.

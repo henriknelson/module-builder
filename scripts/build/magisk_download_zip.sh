@@ -11,7 +11,7 @@ magisk_download_zip() {
 			read -d "\n" PKG_PATH PKG_HASH <<<$(./scripts/get_hash_from_file.py "${MAGISK_COMMON_CACHEDIR}-${PACKAGE_ARCH}/$PACKAGE_FILE_PATH" $PACKAGE $VERSION)
 			if [ ! -z "$PKG_HASH" ]; then
 				if [ ! "$MAGISK_QUIET_BUILD" = true ]; then
-					echo "Found $PACKAGE in ${MAGISK_REPO_URL[$idx-1]}/dists/${MAGISK_REPO_DISTRIBUTION[$idx-1]}"
+					magisk_log "found $PACKAGE in ${MAGISK_REPO_URL[$idx-1]}/dists/${MAGISK_REPO_DISTRIBUTION[$idx-1]}"
 				fi
 				break
 			fi

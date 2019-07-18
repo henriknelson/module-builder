@@ -10,12 +10,15 @@ magisk_download() {
 		# Keep existing file if checksum matches.
 		local EXISTING_CHECKSUM
 		EXISTING_CHECKSUM=$(sha256sum "$DESTINATION" | cut -f 1 -d ' ')
-		if [ "$EXISTING_CHECKSUM" = "$CHECKSUM" ]; then return; fi
+		if [ "$EXISTING_CHECKSUM" = "$CHECKSUM" ]; then
+			magisk_log "module source already existing, no need to download"
+			return;
+		fi
 	fi
 
 	local TMPFILE
 	TMPFILE=$(mktemp "$MAGISK_MODULE_TMPDIR/download.$MAGISK_MODULE_NAME.XXXXXXXXX")
-	echo "Downloading ${URL}"
+	magisk_log "downloading ${URL}"
 	local TRYMAX=6
 	for try in $(seq 1 $TRYMAX); do
 		if curl -L --fail --retry 2 -o "$TMPFILE" "$URL"; then
@@ -34,7 +37,7 @@ magisk_download() {
 			mv "$TMPFILE" "$DESTINATION"
 			return
 		else
-			echo "Download of $URL failed (attempt $try/$TRYMAX)" 1>&2
+			magisk_log "download of $URL failed (attempt $try/$TRYMAX)" 1>&2
 			sleep 45
 		fi
 	done
