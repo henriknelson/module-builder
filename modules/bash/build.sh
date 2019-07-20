@@ -30,25 +30,8 @@ MAGISK_MODULE_CONFFILES="etc/bash.bashrc etc/profile"
 MAGISK_MODULE_RM_AFTER_INSTALL="share/* bin/bashbug"
 
 magisk_step_configure() {
-	target_host=aarch64-linux-gnu
-	$MAGISK_MODULE_SRCDIR/configure \
-		--host=$target_host \
-		--prefix=$MAGISK_PREFIX \
-		--datarootdir=$MAGISK_MODULE_TMPDIR \
-		--disable-nls \
-		--enable-static-link  \
-		--without-bash-malloc \
-		bash_cv_dev_fd=whacky \
-		bash_cv_getcwd_malloc=yes \
-		--enable-largefile \
-		--enable-alias \
-		--enable-history \
-		--enable-readline \
-		--enable-multibyte \
-		--enable-job-control \
-		--enable-array-variables \
-		CFLAGS="-g -O2" \
-		LDFLAGS="-g -O2"
+	target_host=aarch64-linux-android
+	./configure --prefix=$MAGISK_PREFIX --host=$target_host --target=$target_host --datarootdir=$MAGISK_MODULE_TMPDIR --disable-nls --enable-static-link  \--without-bash-malloc bash_cv_dev_fd=whacky bash_cv_getcwd_malloc=yes --enable-largefile --enable-alias --enable-history --enable-readline --enable-multibyte --enable-job-control --enable-array-variables CFLAGS="-g -O2" LDFLAGS="-g -O2"
 }
 
 
@@ -77,9 +60,9 @@ magisk_step_patch_module() {
   	done
 }
 
-magisk_step_post_make_install() {
-	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
-	ls $MAGISK_MODULE_SRCDIR
-	cp $MAGISK_MODULE_SRCDIR/bash $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/bash
-	rm -Rf $MAGISK_MODULE_MASSAGEDIR/bin
-}
+#magisk_step_post_make_install() {
+#	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
+#	ls $MAGISK_MODULE_SRCDIR
+#	cp $MAGISK_MODULE_SRCDIR/bash $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/bash
+#	rm -Rf $MAGISK_MODULE_MASSAGEDIR/bin
+#}
