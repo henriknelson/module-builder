@@ -59,6 +59,9 @@ magisk_step_make_install() {
 	make -j $(nproc) V=1 $MAGISK_MODULE_EXTRA_MAKE_ARGS install CFLAGS+=" -static"
 	make -j $(nproc) -C contrib/subtree V=1 $MAGISK_MODULE_EXTRA_MAKE_ARGS install CFLAGS+=" -static"
 	#make -j $(nproc) -C contrib/subtree V=1 $MAGISK_MODULE_EXTRA_MAKE_ARGS install LDFLAGS+=" -L/system/lib"
+	mkdir -p $MAGISK_PREFIX/etc/bash_completion.d/
+	cp $MAGISK_MODULE_SRCDIR/contrib/completion/git-completion.bash $MAGISK_PREFIX/etc/bash_completion.d/
+	cp $MAGISK_MODULE_SRCDIR/contrib/completion/git-prompt.sh $MAGISK_PREFIX/etc/bash_completion.d/
 }
 
 mmagisk_step_post_make_install() {
@@ -66,11 +69,6 @@ mmagisk_step_post_make_install() {
 	fdfind -t x ^git$ $MAGISK_MODULE_SRCDIR --exec cp {}  $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/
 	tree $MAGISK_MODULE_SRCDIR
 	tree $MAGISK_MODULE_MASSAGEDIR
-
-	#mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/etc/bash_completion.d/
-	#cp $MAGISK_MODULE_SRCDIR/contrib/completion/git-completion.bash \
-	#   $MAGISK_MODULE_SRCDIR/contrib/completion/git-prompt.sh \
-	#   $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/etc/bash_completion.d/
 
 	# Remove the build machine perl setup in magisk_step_pre_configure to avoid it being packaged:
 
