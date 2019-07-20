@@ -1,0 +1,41 @@
+--- ../coreutils/ls.c	2019-06-10 09:09:31.000000000 +0000
++++ ./coreutils/ls.c	2019-07-19 13:07:11.521412240 +0000
+@@ -100,7 +100,7 @@
+ //usage:	"[-1AaCxd"
+ //usage:	IF_FEATURE_LS_FOLLOWLINKS("LH")
+ //usage:	IF_FEATURE_LS_RECURSIVE("R")
+-//usage:	IF_FEATURE_LS_FILETYPES("Fp") "lins"
++//usage:	IF_FEATURE_LS_FILETYPES("Fp") "linsk"
+ //usage:	IF_FEATURE_HUMAN_READABLE("h")
+ //usage:	IF_FEATURE_LS_SORTFILES("rSXv")
+ //usage:	IF_FEATURE_LS_TIMESTAMPS("ctu")
+@@ -129,6 +129,7 @@
+ //usage:     "\n	-i	List inode numbers"
+ //usage:     "\n	-n	List numeric UIDs and GIDs instead of names"
+ //usage:     "\n	-s	List allocated blocks"
++//usage:     "\n	-k	List permissions in octal format"
+ //usage:	IF_FEATURE_LS_TIMESTAMPS(
+ //usage:     "\n	-lc	List ctime"
+ //usage:     "\n	-lu	List atime"
+@@ -230,7 +231,7 @@
+ 	OPT_s = (1 << 8),
+ 	OPT_x = (1 << 9),
+ 	OPT_A = (1 << 10),
+-	//OPT_k = (1 << 11),
++	OPT_k = (1 << 11),
+ 
+ 	OPTBIT_F = 12,
+ 	OPTBIT_p, /* 13 */
+@@ -503,7 +504,11 @@
+ 		column += printf("%6"OFF_FMT"u ", (off_t) (dn->dn_blocks >> 1));
+ 	if (opt & OPT_l) {
+ 		/* long listing: show mode */
+-		column += printf("%-10s ", (char *) bb_mode_string(dn->dn_mode));
++		 if(opt & OPT_k) {
++                       column += printf("%o ", (int) dn->dn_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
++                } else {
++                       column += printf("%-10s ", (char *) bb_mode_string(dn->dn_mode));
++              	}
+ 		/* long listing: show number of links */
+ 		column += printf("%4lu ", (long) dn->dn_nlink);
+ 		/* long listing: show user/group */

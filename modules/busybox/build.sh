@@ -7,6 +7,7 @@ MAGISK_MODULE_REVISION=1
 MAGISK_MODULE_SHA256=0e4925392fd9f3743cc517e031b68b012b24a63b0cf6c1ff03cce7bb3846cc99
 MAGISK_MODULE_SRCURL=https://busybox.net/downloads/busybox-${MAGISK_MODULE_VERSION}.tar.bz2
 MAGISK_MODULE_BUILD_IN_SRC=yes
+MAGISK_MODULE_DEPENDS="libcares"
 
 # We replace env in the old coreutils package:
 MAGISK_MODULE_CONFLICTS="coreutils (<< 8.25-4)"
