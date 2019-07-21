@@ -15,9 +15,9 @@ MAGISK_MODULE_CONFFILES="etc/nanorc"
 MAGISK_MODULE_RM_AFTER_INSTALL="bin/rnano share/man/man1/rnano.1 share/nano/man-html"
 
 magisk_step_pre_configure() {
-	export PATH=/usr/local/musl/bin:$PATH
-	CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
-	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --host=aarch64-linux-musl --target=aarch64-linux-musl"
+	#export PATH=/usr/local/musl/bin:$PATH
+	#CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
+	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --host=aarch64-linux-android --target=aarch64-linux-android"
 	LDFLAGS+=" --static"
 	if [ "$MAGISK_DEBUG" == "true" ]; then
 		# When doing debug build, -D_FORTIFY_SOURCE=2 gives this error:
