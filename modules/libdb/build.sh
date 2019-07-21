@@ -16,4 +16,5 @@ MAGISK_MODULE_RM_AFTER_INSTALL="docs"
 
 magisk_step_pre_configure() {
 	MAGISK_MODULE_SRCDIR=$MAGISK_MODULE_SRCDIR/dist
+	CFLAGS+=" -I/home/builder/lib/android-ndk/sysroot/usr/include $CFLAGS"
 }
