@@ -17,7 +17,9 @@ export LEXLIB=
 
 magisk_step_pre_configure() {
 	export CPPFLAGS="$CPPFLAGS -Wno-c++11-narrowing"
-	export PREF=/usr/local/musl/aarch64-linux-musl
+	export LDFLAGs="$LDFLAGS --static"
+	export PREF=aarch64-linux-android
+	#/usr/local/musl/aarch64-linux-musl
 	if [ $MAGISK_ARCH_BITS = 32 ]; then
 		export LIB_PATH="${PREF}/lib:/system/lib"
 	else
@@ -25,25 +27,25 @@ magisk_step_pre_configure() {
 	fi
 }
 
-magisk_step_configure() {
+mmagisk_step_configure() {
 	export PATH=/usr/local/musl/bin:$PATH
 	PRE=/usr/local/musl/bin/aarch64-linux-musl
 	CC=$PRE-gcc CXX=$PRE-c++ LD=$PRE-ld AR=$PRE-ar AS=$PRE-as LIB_PATH="/usr/local/musl/aarch64-linux-musl/lib" ./configure --host aarch64-linux-musl -with-lib-path=/usr/local/musl/aarch64-linux-musl/lib --disable-nls --disable-werror --disable-gdb --disable-libdecnumber --disable-readline --disable-sim --disable-shared
 }
 
-magisk_step_make() {
+mmagisk_step_make() {
 	export PATH=/usr/local/musl/bin:$PATH
 	PRE=/usr/local/musl/bin/aarch64-linux-musl
 	make CC=$PRE-gcc CXX=$PRE-c++ LD=$PRE-ld AR=$PRE-ar AS=$PRE-as LIB_PATH="/usr/local/musl/lib" CFLAGS+="-I/usr/local/musl/aarch64-linux-musl/include -static" LDFLAGS+="-L/usr/local/musl/aarch64-linux-musl/lib  --static"
 }
 
 magisk_step_post_make_install() {
-	#cp $MAGISK_MODULE_BUILDER_DIR/ldd $MAGISK_PREFIX/bin/ldd
-	#cd $MAGISK_PREFIX/bin
+	cp $MAGISK_MODULE_BUILDER_DIR/ldd $MAGISK_PREFIX/bin/ldd
+	cd $MAGISK_PREFIX/bin
 	# Setup symlinks as these are used when building, so used by
 	# system setup in e.g. python, perl and libtool:
-	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
-	for b in size strings bfdtest1 bfdtest2 objdump objcopy nm-new ranlib elfedit strip-new cxxfilt readelf addr2line libtool ar; do
-		cp $MAGISK_MODULE_SRCDIR/binutils/$b $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/$b
+	for b in ar ld nm objdump ranlib readelf strip; do
+		ln -s -f $b $MAGISK_HOST_PLATFORM-$b
 	done
+	ln -sf ld.gold gold
 }
