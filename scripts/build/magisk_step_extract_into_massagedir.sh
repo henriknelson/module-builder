@@ -4,6 +4,7 @@ magisk_step_extract_into_massagedir() {
 	# Build diff tar with what has changed during the build:
 	cd $MAGISK_PREFIX
 	tar -N "$MAGISK_BUILD_TS_FILE" \
+		--warning=none \
 		--exclude='lib/libutil.so' \
 		-cvzf "$TARBALL_ORIG" .
 
