@@ -42,7 +42,7 @@ magisk_step_configure() {
 	#CXX=/home/builder/lib/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-cxx
 	#RANLIB=/home/builder/lib/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-ranlib
 	#export CPP=/home/builder/lib/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-cpp
-	./configure --prefix=$MAGISK_PREFIX --host=aarch64-linux-android --target=aarch64-linux-android --with-curl --with-zlib --with-ssl --libdir=/system/lib --includedir=/system/include  ac_cv_fread_reads_directories=yes ac_cv_header_libintl_h=no ac_cv_snprintf_returns_bogus=no CURL_CONFIG=/system/bin/curl-config
+	./configure --prefix=$MAGISK_PREFIX --libexecdir=$MAGISK_PREFIX/usr/libexec --datarootdir=$MAGISK_PREFIX/usr/share --host=aarch64-linux-android --target=aarch64-linux-android --with-curl --with-zlib --with-ssl --libdir=/system/lib --includedir=/system/include  ac_cv_fread_reads_directories=yes ac_cv_header_libintl_h=no ac_cv_snprintf_returns_bogus=no CURL_CONFIG=/system/bin/curl-config
 }
 
 magisk_step_make() {
