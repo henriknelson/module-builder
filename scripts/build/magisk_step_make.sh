@@ -10,9 +10,9 @@ magisk_step_make() {
 		ninja -w dupbuild=warn -j $MAGISK_MAKE_PROCESSES
 	elif ls ./*akefile &> /dev/null || [ ! -z "$MAGISK_MODULE_EXTRA_MAKE_ARGS" ]; then
 		if [ -z "$MAGISK_MODULE_EXTRA_MAKE_ARGS" ]; then
-			make -j $MAGISK_MAKE_PROCESSES
+			make V=1 -j $MAGISK_MAKE_PROCESSES
 		else
-			make -j $MAGISK_MAKE_PROCESSES ${MAGISK_MODULE_EXTRA_MAKE_ARGS}
+			make V=1 -j $MAGISK_MAKE_PROCESSES ${MAGISK_MODULE_EXTRA_MAKE_ARGS}
 		fi
 	elif test -f Cargo.toml; then
                 magisk_setup_rust
