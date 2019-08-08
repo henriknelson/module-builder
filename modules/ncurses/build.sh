@@ -47,56 +47,6 @@ magisk_step_pre_configure() {
         MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --prefix=$MAGISK_PREFIX --host=aarch64-linux-android --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
 }
 
-mmagisk_step_pre_configure() {
-	target=/usr/local/musl/bin/aarch64-linux-musl
-	cflag=" --enable-static"
-	export CROSS_COMPILE=aarch64-linux-musl-
-	# --host=aarch64-linux-musl
-	export CC=$target-gcc
-	export LD=$target-ld
-	export CXX=$target-g++
-	export AR=$target-ar
-	export AS=$target-as
-	export NM=$target-nm
-	export RANLIB=$target-ranlib
-	export CPP=$target-cpp
-	export LDFLAGS+=" --static"
-	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --host=aarch64-linux-musl --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
-}
-
-mmagisk_step_post_make_install() {
-	#mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/lib
-	#mkdir -p $MAGISK_MODULE_MASSAGEDIR/system/share
-	#cp $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/lib/*.so $MAGISK_MODULE_MASSAGEDIR/system/lib
-	#cp $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/lib/*.a $MAGISK_MODULE_MASSAGEDIR/system/lib
-	#cp -r $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/share/* $MAGISK_MODULE_MASSAGEDIR/system/share/
-
-	#rm -rf $MAGISK_MODULE_MASSAGEDIR/system/share/man
-	# we need the rm as we create(d) symlinks for the versioned so as well
-	cd $MAGISK_PREFIX/lib
-	for lib in form menu ncurses panel; do
-		#rm -Rf lib${lib}.so*
-		for file in lib${lib}w.so*; do
-			ln -s $file ${file/w./.}
-			cp ${file/w./.} $MAGISK_MODULE_MASSAGEDIR/system/lib64
-		done
-		(cd pkgconfig; ln -sf ${lib}w.pc $lib.pc)
-	done
-	# some packages want libcurses while building/compiling
-	#rm -f libcurses.so*
-	for file in libncurses.so*; do
-		ln -s $file ${file/libn/lib}
-		#cp $file $MAGISK_MODULE_MASSAGEDIR/system/lib64
-	done
-
-	# Some packages want these:
-	cd $MAGISK_PREFIX/include/
-	#rm -Rf ncurses{,w}
-	mkdir ncurses{,w}
-	ln -s ../{ncurses.h,termcap.h,panel.h,unctrl.h,menu.h,form.h,tic.h,nc_tparm.h,term.h,eti.h,term_entry.h,ncurses_dll.h,curses.h} ncurses
-	ln -s ../{ncurses.h,termcap.h,panel.h,unctrl.h,menu.h,form.h,tic.h,nc_tparm.h,term.h,eti.h,term_entry.h,ncurses_dll.h,curses.h} ncursesw
-}
-
 magisk_step_post_massage() {
 	# Strip away 30 years of cruft to decrease size.
 	local TI=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/share/terminfo

@@ -12,18 +12,10 @@ MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 --enable-static
 --disable-shared
 --enable-multibyte
---host=aarch64-linux-musl
+--host=aarch64-linux-android
 bash_cv_wcwidth_broken=no"
 MAGISK_MODULE_EXTRA_MAKE_ARGS="SHLIB_LIBS=-lncursesw"
 MAGISK_MODULE_CONFFILES="etc/inputrc"
-
-mmagisk_step_configure() {
-	echo $(pwd)
-	export PATH=/usr/local/musl/bin:$PATH
-	#export CC=/usr/local/musl/aarch64-linux-musl-gcc
-	#export CFLAGS=" -fexceptions"
-	$MAGISK_MODULE_SRCDIR/configure CC=$CC $MAGISK_MODULE_EXTRA_CONFIGURE_ARGS
-}
 
 magisk_step_post_make_install() {
 	mkdir -p $MAGISK_PREFIX/lib/pkgconfig

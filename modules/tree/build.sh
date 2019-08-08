@@ -10,7 +10,6 @@ MAGISK_MODULE_SRCURL=http://mama.indstate.edu/users/ice/tree/src/tree-${MAGISK_M
 MAGISK_MODULE_BUILD_IN_SRC=yes
 
 magisk_step_make() {
-	CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
 	make \
 		CC="$CC" \
 		CFLAGS="$CFLAGS $CPPFLAGS -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64" \

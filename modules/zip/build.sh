@@ -12,15 +12,6 @@ magisk_step_make() {
 	cp $MAGISK_PREFIX/lib/libbz2.a $MAGISK_MODULE_SRCDIR/bzip2/libbz2.a
 	cp $MAGISK_PREFIX/include/bzlib.h $MAGISK_MODULE_SRCDIR/bzip2/bzlib.h
 
-	#export PATH=/usr/local/musl/bin:$PATH
-	#TARGET=aarch64-linux-musl
-	#export CC=$TARGET-gcc
-	#export CXX=$TARGET-g++
-	#export LD=$TARGET-ld
-	#export AR=$TARGET-ar
-	#export AS=$TARGET-as
-	#export RANLIB=$TARGET-ranlib
-	#export LDFLAGS+=" --static"
         make -f unix/Makefile clean
 	make -f unix/Makefile generic -j $(nproc) CC=$CC #LD=$LD
      	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin

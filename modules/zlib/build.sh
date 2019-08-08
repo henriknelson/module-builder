@@ -10,11 +10,5 @@ MAGISK_MODULE_DEVMODULE_REPLACES="ndk-sysroot (<< 19b-3)"
 MAGISK_MODULE_BUILD_IN_SRC=true
 
 magisk_step_configure() {
-	#export PATH=/usr/local/musl/bin:$PATH
-	#target=aarch64-linux-musl
-	#export CC=$target-gcc
-	#export LD=$target-ld
-	#CC=$CC LD=$LD
 	./configure --prefix=$MAGISK_PREFIX --static --archs="-arch aarch64"
-	#--host=aarch64-linux-musl --target=aarch64-linux-musl
 }

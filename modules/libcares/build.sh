@@ -17,30 +17,3 @@ MAGISK_MODULE_BUILD_IN_SRC=true
 magisk_step_configure() {
 	./configure --prefix $MAGISK_PREFIX --host=aarch64-linux-android --target=aarch64-linux-android --includedir=/system/include --libdir=/system/lib --disable-shared --with-pic
 }
-
-
-#magisk_step_pre_configure() {
-#	export PATH=/usr/local/musl/bin:$PATH
-#	#export CROSS_COMPILE=aarch64-linux-musl
-#        export CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
-#	#export CPP=/usr/local/musl/bin/aarch64-linux-musl-cpp
-#        #export LD=/usr/local/musl/bin/aarch64-linux-musl-ld
-#        #LDFLAGS+="${LDFLAGS} --static"
-#}
-
-#magisk_step_make_install() {
-#        $CC -I/system/include -I$MAGISK_MODULE_SRCDIR/src $CFLAGS $CPPFLAGS $LDFLAGS -Wall -Wextra -fPIC -shared $MAGISK_MODULE_SRCDIR/src/*.c -lcurl -o $MAGISK_PREFIX/lib/libcurl.so
-#        mkdir -p $MAGISK_PREFIX/include/
-#        cp $MAGISK_MODULE_BUILDER_DIR/*.h $MAGISK_PREFIX/include/
-#}
-
-mmagisk_step_configure() {
-	#export CPPFLAGS=" -I$MAGISK_PREFIX/include"
-	#export LDFLAGS="-static -L$MAGISK_PREFIX/lib"
-	./configure --prefix=$MAGISK_PREFIX --enable-cross-compile --with-zlib --host=aarch64-linux-android --target=aarch64-linux-android --disable-ldap --disable-ldaps --enable-versioned-symbols --enable-threaded-resolver $MAGISK_MODULE_EXTRA_CONFIGURE_ARGS
-	#LIBS+=" -lpthread -ldl"
-}
-
-mmagisk_step_make() {
-	make V=1 curl_LDFLAGS=-all-static -j$(nproc) LIBS+=" -ldl"
-}

@@ -13,7 +13,7 @@ magisk_step_configure() {
 	sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" $MAGISK_MODULE_SRCDIR/Makefile
 }
 
-mmagisk_step_make() {
+magisk_step_make() {
 	# bzip2 uses a separate makefile for the shared library
 	CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
 	LDFLAGS+=" --static"

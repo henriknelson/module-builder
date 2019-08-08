@@ -13,5 +13,5 @@ MAGISK_MODULE_DEPENDS="openssl"
 magisk_step_make_install() {
 	$CC $CFLAGS $CPPFLAGS $LDFLAGS -Wall -Wextra -fPIC -shared $MAGISK_MODULE_BUILDER_DIR/crypt3.c -lcrypto -o $MAGISK_PREFIX/lib/libcrypt.so
 	mkdir -p $MAGISK_PREFIX/include/
-	cp $MAGISK_MODULE_BUILDER_DIR/crypt.h $MAGISK_PREFIX/include/
+	cp $MAGISK_MODULE_BUILDER_DIR/crypt.h $MAGISK_PREFIX/include
 }
