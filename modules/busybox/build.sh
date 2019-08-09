@@ -19,7 +19,6 @@ MAGISK_MODULE_CONFLICTS="coreutils (<< 8.25-4)"
 magisk_step_configure() {
 	make clean
 	cp -f $MAGISK_MODULE_BUILDER_DIR/busybox.config .config
-	cp -f $MAGISK_MODULE_BUILDER_DIR/files/* .
 	echo "CONFIG_SYSROOT=\"$MAGISK_STANDALONE_TOOLCHAIN/sysroot\"" >> .config
 	echo "CONFIG_PREFIX=\"$MAGISK_PREFIX\"" >> .config
 	echo "CONFIG_CROSS_COMPILER_PREFIX=\"$MAGISK_HOST_PLATFORM-\"" >> .config
