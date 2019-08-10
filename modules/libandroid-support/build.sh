@@ -8,11 +8,11 @@ MAGISK_MODULE_PRE_DEPENDS="dpkg (>= 1.19.4-3)"
 MAGISK_MODULE_BUILD_IN_SRC=yes
 MAGISK_MODULE_ESSENTIAL=yes
 
-mmagisk_step_pre_configure() {
+magisk_step_pre_configure() {
 	MUSL=/usr/local/musl/bin
-	TARGET=aarch64-linux-android
-	#export CC=$MUSL/$TARGET-gcc
-	#export LD=$MUSL/$TARGET-ld
+	TARGET=aarch64-linux-musl
+	export CC=$MUSL/$TARGET-gcc
+	export LD=$MUSL/$TARGET-ld
 }
 
 magisk_step_make_install() {
