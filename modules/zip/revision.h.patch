@@ -1,0 +1,11 @@
+--- zip30/revision.h	2008-07-05 17:24:56.000000000 +0000
++++ ./revision.h	2019-08-10 14:32:24.820457646 +0000
+@@ -50,7 +50,7 @@
+ #else /* DEFCPYRT */
+ 
+ ZCONST char *copyright[] = {
+-"Copyright (c) 1990-2008 Info-ZIP - Type '%s \"-L\"' for software license."
++"Copyright (c) 1990-2008 Info-ZIP - Type '%s \"-L\"' for software license.\n\nCompiled for Android by nelshh @ xda-developers\n"
+ /* XXX still necessary ???? */
+ #ifdef AZTEC_C
+ ,        /* extremely lame compiler bug workaround */
