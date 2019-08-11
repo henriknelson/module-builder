@@ -12,5 +12,8 @@ mmagisk_step_pre_configure() {
 magisk_step_make_install() {
 	cp $MAGISK_MODULE_BUILDER_DIR/glob.h $MAGISK_PREFIX/include/
 	#printenv
-	$CC $CFLAGS $CPPFLAGS $LDFLAGS $MAGISK_MODULE_BUILDER_DIR/glob.c -shared -o $MAGISK_PREFIX/lib/libandroid-glob.so
+	#export LDFLAGS="$LDFLAGS --static
+	CFLAGS="-c"
+	$CC $CFLAGS $CPPFLAGS $LDFLAGS $MAGISK_MODULE_BUILDER_DIR/glob.c
+	$AR rcs $MAGISK_PREFIX/lib/libandroid-glob.a glob.o
 }
