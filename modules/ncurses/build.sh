@@ -25,31 +25,31 @@ ac_cv_header_locale_h=no
 --enable-overwrite
 --enable-pc-files
 --enable-widec
---mandir=$MAGISK_PREFIX/share/man
+--mandir=$MAGISK_PREFIX/usr/share/man
 --without-ada
 --without-cxx-binding
 --without-debug
 --without-tests
 "
 MAGISK_MODULE_INCLUDE_IN_DEVMODULE="
-share/man/man1/ncursesw6-config.1*
+usr/share/man/man1/ncursesw6-config.1*
 bin/ncursesw6-config
 "
 MAGISK_MODULE_RM_AFTER_INSTALL="
 bin/captoinfo
 bin/infotocap
-share/man/man1/captoinfo.1*
-share/man/man1/infotocap.1*
-share/man/man5
-share/man/man7
+usr/share/man/man1/captoinfo.1*
+usr/share/man/man1/infotocap.1*
+usr/share/man/man5
+usr/share/man/man7
 "
 magisk_step_pre_configure() {
-        MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --prefix=$MAGISK_PREFIX --host=aarch64-linux-android --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
+        MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --prefix=$MAGISK_PREFIX --datarootdir=$MAGISK_PREFIX/usr/share --host=aarch64-linux-android --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
 }
 
 magisk_step_post_massage() {
 	# Strip away 30 years of cruft to decrease size.
-	local TI=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/share/terminfo
+	local TI=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/usr/share/terminfo
 	mv $TI $MAGISK_MODULE_TMPDIR/full-terminfo
 	mkdir -p $TI/{a,d,e,n,l,p,r,s,t,v,x}
 	cp $MAGISK_MODULE_TMPDIR/full-terminfo/a/ansi $TI/a/
