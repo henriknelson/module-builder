@@ -152,6 +152,15 @@ magisk_step_post_massage() {
 	return
 }
 
+magisk_step_setup_zipfile() {
+	cd "$MAGISK_MODULE_MASSAGEDIR"
+	mkdir -p common
+	cd common
+	echo "#!$MAGISK_PREFIX/bin/sh" >> service.sh
+	echo "MODDIR=\${0%/*};" >> service.sh
+	cd "$MAGISK_MODULE_MASSAGEDIR" 
+}
+
 # Hook function to create {pre,post}install, {pre,post}rm-scripts and similar
 magisk_step_create_zipscripts() {
 	return
@@ -214,6 +223,7 @@ source scripts/build/magisk_step_finish_build.sh
 	magisk_step_massage
 	cd "$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX"
 	magisk_step_post_massage
+	magisk_step_setup_zipfile
 	magisk_step_create_zipfile
 	magisk_step_finish_build
 } 5< "$MAGISK_BUILD_LOCK_FILE"
