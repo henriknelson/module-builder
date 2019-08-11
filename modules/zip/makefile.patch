@@ -20,7 +20,7 @@
  BINDIR = $(prefix)/bin
  MANEXT=1
 -MANDIR = $(prefix)/man/man$(MANEXT)
-+MANDIR = $(prefix)/share/man/man$(MANEXT)
++MANDIR = $(prefix)/usr/share/man/man$(MANEXT)
  ZIPMANUAL = zip.txt
  ZIPMANUALcloak = zipcloak.txt
  ZIPMANUALnote = zipnote.txt
