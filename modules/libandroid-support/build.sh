@@ -8,21 +8,16 @@ MAGISK_MODULE_PRE_DEPENDS="dpkg (>= 1.19.4-3)"
 MAGISK_MODULE_BUILD_IN_SRC=yes
 MAGISK_MODULE_ESSENTIAL=yes
 
-magisk_step_pre_configure() {
-	MUSL=/usr/local/musl/bin
-	TARGET=aarch64-linux-musl
-	export CC=$MUSL/$TARGET-gcc
-	export LD=$MUSL/$TARGET-ld
-}
-
 magisk_step_make_install() {
 	_C_FILES="src/musl-*/*.c"
-	#CFLAGS="$CFLAGS -static"
-	#LDFLAGS=" --static"
-	#$CC $CFLAGS -std=c99 -DNULL=0 $CPPFLAGS $LDFLAGS \
-	#	-Iinclude \
-	#	$_C_FILES \
-	#	-shared -static -fPIC \
-	#	-o $MAGISK_PREFIX/lib/libandroid-support.so
-	$CC --verbose -Iinclude -I$MAGISK_PREFIX/include -L$MAGISK_PREFIX/lib $_C_FILES -shared -static -fPIC -o $MAGISK_PREFIX/lib/libandroid-support.a
+	_H_FILES="src/musl-*/*.h"
+	cp $_H_FILES $MAGISK_PREFIX/include
+	CFLAGS="-c"
+	$CC --verbose $CFLAGS $CPPFLAGS $LDFLAGS $_C_FILES
+	for i in *.o; do
+		[ -f "$i" ] || break
+		echo "$AR -rcs libandroid-support.a $i"
+		$AR -rcs libandroid-support.a $i
+	done
+	mv libandroid-support.a $MAGISK_PREFIX/lib/
 }
