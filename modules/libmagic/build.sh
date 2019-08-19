@@ -7,14 +7,14 @@ MAGISK_MODULE_SRCURL=https://github.com/file/file/archive/FILE5_35.zip
 MAGISK_MODULE_BUILD_IN_SRC=yes
 
 magisk_step_configure() {
-	export LDFLAGS+=" --static"
+	#export LDFLAGS+=" --static"
 	cd "$MAGISK_MODULE_SRCDIR"
 	autoreconf --install
-	"$MAGISK_MODULE_SRCDIR/configure" --enable-static --disable-shared --prefix=$MAGISK_PREFIX --host=aarch64-linux-android CC=$CC LD=$LD
+	$MAGISK_MODULE_SRCDIR/configure --enable-static --enable-shared --prefix=$MAGISK_PREFIX --datarootdir=$MAGISK_PREFIX/usr/share --host=aarch64-linux-android --target=aarch64-linux-android CC=$CC LD=$LD --disable-zlib
 }
 
-magisk_step_make() {
-	export LDFLAGS+=" --static"
+mmagisk_step_make() {
+	export LDFLAGS+=" -lz"
 	cd "$MAGISK_MODULE_SRCDIR"
 	make -j$(nproc) CC=$CC
 }
