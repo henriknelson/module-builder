@@ -6,6 +6,8 @@ set -e -u -o pipefail
 # Utility function to see if we are running inside a docker container or not
 source scripts/build/magisk_docker_check.sh
 
+source scripts/build/magisk_log.sh
+
 if [ ! "$(magisk_running_in_docker)" -eq 1 ]; then
         ./scripts/run-docker.sh $0 "$@"
         exit 0
@@ -46,19 +48,19 @@ if [[ ! "$MAGISK_ARCH" =~ ^(all|aarch64|arm|i686|x86_64)$ ]]; then
 	exit 1
 fi
 
-BUILDSCRIPT=$(dirname $0)/build-module.sh
+BUILDSCRIPT=$(dirname $0)/build-module
 BUILDALL_DIR=$MAGISK_TOPDIR/_buildall-$MAGISK_ARCH
 BUILDORDER_FILE=$BUILDALL_DIR/buildorder.txt
 BUILDSTATUS_FILE=$BUILDALL_DIR/buildstatus.txt
 
 if [ -e $BUILDORDER_FILE ]; then
-	echo "Using existing buildorder file: $BUILDORDER_FILE"
+	magisk_log "Using existing buildorder file: $BUILDORDER_FILE"
 else
 	mkdir -p $BUILDALL_DIR
 	./scripts/buildorder.py > $BUILDORDER_FILE
 fi
 if [ -e $BUILDSTATUS_FILE ]; then
-	echo "Continuing build-all from: $BUILDSTATUS_FILE"
+	magisk_log "Continuing build-all from: $BUILDSTATUS_FILE"
 fi
 
 exec >	>(tee -a $BUILDALL_DIR/ALL.out)
@@ -68,18 +70,18 @@ trap "echo ERROR: See $BUILDALL_DIR/\${MODULE}.err" ERR
 while read MODULE MODULE_DIR; do
 	# Check build status (grepping is a bit crude, but it works)
 	if [ -e $BUILDSTATUS_FILE ] && grep "^$MODULE\$" $BUILDSTATUS_FILE >/dev/null; then
-		echo "Skipping $MODULE"
+		magisk_log "Skipping $MODULE"
 		continue
 	fi
 
-	echo -n "Building $MODULE... "
+	magisk_log "Building $MODULE..."
 	BUILD_START=$(date "+%s")
 	bash -x $BUILDSCRIPT -a $MAGISK_ARCH $MAGISK_DEBUG \
 		${MAGISK_ZIPDIR+-o $MAGISK_ZIPDIR} $MAGISK_INSTALL_DEPS $MODULE_DIR \
 		> $BUILDALL_DIR/${MODULE}.out 2> $BUILDALL_DIR/${MODULE}.err
 	BUILD_END=$(date "+%s")
 	BUILD_SECONDS=$(( $BUILD_END - $BUILD_START ))
-	echo "done in $BUILD_SECONDS"
+	magisk_log "done in $BUILD_SECONDS"
 
 	# Update build status
 	echo "$MODULE" >> $BUILDSTATUS_FILE
@@ -87,4 +89,4 @@ done<${BUILDORDER_FILE}
 
 # Update build status
 rm -f $BUILDSTATUS_FILE
-echo "Finished"
+magisk_log "Finished"
