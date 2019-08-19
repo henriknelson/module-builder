@@ -3,7 +3,7 @@ set input-meta on
 set output-meta on
 
 # some defaults / modifications for the emacs mode
-#$if mode=emacs
+$if mode=emacs
 
 # allow the use of the Home/End keys
 "\e[1~": beginning-of-line
@@ -21,4 +21,4 @@ set output-meta on
 
 "\e[8~": end-of-line
 
-#$endif
+$endif
