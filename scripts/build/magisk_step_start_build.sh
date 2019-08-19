@@ -64,7 +64,7 @@ magisk_step_start_build() {
 
 			if ! magisk_download_zip $MODULE $DEP_ARCH $DEP_VERSION; then
 				magisk_log "download of $MODULE@$DEP_VERSION from $MAGISK_REPO_URL failed, building instead"
-				MAGISK_BUILD_IGNORE_LOCK=true ./build-module.sh -a $MAGISK_ARCH -I "${MODULE_DIR}"
+				MAGISK_BUILD_IGNORE_LOCK=true ./build-module -a $MAGISK_ARCH -I "${MODULE_DIR}"
 				continue
 			else
 				if [ ! "$MAGISK_QUIET_BUILD" = true ]; then
@@ -91,7 +91,7 @@ magisk_step_start_build() {
 			fi
 			magisk_log "trying to build dependency $MODULE if necessary..."
 			# Built dependencies are put in the default MAGISK_ZIPDIR instead of the specified one
-			MAGISK_BUILD_IGNORE_LOCK=true ./build-module.sh -a $MAGISK_ARCH -s "${MODULE_DIR}"
+			MAGISK_BUILD_IGNORE_LOCK=true ./build-module -a $MAGISK_ARCH -s "${MODULE_DIR}"
 		done<<<$(./scripts/buildorder.py "$MAGISK_MODULE_BUILDER_DIR" $MAGISK_MODULES_DIRECTORIES || echo "ERROR")
 	fi
 
@@ -110,7 +110,7 @@ magisk_step_start_build() {
 		 "$MAGISK_MODULE_TMPDIR" \
 		 "$MAGISK_MODULE_CACHEDIR" \
 		 "$MAGISK_MODULE_MASSAGEDIR" \
-		 $MAGISK_PREFIX/{bin,etc,lib,libexec,share,share/LICENSES,tmp,include}
+		 $MAGISK_PREFIX/{bin,etc,lib,libexec,share,share/LICENSES,tmp,include,usr}
 
 	# Make $MAGISK_PREFIX/bin/sh executable on the builder, so that build
 	# scripts can assume that it works on both builder and host later on:

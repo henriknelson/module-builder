@@ -110,6 +110,7 @@ magisk_step_configure_autotools() {
 	env $AVOID_GNULIB "$MAGISK_MODULE_SRCDIR/configure" \
 		--disable-dependency-tracking \
 		--prefix=$MAGISK_PREFIX \
+		--datarootdir=$MAGISK_PREFIX/usr/share \
 		--libdir=$MAGISK_PREFIX/lib \
 		--includedir=$MAGISK_PREFIX/include \
 		--disable-rpath --disable-rpath-hack \
@@ -120,8 +121,8 @@ magisk_step_configure_autotools() {
 		$DISABLE_SHARED \
 		$LIBEXEC_FLAG \
 		$VERBOSE_BUILD \
-		CFLAGS="${CFLAGS} -static" \
-		LDFLAGS="${LDFLAGS} --static"
+		#CFLAGS="${CFLAGS} -static" \
+		#LDFLAGS="${LDFLAGS} --static"
 
 	magisk_log "./configure completed!"
 }

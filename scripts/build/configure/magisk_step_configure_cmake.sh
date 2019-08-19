@@ -14,9 +14,9 @@ magisk_step_configure_cmake() {
 	else
 		MAKE_PROGRAM_PATH=$(which make)
 	fi
-	CFLAGS+=" --target=$CCMAGISK_HOST_PLATFORM -fno-addrsig"
-	CXXFLAGS+=" --target=$CCMAGISK_HOST_PLATFORM -fno-addrsig"
-	LDFLAGS+=" --target=$CCMAGISK_HOST_PLATFORM"
+	CFLAGS+=" --host=$CCMAGISK_HOST_PLATFORM --target=$CCMAGISK_HOST_PLATFORM -fno-addrsig"
+	CXXFLAGS+=" --host=$CCMAGISK_HOST_PLATFORM --target=$CCMAGISK_HOST_PLATFORM -fno-addrsig"
+	LDFLAGS+=" --host=$CCMAGISK_HOST_PLATFORM --target=$CCMAGISK_HOST_PLATFORM"
 
 	# XXX: CMAKE_{AR,RANLIB} needed for at least jsoncpp build to not
 	# pick up cross compiled binutils tool in $PREFIX/bin:

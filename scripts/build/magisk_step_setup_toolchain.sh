@@ -31,34 +31,35 @@ magisk_step_setup_toolchain() {
 		export LDFLAGS="-L${MAGISK_PREFIX}/lib"
 	else
 		magisk_log "setting up clang toolchain"
-		export PATH=$MAGISK_STANDALONE_TOOLCHAIN/bin:$PATH
-
 		export CFLAGS=""
 		export LDFLAGS="-L${MAGISK_PREFIX}/lib"
-
-		export AS=${MAGISK_HOST_PLATFORM}-clang
+		export AS=$MAGISK_HOST_PLATFORM-clang
 		export CC=$MAGISK_HOST_PLATFORM-clang
 		export CXX=$MAGISK_HOST_PLATFORM-clang++
-
-		export CCMAGISK_HOST_PLATFORM=$MAGISK_HOST_PLATFORM$MAGISK_MODULE_API_LEVEL
-		if [ $MAGISK_ARCH = arm ]; then
-	       		CCMAGISK_HOST_PLATFORM=armv7a-linux-androideabi$MAGISK_MODULE_API_LEVEL
-		fi
 		export AR=$MAGISK_HOST_PLATFORM-ar
-		export CPP=${MAGISK_HOST_PLATFORM}-cpp
-		export CC_FOR_BUILD=gcc
+		export CPP=$MAGISK_HOST_PLATFORM-cpp
 		export LD=$MAGISK_HOST_PLATFORM-ld
 		export OBJCOPY=$MAGISK_HOST_PLATFORM-objcopy
 		export OBJDUMP=$MAGISK_HOST_PLATFORM-objdump
-		# Setup pkg-config for cross-compiling:
-		export PKG_CONFIG=$MAGISK_STANDALONE_TOOLCHAIN/bin/${MAGISK_HOST_PLATFORM}-pkg-config
 		export RANLIB=$MAGISK_HOST_PLATFORM-ranlib
 		export READELF=$MAGISK_HOST_PLATFORM-readelf
 		export STRIP=$MAGISK_HOST_PLATFORM-strip
 
-	fi
-		# Android 7 started to support DT_RUNPATH (but not DT_RPATH).
-		LDFLAGS+=" -Wl,-rpath=$MAGISK_PREFIX/lib -Wl,--enable-new-dtags"
+		#if [ "$MAGISK_ON_DEVICE_BUILD" = "false" ]; then
+		#if 1==1; then
+			export PATH=$MAGISK_STANDALONE_TOOLCHAIN/bin:$PATH
+			export CC_FOR_BUILD=gcc
+			export PKG_CONFIG=$MAGISK_STANDALONE_TOOLCHAIN/bin/${MAGISK_HOST_PLATFORM}-pkg-config
+			export CCMAGISK_HOST_PLATFORM=$MAGISK_HOST_PLATFORM$MAGISK_MODULE_API_LEVEL
+			if [ $MAGISK_ARCH = arm ]; then
+				CCMAGISK_HOST_PLATFORM=armv7a-linux-androideabi$MAGISK_PKG_API_LEVEL
+			fi
+		#else
+		#	export CC_FOR_BUILD=$CC
+		#	# Some build scripts use environment variable 'PKG_CONFIG', so
+		#	# using this for on-device builds too.
+		#	export PKG_CONFIG=pkg-config
+		#fi
 
 		if [ "$MAGISK_ARCH" = "arm" ]; then
 			# https://developer.android.com/ndk/guides/standalone_toolchain.html#abi_compatibility:
@@ -74,17 +75,23 @@ magisk_step_setup_toolchain() {
 		elif [ "$MAGISK_ARCH" = "x86_64" ]; then
 			:
 		else
-			magisk_error_exit "Invalid arch '$MAGISK_ARCH' - support arches are 'arm', 'i686', 'aarch64', 'x86_64'"
+			MAGISK_error_exit "Invalid arch '$MAGISK_ARCH' - support arches are 'arm', 'i686', 'aarch64', 'x86_64'"
 		fi
 
-		if [ -n "$MAGISK_DEBUG" ]; then
-			CFLAGS+=" -g3 -O1 -fstack-protector --param ssp-buffer-size=4 -D_FORTIFY_SOURCE=2"
+		# Android 7 started to support DT_RUNPATH (but not DT_RPATH).
+		LDFLAGS+=" -Wl,-rpath=$MAGISK_PREFIX/lib,--enable-new-dtags"
+
+		# Avoid linking extra (unneeded) libraries.
+		LDFLAGS+=" -Wl,--as-needed"
+
+		# Basic hardening.
+		CFLAGS+=" -fstack-protector-strong"
+		LDFLAGS+=" -Wl,-z,relro,-z,now"
+
+		if [ "$MAGISK_DEBUG" = "true" ]; then
+			CFLAGS+=" -g3 -O1 -D_FORTIFY_SOURCE=2"
 		else
-			if [ $MAGISK_ARCH = arm ]; then
-				CFLAGS+=" -Os"
-			else
-				CFLAGS+=" -O0"
-			fi
+			CFLAGS+=" -Oz"
 		fi
 
 		export CXXFLAGS="$CFLAGS"
@@ -93,11 +100,6 @@ magisk_step_setup_toolchain() {
 		# If libandroid-support is declared as a dependency, link to it explicitly:
 		if [ "$MAGISK_MODULE_DEPENDS" != "${MAGISK_MODULE_DEPENDS/libandroid-support/}" ]; then
 			LDFLAGS+=" -landroid-support"
-		fi
-
-
-		if [ "$MAGISK_MODULE_DEPENDS" != "${MAGISK_MODULE_DEPENDS/libcurl/}" ]; then
-			LDFLAGS+=" -lcurl"
 		fi
 
 		export ac_cv_func_getpwent=no
@@ -111,6 +113,7 @@ magisk_step_setup_toolchain() {
 			# toolchain left in place if something goes wrong (or process is just aborted):
 			local _MAGISK_TOOLCHAIN_TMPDIR=${MAGISK_STANDALONE_TOOLCHAIN}-tmp
 			rm -Rf $_MAGISK_TOOLCHAIN_TMPDIR
+
 			local _NDK_ARCHNAME=$MAGISK_ARCH
 			if [ "$MAGISK_ARCH" = "aarch64" ]; then
 				_NDK_ARCHNAME=arm64
@@ -175,7 +178,7 @@ magisk_step_setup_toolchain() {
 			# langinfo.h: Inline implementation of nl_langinfo().
 			cp "$MAGISK_SCRIPTDIR"/ndk-patches/{ifaddrs.h,libintl.h,langinfo.h} usr/include
 
-			# Remove <sys/capability.h> because it is provided by libcap-dev.
+			# Remove <sys/capability.h> because it is provided by libcap.
 			# Remove <sys/shm.h> from the NDK in favour of that from the libandroid-shmem.
 			# Remove <sys/sem.h> as it doesn't work for non-root.
 			# Remove <glob.h> as we currently provide it from libandroid-glob.
@@ -201,17 +204,21 @@ magisk_step_setup_toolchain() {
 		fi
 
 		export PKG_CONFIG_LIBDIR="$MAGISK_MODULE_CONFIG_LIBDIR"
-		# Create a pkg-config wrapper. We use path to host pkg-config to
-		# avoid picking up a cross-compiled pkg-config later on.
-		local _HOST_PKGCONFIG
-		_HOST_PKGCONFIG=$(which pkg-config)
-		mkdir -p $MAGISK_STANDALONE_TOOLCHAIN/bin "$PKG_CONFIG_LIBDIR"
-		cat > "$PKG_CONFIG" <<-HERE
-			#!/bin/sh
-			export PKG_CONFIG_DIR=
-			export PKG_CONFIG_LIBDIR=$PKG_CONFIG_LIBDIR
-			exec $_HOST_PKGCONFIG "\$@"
-		HERE
-		chmod +x "$PKG_CONFIG"
+
+		#if [ "$MAGISK_ON_DEVICE_BUILD" = "false" ]; then
+			# Create a pkg-config wrapper. We use path to host pkg-config to
+			# avoid picking up a cross-compiled pkg-config later on.
+			local _HOST_PKGCONFIG
+			_HOST_PKGCONFIG=$(which pkg-config)
+			mkdir -p $MAGISK_STANDALONE_TOOLCHAIN/bin "$PKG_CONFIG_LIBDIR"
+			cat > "$PKG_CONFIG" <<-HERE
+				#!/bin/sh
+				export PKG_CONFIG_DIR=
+				export PKG_CONFIG_LIBDIR=$PKG_CONFIG_LIBDIR
+				exec $_HOST_PKGCONFIG "\$@"
+			HERE
+			chmod +x "$PKG_CONFIG"
+		#fi
+    	fi
 }
 

@@ -55,6 +55,7 @@ PACKAGES+=" tree"
 PACKAGES+=" make"
 PACKAGES+=" neofetch"
 PACKAGES+=" bash-completion"
+PACKAGES+=" mandoc"
 
 # Allow 32-bit packages.
 sudo dpkg --add-architecture i386
