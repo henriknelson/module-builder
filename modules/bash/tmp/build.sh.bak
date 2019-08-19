@@ -7,14 +7,14 @@ MAGISK_MODULE_VERSION=${_MAIN_VERSION}.${_PATCH_VERSION}
 MAGISK_MODULE_REVISION=5
 MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/bash/bash-${_MAIN_VERSION}.tar.gz
 MAGISK_MODULE_SHA256=b4a80f2ac66170b2913efbfb9f2594f1f76c7b1afd11f799e22035d63077fb4d
-MAGISK_MODULE_DEPENDS="libandroid-support, ncurses, readline (>= 8.0)"
+MAGISK_MODULE_DEPENDS="libandroid-support, libiconv, ncurses, readline (>= 8.0), termux-tools"
 MAGISK_MODULE_RECOMMENDS="command-not-found"
 MAGISK_MODULE_BREAKS="bash-dev"
 MAGISK_MODULE_REPLACES="bash-dev"
 MAGISK_MODULE_ESSENTIAL=true
 MAGISK_MODULE_BUILD_IN_SRC=true
 
-MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--enable-multibyte --without-bash-malloc --with-installed-readline --enable-static-link"
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--enable-multibyte --without-bash-malloc --with-installed-readline"
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" bash_cv_job_control_missing=present"
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" bash_cv_sys_siglist=yes"
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" bash_cv_func_sigsetjmp=present"
@@ -30,11 +30,11 @@ MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" bash_cv_dev_fd=whacky"
 # - https://github.com/termux/termux-app/issues/200
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" bash_cv_getcwd_malloc=yes"
 
-#MAGISK_MODULE_CONFFILES="etc/bash.bashrc etc/profile"
+MAGISK_MODULE_CONFFILES="etc/bash.bashrc etc/profile"
 
 MAGISK_MODULE_RM_AFTER_INSTALL="share/man/man1/bashbug.1 bin/bashbug"
 
-magisk_step_pre_configure() {
+termux_step_pre_configure() {
 	declare -A PATCH_CHECKSUMS
 
 	PATCH_CHECKSUMS[001]=f2fe9e1f0faddf14ab9bfa88d450a75e5d028fedafad23b88716bd657c737289
@@ -47,7 +47,7 @@ magisk_step_pre_configure() {
 
 	for PATCH_NUM in $(seq -f '%03g' ${_PATCH_VERSION}); do
 		PATCHFILE=$MAGISK_MODULE_CACHEDIR/bash_patch_${PATCH_NUM}.patch
-		magisk_download \
+		termux_download \
 			"https://mirrors.kernel.org/gnu/bash/bash-${_MAIN_VERSION}-patches/bash${_MAIN_VERSION/./}-$PATCH_NUM" \
 			$PATCHFILE \
 			${PATCH_CHECKSUMS[$PATCH_NUM]}
@@ -56,7 +56,7 @@ magisk_step_pre_configure() {
 	unset PATCH_CHECKSUMS PATCHFILE PATCH_NUM
 }
 
-mmagisk_step_post_make_install() {
+termux_step_post_make_install() {
 	sed -e "s|@MAGISK_PREFIX@|$MAGISK_PREFIX|" \
 		-e "s|@MAGISK_HOME@|$MAGISK_ANDROID_HOME|" \
 		$MAGISK_MODULE_BUILDER_DIR/etc-profile > $MAGISK_PREFIX/etc/profile
