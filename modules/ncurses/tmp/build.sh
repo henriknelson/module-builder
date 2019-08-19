@@ -4,7 +4,7 @@ MAGISK_MODULE_LICENSE="MIT"
 MAGISK_MODULE_VERSION=(6.1.20190511
 		    9.22
 		    15)
-MAGISK_MODULE_REVISION=7
+MAGISK_MODULE_REVISION=2
 MAGISK_MODULE_SHA256=(fdbd39234fc7e7f8e5fd08d2329014e085fa5c8d0a9cc9a919e94bbc9d411c0e
 		   e94628e9bcfa0adb1115d83649f898d6edb4baced44f5d5b769c2eeb8b95addd
 		   3ae9ebef28aad081c6c11351f086776e2fd9547563b2f900732b41c376bec05a)
@@ -12,76 +12,39 @@ MAGISK_MODULE_SRCURL=(https://dl.bintray.com/termux/upstream/ncurses-${MAGISK_MO
 		   https://fossies.org/linux/misc/rxvt-unicode-${MAGISK_MODULE_VERSION[1]}.tar.bz2
 		   https://github.com/thestinger/termite/archive/v${MAGISK_MODULE_VERSION[2]}.tar.gz)
 
-# ncurses-utils: tset/reset/clear are moved to package 'ncurses'.
-MAGISK_MODULE_BREAKS="ncurses-dev, ncurses-utils (<< 6.1.20190511-4)"
-MAGISK_MODULE_REPLACES="ncurses-dev, ncurses-utils (<< 6.1.20190511-4)"
-
+# --without-normal disables static libraries:
 # --disable-stripping to disable -s argument to install which does not work when cross compiling:
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 ac_cv_header_locale_h=no
+--with-normal
+--enable-static
 --disable-stripping
 --enable-const
 --enable-ext-colors
 --enable-ext-mouse
 --enable-overwrite
 --enable-pc-files
---enable-termcap
---enable-static
---enable-shared
 --enable-widec
 --mandir=$MAGISK_PREFIX/usr/share/man
 --without-ada
 --without-cxx-binding
 --without-debug
 --without-tests
---with-normal
---with-static
---with-shared
---with-termpath=$MAGISK_PREFIX/etc/termcap:$MAGISK_PREFIX/usr/share/misc/termcap
 "
-
+MAGISK_MODULE_INCLUDE_IN_DEVMODULE="
+usr/share/man/man1/ncursesw6-config.1*
+bin/ncursesw6-config
+"
 MAGISK_MODULE_RM_AFTER_INSTALL="
+bin/captoinfo
+bin/infotocap
+usr/share/man/man1/captoinfo.1*
+usr/share/man/man1/infotocap.1*
 usr/share/man/man5
 usr/share/man/man7
 "
-
 magisk_step_pre_configure() {
-	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" \
-		--prefix=$MAGISK_PREFIX \
-		--datarootdir=$MAGISK_PREFIX/usr/share \
-		--host=aarch64-linux-android \
-		--with-pkg-config-libdir=$PKG_CONFIG_LIBDIR \
-	"
-	#export LDFLAGS="$LDFLAGS --static"
-}
-
-magisk_step_post_make_install() {
-	cd $MAGISK_PREFIX/lib
-
-	# Ncursesw/Ncurses compatibility symlinks.
-	for lib in form menu ncurses panel; do
-		ln -sfr lib${lib}w.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:3}
-		ln -sfr lib${lib}w.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:1}
-		ln -sfr lib${lib}w.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so
-		ln -sfr lib${lib}w.a lib${lib}.a
-		(cd pkgconfig; ln -sf ${lib}w.pc $lib.pc)
-	done
-
-	# Legacy compatibility symlinks (libcurses, libtermcap, libtic, libtinfo).
-	for lib in curses termcap tic tinfo; do
-		ln -sfr libncursesw.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:3}
-		ln -sfr libncursesw.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:1}
-		ln -sfr libncursesw.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so
-		ln -sfr libncursesw.a lib${lib}.a
-		(cd pkgconfig; ln -sfr ncursesw.pc ${lib}.pc)
-	done
-
-	# Some packages want these:
-	cd $MAGISK_PREFIX/include/
-	rm -Rf ncurses{,w}
-	mkdir ncurses{,w}
-	ln -s ../{ncurses.h,termcap.h,panel.h,unctrl.h,menu.h,form.h,tic.h,nc_tparm.h,term.h,eti.h,term_entry.h,ncurses_dll.h,curses.h} ncurses
-	ln -s ../{ncurses.h,termcap.h,panel.h,unctrl.h,menu.h,form.h,tic.h,nc_tparm.h,term.h,eti.h,term_entry.h,ncurses_dll.h,curses.h} ncursesw
+        MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --prefix=$MAGISK_PREFIX --datarootdir=$MAGISK_PREFIX/usr/share --host=aarch64-linux-android --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
 }
 
 magisk_step_post_massage() {
@@ -96,7 +59,7 @@ magisk_step_post_massage() {
 	cp $MAGISK_MODULE_TMPDIR/full-terminfo/l/linux $TI/l/
 	cp $MAGISK_MODULE_TMPDIR/full-terminfo/p/putty{,-256color} $TI/p/
 	cp $MAGISK_MODULE_TMPDIR/full-terminfo/r/rxvt{,-256color} $TI/r/
-	cp $MAGISK_MODULE_TMPDIR/full-terminfo/s/{screen{,2,-256color},st{,-256color}} $TI/s/
+	cp $MAGISK_MODULE_TMPDIR/full-terminfo/s/screen{,2,-256color} $TI/s/
 	cp $MAGISK_MODULE_TMPDIR/full-terminfo/t/tmux{,-256color} $TI/t/
 	cp $MAGISK_MODULE_TMPDIR/full-terminfo/v/{vt52,vt100,vt102} $TI/v/
 	cp $MAGISK_MODULE_TMPDIR/full-terminfo/x/xterm{,-color,-new,-16color,-256color,+256color} $TI/x/

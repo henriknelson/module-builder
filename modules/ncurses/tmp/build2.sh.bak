@@ -26,10 +26,8 @@ ac_cv_header_locale_h=no
 --enable-overwrite
 --enable-pc-files
 --enable-termcap
---enable-static
---enable-shared
 --enable-widec
---mandir=$MAGISK_PREFIX/usr/share/man
+--mandir=$MAGISK_PREFIX/share/man
 --without-ada
 --without-cxx-binding
 --without-debug
@@ -37,25 +35,19 @@ ac_cv_header_locale_h=no
 --with-normal
 --with-static
 --with-shared
---with-termpath=$MAGISK_PREFIX/etc/termcap:$MAGISK_PREFIX/usr/share/misc/termcap
+--with-termpath=$MAGISK_PREFIX/etc/termcap:$MAGISK_PREFIX/share/misc/termcap
 "
 
 MAGISK_MODULE_RM_AFTER_INSTALL="
-usr/share/man/man5
-usr/share/man/man7
+share/man/man5
+share/man/man7
 "
 
-magisk_step_pre_configure() {
-	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" \
-		--prefix=$MAGISK_PREFIX \
-		--datarootdir=$MAGISK_PREFIX/usr/share \
-		--host=aarch64-linux-android \
-		--with-pkg-config-libdir=$PKG_CONFIG_LIBDIR \
-	"
-	#export LDFLAGS="$LDFLAGS --static"
+termux_step_pre_configure() {
+	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --with-pkg-config-libdir=$MODULE_CONFIG_LIBDIR"
 }
 
-magisk_step_post_make_install() {
+termux_step_post_make_install() {
 	cd $MAGISK_PREFIX/lib
 
 	# Ncursesw/Ncurses compatibility symlinks.
@@ -84,9 +76,9 @@ magisk_step_post_make_install() {
 	ln -s ../{ncurses.h,termcap.h,panel.h,unctrl.h,menu.h,form.h,tic.h,nc_tparm.h,term.h,eti.h,term_entry.h,ncurses_dll.h,curses.h} ncursesw
 }
 
-magisk_step_post_massage() {
+termux_step_post_massage() {
 	# Strip away 30 years of cruft to decrease size.
-	local TI=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/usr/share/terminfo
+	local TI=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/share/terminfo
 	mv $TI $MAGISK_MODULE_TMPDIR/full-terminfo
 	mkdir -p $TI/{a,d,e,n,l,p,r,s,t,v,x}
 	cp $MAGISK_MODULE_TMPDIR/full-terminfo/a/ansi $TI/a/
