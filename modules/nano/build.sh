@@ -4,19 +4,22 @@ MAGISK_MODULE_LICENSE="GPL-2.0"
 MAGISK_MODULE_VERSION=4.3
 MAGISK_MODULE_SHA256=00d3ad1a287a85b4bf83e5f06cedd0a9f880413682bebd52b4b1e2af8cfc0d81
 MAGISK_MODULE_SRCURL=https://nano-editor.org/dist/latest/nano-$MAGISK_MODULE_VERSION.tar.xz
-MAGISK_MODULE_DEPENDS="ncurses"
+MAGISK_MODULE_DEPENDS="ncurses,libmagic"
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 ac_cv_header_pwd_h=no
 --enable-utf8
+--enable-libmagic
 --with-wordbounds
---datarootdir=/system/etc
+--datarootdir=$MAGISK_PREFIX/usr/share
+--sysconfdir=$MAGISK_PREFIX/usr/share
 "
-MAGISK_MODULE_CONFFILES="etc/nanorc"
-MAGISK_MODULE_RM_AFTER_INSTALL="bin/rnano share/man/man1/rnano.1 share/nano/man-html"
+MAGISK_MODULE_CONFFILES="usr/share/nanorc"
+MAGISK_MODULE_RM_AFTER_INSTALL="bin/rnano usr/share/man/man1/rnano.1 usr/share/nano/man-html"
+MAGISK_MODULE_BUILD_IN_SRC=y
 
 magisk_step_pre_configure() {
 	#export PATH=/usr/local/musl/bin:$PATH
-	#CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
+	#export CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
 	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --host=aarch64-linux-android --target=aarch64-linux-android"
 	LDFLAGS+=" --static"
 	if [ "$MAGISK_DEBUG" == "true" ]; then
@@ -28,7 +31,7 @@ magisk_step_pre_configure() {
 
 magisk_step_post_make_install() {
 	# Configure nano to use syntax highlighting:
-	rm -Rf $MAGISK_MODULE_MASSAGEDIR/system/etc/doc
-	NANORC=$MAGISK_PREFIX/etc/nanorc
-	echo include \"$MAGISK_PREFIX/etc/nano/\*nanorc\" > $NANORC
+	rm -Rf $MAGISK_MODULE_MASSAGEDIR/system/usr/share/doc
+	NANORC=$MAGISK_PREFIX/usr/share/nanorc
+	echo include \"$MAGISK_PREFIX/usr/share/nano/\*nanorc\" > $NANORC
 }
