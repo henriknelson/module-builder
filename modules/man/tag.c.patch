@@ -1,0 +1,14 @@
+--- old/tag.c	2019-03-10 09:56:43.000000000 +0000
++++ ./tag.c	2019-08-11 19:50:46.385493821 +0000
+@@ -88,9 +88,9 @@
+ 
+ 	/* Create both temporary output files. */
+ 
+-	(void)strlcpy(tag_files.ofn, "/tmp/man.XXXXXXXXXX",
++	(void)strlcpy(tag_files.ofn, "/sdcard/man.XXXXXXXXXX",
+ 	    sizeof(tag_files.ofn));
+-	(void)strlcpy(tag_files.tfn, "/tmp/man.XXXXXXXXXX",
++	(void)strlcpy(tag_files.tfn, "/sdcard/man.XXXXXXXXXX",
+ 	    sizeof(tag_files.tfn));
+ 	if ((ofd = mkstemp(tag_files.ofn)) == -1)
+ 		goto fail;
