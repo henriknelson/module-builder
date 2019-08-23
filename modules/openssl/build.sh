@@ -1,7 +1,7 @@
 MAGISK_MODULE_HOMEPAGE=https://www.openssl.org/
 MAGISK_MODULE_DESCRIPTION="Library implementing the SSL and TLS protocols as well as general purpose cryptography functions"
 MAGISK_MODULE_LICENSE="BSD"
-MAGISK_MODULE_DEPENDS="ca-certificates, zlib"
+MAGISK_MODULE_DEPENDS="ca-certificates, libdl, zlib"
 MAGISK_MODULE_VERSION=1.1.1c
 MAGISK_MODULE_REVISION=1
 MAGISK_MODULE_SHA256=f6fb3079ad15076154eda9413fed42877d668e7069d9b87396d0804fdb3f4c90
