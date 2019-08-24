@@ -1,0 +1,48 @@
+#/bin/bash
+module_path="modules";
+package_path="../termux-packages/packages";
+
+function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
+
+for module in $(find "$module_path/" -maxdepth 1 -type d -name "*" -printf "%P\n"); do
+	echo "Checking module $module..";
+	if ! [[ -d "$package_path/$module" ]]; then
+		echo "Could not find package with name $module";
+		continue;
+	fi
+	
+	module_build_path="$module_path/$module/build.sh";
+
+	source "$module_build_path" 2>/dev/null;
+	if [ -z "$MAGISK_MODULE_VERSION" ]; then
+		continue;
+	fi
+	module_version="$MAGISK_MODULE_VERSION";
+	
+	source "$package_path/$module/build.sh" 2>/dev/null;
+	if [ -z "$TERMUX_PKG_VERSION" ]; then
+		continue;
+	fi
+	package_version="$TERMUX_PKG_VERSION";
+
+	if version_gt "$package_version" "$module_version" ; then
+		echo -e "Magisk module $module can be updated from $module_version to $package_version";
+		perl -i.bak -pe "s/MAGISK_MODULE_VERSION=[\"]*"$module_version[\"]*"/MAGISK_MODULE_VERSION=\""$package_version\""/g" "$module_build_path";
+		source "$module_build_path" 2>/dev/null;
+		new_module_version="$MAGISK_MODULE_VERSION";
+		if [[ "$new_module_version" == "$package_version" ]]; then
+			echo "Module $module updated to new version $new_module_version";
+		fi
+		
+	fi
+
+	#echo "perl -pe 's:(\bMAGISK_MODULE_VERSION=\s+)$module_version:$1$package_version:' $module_build_path;";
+	#
+	# | while read line; do
+	#	if [[ "$line" == TERMUX_PKG_VERSION* ]] ; then
+	#		#version=$(cat $("$line") | sed 's/=/ /g' | awk '{printf $2}');
+	#		echo $version;
+	#	fi
+	#done
+   
+done
