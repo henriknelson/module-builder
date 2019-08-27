@@ -36,7 +36,7 @@ def parse_build_file_dependencies(path):
 
     with open(path, encoding="utf-8") as build_script:
         for line in build_script:
-            if line.startswith( ('MAGISK_MODULE_DEPENDS', 'MAGISK_MODULE_BUILD_DEPENDS', 'MAGISK_MODULE_SUBMODULE_DEPENDS', 'MAGISK_MODULE_DEVMODULE_DEPENDS') ):
+            if line.startswith( ('MAGISK_MODULE_DEPENDS', 'MAGISK_MODULE_BUILD_DEPENDS', 'MAGISK_SUBMODULE_DEPENDS', 'MAGISK_MODULE_DEVMODULE_DEPENDS') ):
                 dependencies_string = line.split('DEPENDS=')[1]
                 for char in "\"'\n":
                     dependencies_string = dependencies_string.replace(char, '')
@@ -50,14 +50,6 @@ def parse_build_file_dependencies(path):
 
     return set(dependencies)
 
-def develsplit(path):
-    with open(path, encoding="utf-8") as build_script:
-        for line in build_script:
-            if line.startswith('MAGISK_MODULE_NO_DEVELSPLIT'):
-                return False
-
-    return True
-
 class MagiskModule(object):
     "A main module definition represented by a directory with a build.sh file."
     def __init__(self, dir_path, fast_build_mode):
@@ -70,10 +62,12 @@ class MagiskModule(object):
             raise Exception("build.sh not found for module '" + self.name + "'")
 
         self.deps = parse_build_file_dependencies(build_sh_path)
-        always_deps = ['libc++']
-        for dependency_name in always_deps:
-            if dependency_name not in self.deps and self.name not in always_deps:
-                self.deps.add(dependency_name)
+
+        if os.getenv('MAGISK_ON_DEVICE_BUILD') == "true":
+            always_deps = ['libc++']
+            for dependency_name in always_deps:
+                if dependency_name not in self.deps and self.name not in always_deps:
+                    self.deps.add(dependency_name)
 
         # search submodules
         self.submodules = []
@@ -87,7 +81,7 @@ class MagiskModule(object):
             self.deps.add(submodule.name)
             self.deps |= submodule.deps
 
-        submodule = MagiskSubModule(self.dir + '/' + self.name + '-static' + '.subpackage.sh', self, virtual=True)
+        submodule = MagiskSubModule(self.dir + '/' + self.name + '-static' + '.submodule.sh', self, virtual=True)
         self.submodules.append(submodule)
 
         # Do not depend on itself
@@ -280,7 +274,6 @@ def main():
         if not os.path.isdir(module):
             die('Not a directory: ' + module)
         if not os.path.relpath(os.path.dirname(module), '.') in modules_directories:
-
             modules_directories.insert(0, os.path.dirname(module))
     modules_map = read_modules_from_directories(modules_directories, fast_build_mode)
 
