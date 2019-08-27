@@ -18,20 +18,32 @@ for module in $(find "$module_path/" -maxdepth 1 -type d -name "*" -printf "%P\n
 		continue;
 	fi
 	module_version="$MAGISK_MODULE_VERSION";
+	module_srcurl="$MAGISK_MODULE_SRCURL";
+	module_sha256="$MAGISK_MODULE_SHA256";
 	
 	source "$package_path/$module/build.sh" 2>/dev/null;
 	if [ -z "$TERMUX_PKG_VERSION" ]; then
 		continue;
 	fi
 	package_version="$TERMUX_PKG_VERSION";
+	package_srcurl="$TERMUX_PKG_SRCURL";
+	package_sha256="$TERMUX_PKG_SHA256";
 
 	if version_gt "$package_version" "$module_version" ; then
-		echo -e "Magisk module $module can be updated from $module_version to $package_version";
-		perl -i.bak -pe "s/MAGISK_MODULE_VERSION=[\"]*"$module_version[\"]*"/MAGISK_MODULE_VERSION=\""$package_version\""/g" "$module_build_path";
+		echo -e "Magisk module $module can be updated from $module_version to $package_version ($package_srcurl)";
+		#perl -i.bak -pe "s/MAGISK_MODULE_VERSION=[\"]*"$module_version[\"]*"/MAGISK_MODULE_VERSION=\""$package_version\""/g" "$module_build_path";
+		#cat "$module_build_path";
+		perl -i.bak -pe 's|(MAGISK_MODULE_VERSION=[\"]*)[a-zA-Z0-9.]+([\"]*\n)|${1}'$package_version'\2|' "$module_build_path"
+		perl -i.bak -pe 's|(MAGISK_MODULE_SRCURL=[\"]*)[^\"]+([\"]*\n)|${1}'$package_srcurl'\2|' "$module_build_path";
+		perl -i.bak -pe 's|(MAGISK_MODULE_SHA256=[\"]*)[^\"]+([\"]*\n)|${1}'$package_sha256'\2|' "$module_build_path";	
+		#perl -i.bak -pe "s/MAGISK_MODULE_SHA256=[\"]*"$module_sha256[\"]*"/MAGISK_MODULE_SHA256=\""$package_sha256\""/g" "$module_build_path";
 		source "$module_build_path" 2>/dev/null;
 		new_module_version="$MAGISK_MODULE_VERSION";
 		if [[ "$new_module_version" == "$package_version" ]]; then
 			echo "Module $module updated to new version $new_module_version";
+		else
+			echo "Module $module encountered an error!";
+			exit 0;
 		fi
 		
 	fi
