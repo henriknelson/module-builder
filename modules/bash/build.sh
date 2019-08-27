@@ -30,9 +30,9 @@ MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" bash_cv_dev_fd=whacky"
 # - https://github.com/termux/termux-app/issues/200
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" bash_cv_getcwd_malloc=yes"
 
-#MAGISK_MODULE_CONFFILES="etc/bash.bashrc etc/profile"
+MAGISK_MODULE_CONFFILES="etc/bash.bashrc etc/profile"
 
-MAGISK_MODULE_RM_AFTER_INSTALL="share/man/man1/bashbug.1 bin/bashbug"
+MAGISK_MODULE_RM_AFTER_INSTALL="usr/share/man/man1/bashbug.1 bin/bashbug"
 
 magisk_step_pre_configure() {
 	declare -A PATCH_CHECKSUMS
@@ -58,7 +58,7 @@ magisk_step_pre_configure() {
 	unset PATCH_CHECKSUMS PATCHFILE PATCH_NUM
 }
 
-mmagisk_step_post_make_install() {
+magisk_step_post_make_install() {
 	sed -e "s|@MAGISK_PREFIX@|$MAGISK_PREFIX|" \
 		-e "s|@MAGISK_HOME@|$MAGISK_ANDROID_HOME|" \
 		$MAGISK_MODULE_BUILDER_DIR/etc-profile > $MAGISK_PREFIX/etc/profile
