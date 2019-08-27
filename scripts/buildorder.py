@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"Script to generate a build order respecting package dependencies."
+"Script to generate a build order respecting module dependencies."
 
 import os
 import re
@@ -31,7 +31,7 @@ def die(msg):
     sys.exit('ERROR: ' + msg)
 
 def parse_build_file_dependencies(path):
-    "Extract the dependencies of a build.sh or *.subpackage.sh file."
+    "Extract the dependencies of a build.sh or *.submodule.sh file."
     dependencies = []
 
     with open(path, encoding="utf-8") as build_script:
@@ -59,15 +59,15 @@ def develsplit(path):
     return True
 
 class MagiskModule(object):
-    "A main package definition represented by a directory with a build.sh file."
+    "A main module definition represented by a directory with a build.sh file."
     def __init__(self, dir_path, fast_build_mode):
         self.dir = dir_path
         self.name = os.path.basename(self.dir)
 
-        # search package build.sh
+        # search module build.sh
         build_sh_path = os.path.join(self.dir, 'build.sh')
         if not os.path.isfile(build_sh_path):
-            raise Exception("build.sh not found for package '" + self.name + "'")
+            raise Exception("build.sh not found for module '" + self.name + "'")
 
         self.deps = parse_build_file_dependencies(build_sh_path)
         always_deps = ['libc++']
@@ -75,11 +75,11 @@ class MagiskModule(object):
             if dependency_name not in self.deps and self.name not in always_deps:
                 self.deps.add(dependency_name)
 
-        # search subpackages
+        # search submodules
         self.submodules = []
 
         for filename in os.listdir(self.dir):
-            if not filename.endswith('.subpackage.sh'):
+            if not filename.endswith('.submodule.sh'):
                 continue
             submodule = MagiskSubModule(self.dir + '/' + filename, self)
 
@@ -87,14 +87,12 @@ class MagiskModule(object):
             self.deps.add(submodule.name)
             self.deps |= submodule.deps
 
-        if develsplit(build_sh_path):
-            submodule = MagiskSubModule(self.dir + '/' + self.name + '-dev' + '.subpackage.sh', self, virtual=True)
-            self.submodules.append(submodule)
-            self.deps.add(submodule.name)
+        submodule = MagiskSubModule(self.dir + '/' + self.name + '-static' + '.subpackage.sh', self, virtual=True)
+        self.submodules.append(submodule)
 
         # Do not depend on itself
         self.deps.discard(self.name)
-        # Do not depend on any sub package
+        # Do not depend on any sub module
         if not fast_build_mode:
             self.deps.difference_update([submodule.name for submodule in self.submodules])
 
@@ -104,7 +102,7 @@ class MagiskModule(object):
         return "<{} '{}'>".format(self.__class__.__name__, self.name)
 
     def recursive_dependencies(self, modules_map):
-        "All the dependencies of the package, both direct and indirect."
+        "All the dependencies of the module, both direct and indirect."
         result = []
         for dependency_name in sorted(self.deps):
             dependency_module = modules_map[dependency_name]
@@ -113,12 +111,12 @@ class MagiskModule(object):
         return unique_everseen(result)
 
 class MagiskSubModule:
-    "A sub-package represented by a ${PACKAGE_NAME}.subpackage.sh file."
+    "A sub-module represented by a ${MODULE_NAME}.submodule.sh file."
     def __init__(self, submodule_file_path, parent, virtual=False):
         if parent is None:
-            raise Exception("SubPackages should have a parent")
+            raise Exception("SubModules should have a parent")
 
-        self.name = os.path.basename(submodule_file_path).split('.subpackage.sh')[0]
+        self.name = os.path.basename(submodule_file_path).split('.submodule.sh')[0]
         self.parent = parent
         self.deps = set([parent.name])
         if not virtual:
@@ -131,7 +129,7 @@ class MagiskSubModule:
         return "<{} '{}' parent='{}'>".format(self.__class__.__name__, self.name, self.parent)
 
     def recursive_dependencies(self, modules_map):
-        """All the dependencies of the subpackage, both direct and indirect.
+        """All the dependencies of the submodule, both direct and indirect.
         Only relevant when building in fast-build mode"""
         result = []
         for dependency_name in sorted(self.deps):
@@ -144,8 +142,8 @@ class MagiskSubModule:
         return unique_everseen(result)
 
 def read_modules_from_directories(directories, fast_build_mode):
-    """Construct a map from package name to TermuxPackage.
-    Subpackages are mapped to the parent package if fast_build_mode is false."""
+    """Construct a map from module name to MagiskModule.
+    Submodules are mapped to the parent module if fast_build_mode is false."""
     modules_map = {}
     all_modules = []
 
@@ -156,14 +154,14 @@ def read_modules_from_directories(directories, fast_build_mode):
                 new_module = MagiskModule(module_dir + '/' + moduledir_name, fast_build_mode)
 
                 if new_module.name in modules_map:
-                    die('Duplicated package: ' + new_module.name)
+                    die('Duplicated module: ' + new_module.name)
                 else:
                     modules_map[new_module.name] = new_module
                 all_modules.append(new_module)
 
                 for submodule in new_module.submodules:
                     if submodule.name in modules_map:
-                        die('Duplicated package: ' + submodule.name)
+                        die('Duplicated module: ' + submodule.name)
                     elif fast_build_mode:
                         modules_map[submodule.name] = submodule
                     else:
@@ -173,21 +171,21 @@ def read_modules_from_directories(directories, fast_build_mode):
     for module in all_modules:
         for dependency_name in module.deps:
             if dependency_name not in modules_map:
-                die('Package %s depends on non-existing package "%s"' % (module.name, dependency_name))
+                die('Module %s depends on non-existing module "%s"' % (module.name, dependency_name))
             dep_module = modules_map[dependency_name]
             if fast_build_mode or not isinstance(module, MagiskSubModule):
                 dep_module.needed_by.add(module)
     return modules_map
 
 def generate_full_buildorder(modules_map):
-    "Generate a build order for building all packages."
+    "Generate a build order for building all modules."
     build_order = []
 
-    # List of all TermuxPackages without dependencies
+    # List of all MagiskModules without dependencies
     leaf_modules = [module for name, module in modules_map.items() if not module.deps]
 
     if not leaf_modules:
-        die('No package without dependencies - where to start?')
+        die('No module without dependencies - where to start?')
 
     # Sort alphabetically:
     module_queue = sorted(leaf_modules, key=lambda p: p.name)
@@ -195,7 +193,7 @@ def generate_full_buildorder(modules_map):
     # Topological sorting
     visited = set()
 
-    # Tracks non-visited deps for each package
+    # Tracks non-visited deps for each module
     remaining_deps = {}
     for name, module in modules_map.items():
         remaining_deps[name] = set(module.deps)
@@ -207,14 +205,14 @@ def generate_full_buildorder(modules_map):
         if module.name in visited:
             continue
 
-        # print("Processing {}:".format(pkg.name), pkg.needed_by)
+        # print("Processing {}:".format(module.name), module.needed_by)
         visited.add(module.name)
         build_order.append(module)
 
         for other_module in sorted(module.needed_by, key=lambda p: p.name):
-            # Remove this pkg from deps
+            # Remove this module from deps
             remaining_deps[other_module.name].discard(module.name)
-            # ... and all its subpackages
+            # ... and all its submodules
             remaining_deps[other_module.name].difference_update(
                 [submodule.name for submodule in module.submodules]
             )
@@ -233,28 +231,28 @@ def generate_full_buildorder(modules_map):
     return build_order
 
 def generate_target_buildorder(target_path, modules_map, fast_build_mode):
-    "Generate a build order for building the dependencies of the specified package."
+    "Generate a build order for building the dependencies of the specified module."
     if target_path.endswith('/'):
         target_path = target_path[:-1]
 
     module_name = os.path.basename(target_path)
     module = modules_map[module_name]
-    # Do not depend on any sub package
+    # Do not depend on any sub module
     if fast_build_mode:
         module.deps.difference_update([submodule.name for submodule in module.submodules])
     return module.recursive_dependencies(modules_map)
 
 def main():
-    "Generate the build order either for all packages or a specific one."
+    "Generate the build order either for all modules or a specific one."
     import argparse
 
-    parser = argparse.ArgumentParser(description='Generate order in which to build dependencies for a package. Generates')
+    parser = argparse.ArgumentParser(description='Generate order in which to build dependencies for a module. Generates')
     parser.add_argument('-i', default=False, action='store_true',
-                        help='Generate dependency list for fast-build mode. This includes subpackages in output since these can be downloaded.')
+                        help='Generate dependency list for fast-build mode. This includes submodules in output since these can be downloaded.')
     parser.add_argument('module', nargs='?',
-                        help='Package to generate dependency list for.')
+                        help='Module to generate dependency list for.')
     parser.add_argument('module_dirs', nargs='*',
-                        help='Directories with packages. Can for example point to "../x11-packages/packages/". "packages/" is appended automatically.')
+                        help='Directories with modules. Can for example point to "../x11-modules/modules/". "modules/" is appended automatically.')
     args = parser.parse_args()
     fast_build_mode = args.i
     module = args.module
@@ -268,7 +266,7 @@ def main():
         full_buildorder = False
 
     if fast_build_mode and full_buildorder:
-        die('-i mode does not work when building all packages')
+        die('-i mode does not work when building all modules')
 
     if not full_buildorder:
         modules_real_path = os.path.realpath('modules')
@@ -284,12 +282,12 @@ def main():
         if not os.path.relpath(os.path.dirname(module), '.') in modules_directories:
 
             modules_directories.insert(0, os.path.dirname(module))
-    pkgs_map = read_modules_from_directories(modules_directories, fast_build_mode)
+    modules_map = read_modules_from_directories(modules_directories, fast_build_mode)
 
     if full_buildorder:
-        build_order = generate_full_buildorder(pkgs_map)
+        build_order = generate_full_buildorder(modules_map)
     else:
-        build_order = generate_target_buildorder(module, pkgs_map, fast_build_mode)
+        build_order = generate_target_buildorder(module, modules_map, fast_build_mode)
 
     for module in build_order:
         print("%-30s %s" % (module.name, module.dir))

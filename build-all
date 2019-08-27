@@ -54,34 +54,37 @@ BUILDORDER_FILE=$BUILDALL_DIR/buildorder.txt
 BUILDSTATUS_FILE=$BUILDALL_DIR/buildstatus.txt
 
 if [ -e $BUILDORDER_FILE ]; then
-	magisk_log "Using existing buildorder file: $BUILDORDER_FILE"
+	echo "Using existing buildorder file: $BUILDORDER_FILE"
 else
 	mkdir -p $BUILDALL_DIR
 	./scripts/buildorder.py > $BUILDORDER_FILE
 fi
 if [ -e $BUILDSTATUS_FILE ]; then
-	magisk_log "Continuing build-all from: $BUILDSTATUS_FILE"
+	echo "Continuing build-all from: $BUILDSTATUS_FILE"
 fi
 
 exec >	>(tee -a $BUILDALL_DIR/ALL.out)
 exec 2> >(tee -a $BUILDALL_DIR/ALL.err >&2)
 trap "echo ERROR: See $BUILDALL_DIR/\${MODULE}.err" ERR
 
+
+magisk_log "Running build-add utility script"
+
 while read MODULE MODULE_DIR; do
 	# Check build status (grepping is a bit crude, but it works)
 	if [ -e $BUILDSTATUS_FILE ] && grep "^$MODULE\$" $BUILDSTATUS_FILE >/dev/null; then
-		magisk_log "Skipping $MODULE"
+		echo "Skipping $MODULE"
 		continue
 	fi
 
-	magisk_log "Building $MODULE..."
+	echo "Building $MODULE..."
 	BUILD_START=$(date "+%s")
 	bash -x $BUILDSCRIPT -a $MAGISK_ARCH $MAGISK_DEBUG \
 		${MAGISK_ZIPDIR+-o $MAGISK_ZIPDIR} $MAGISK_INSTALL_DEPS $MODULE_DIR \
 		> $BUILDALL_DIR/${MODULE}.out 2> $BUILDALL_DIR/${MODULE}.err
 	BUILD_END=$(date "+%s")
 	BUILD_SECONDS=$(( $BUILD_END - $BUILD_START ))
-	magisk_log "done in $BUILD_SECONDS"
+	echo "Build done in $BUILD_SECONDS"
 
 	# Update build status
 	echo "$MODULE" >> $BUILDSTATUS_FILE
@@ -89,4 +92,4 @@ done<${BUILDORDER_FILE}
 
 # Update build status
 rm -f $BUILDSTATUS_FILE
-magisk_log "Finished"
+echo "Finished"
