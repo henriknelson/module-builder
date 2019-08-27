@@ -47,10 +47,10 @@ magisk_step_massage() {
 	#find . -type f -print0 | xargs -r -0 "$MAGISK_ELF_CLEANER"
 
 	# Fix shebang paths:
-	#while IFS= read -r -d file
-	#do
-	#	head -c 100 "$file" | grep -E "^#\!.*\\/bin\\/.*" | grep -q -E -v "^#\! ?\\/system" && sed --follow-symlinks -i -E "1 s@^#\!(.*)/bin/(.*)@#\!$MAGISK_PREFIX/bin/\2@" "$file"
-	#done < <(find -L . -type f -print0)
+	while IFS= read -r -d file
+	do
+		head -c 100 "$file" | grep -E "^#\!.*\\/bin\\/.*" | grep -q -E -v "^#\! ?\\/system" && sed --follow-symlinks -i -E "1 s@^#\!(.*)/bin/(.*)@#\!$MAGISK_PREFIX/bin/\2@" "$file"
+	done < <(find -L . -type f -print0)
 
 	test ! -z "$MAGISK_MODULE_RM_AFTER_INSTALL" && rm -Rf $MAGISK_MODULE_RM_AFTER_INSTALL
 

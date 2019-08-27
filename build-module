@@ -32,6 +32,19 @@ fi
 # lock file.
 : "${MAGISK_BUILD_IGNORE_LOCK:=false}"
 
+_function_call_trap() {
+	#declare -F ${BASH_COMMAND%% *} >/dev/null
+	if ! [[ "${BASH_COMMAND%% *}" == "${FUNCNAME[1]}" ]] && [[ "${BASH_COMMAND%% *}" = magisk_step* ]]; then
+		magisk_log_header "${BASH_COMMAND%% *}"
+	fi
+}
+
+setup_process_log() {
+	set -o functrace
+	trap _function_call_trap DEBUG
+}
+
+
 # Utility function to download a resource with an expected checksum.
 source scripts/build/magisk_download.sh
 
@@ -152,15 +165,6 @@ magisk_step_post_massage() {
 	return
 }
 
-magisk_step_setup_zipfile() {
-	cd "$MAGISK_MODULE_MASSAGEDIR"
-	mkdir -p common
-	cd common
-	echo "#!$MAGISK_PREFIX/bin/sh" >> service.sh
-	echo "MODDIR=\${0%/*};" >> service.sh
-	cd "$MAGISK_MODULE_MASSAGEDIR" 
-}
-
 # Hook function to create {pre,post}install, {pre,post}rm-scripts and similar
 magisk_step_create_zipscripts() {
 	return
@@ -176,43 +180,29 @@ source scripts/build/magisk_step_finish_build.sh
 	if ! $MAGISK_BUILD_IGNORE_LOCK; then
 		flock -n 5 || magisk_error_exit "Another build is already running within same environment."
 	fi
-	#magisk_log "handling arguments $@..\n"
+	setup_process_log
 	magisk_step_handle_arguments "$@"
-	#magisk_log "setting up variables..\n"
 	magisk_step_setup_variables
-	#magisk_log "handling buildarch..\n"
 	magisk_step_handle_buildarch
-	#magisk_log_header "magisk_step_start_build()"
 	magisk_step_start_build
-	magisk_log_header "magisk_step_extract_module()"
 	magisk_step_extract_module
 	cd "$MAGISK_MODULE_SRCDIR"
-	#magisk_log "module extracted\n"
 	magisk_step_post_extract_module
-	#magisk_log "handling hostbuild..\n"
 	magisk_step_handle_hostbuild
-	#magisk_log "setting up toolchain..\n"
 	magisk_step_setup_toolchain
-	magisk_log_header "magisk_step_patch_module()"
 	magisk_step_patch_module
 	magisk_step_replace_guess_scripts
 	cd "$MAGISK_MODULE_SRCDIR"
-	#magisk_log "hook pre-configure\n"
 	magisk_step_pre_configure
 	cd "$MAGISK_MODULE_BUILDDIR"
-	magisk_log_header "magisk_step_configure()"
 	magisk_step_configure
 	cd "$MAGISK_MODULE_BUILDDIR"
-	#magisk_log "hook before post-configure\n"
 	magisk_step_before_post_configure
 	cd "$MAGISK_MODULE_BUILDDIR"
-	#magisk_log "hook post-configure\n"
 	magisk_step_post_configure
 	cd "$MAGISK_MODULE_BUILDDIR"
-	magisk_log_header "magisk_step_make()"
 	magisk_step_make
 	cd "$MAGISK_MODULE_BUILDDIR"
-	magisk_log_header "magisk_step_make_install()"
 	magisk_step_make_install
 	cd "$MAGISK_MODULE_BUILDDIR"
 	magisk_step_post_make_install
@@ -223,7 +213,6 @@ source scripts/build/magisk_step_finish_build.sh
 	magisk_step_massage
 	cd "$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX"
 	magisk_step_post_massage
-	magisk_step_setup_zipfile
 	magisk_step_create_zipfile
 	magisk_step_finish_build
 } 5< "$MAGISK_BUILD_LOCK_FILE"
