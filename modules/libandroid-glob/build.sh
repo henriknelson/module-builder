@@ -1,7 +1,7 @@
 MAGISK_MODULE_HOMEPAGE=http://man7.org/linux/man-pages/man3/glob.3.html
 MAGISK_MODULE_DESCRIPTION="Shared library for the glob(3) system function"
 MAGISK_MODULE_LICENSE="BSD 3-Clause"
-MAGISK_MODULE_VERSION=0.4
+MAGISK_MODULE_VERSION=0.6
 MAGISK_MODULE_BUILD_IN_SRC=yes
 
 mmagisk_step_pre_configure() {
