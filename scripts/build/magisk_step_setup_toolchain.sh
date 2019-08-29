@@ -30,7 +30,7 @@ magisk_step_setup_toolchain() {
 		export CFLAGS=""
 		export LDFLAGS="-L${MAGISK_PREFIX}/lib"
 	else
-		magisk_log "setting up clang toolchain"
+		echo "Setting up CLANG toolchain"
 		export CFLAGS=""
 		export LDFLAGS="-L${MAGISK_PREFIX}/lib"
 		export AS=$MAGISK_HOST_PLATFORM-clang

@@ -5,7 +5,7 @@ magisk_step_setup_variables() {
 	: "${MAGISK_TOPDIR:="$HOME/.magisk-build"}"
 	: "${MAGISK_ARCH:="aarch64"}" # arm, aarch64, i686 or x86_64.
 	: "${MAGISK_PREFIX:="/system"}"
-	: "${MAGISK_ANDROID_HOME:="$HOME/android"}"
+	: "${MAGISK_ANDROID_HOME:="/sdcard"}"
 	: "${MAGISK_DEBUG:=""}"
 	: "${MAGISK_MODULE_API_LEVEL:="24"}"
 	: "${MAGISK_NO_CLEAN:="false"}"

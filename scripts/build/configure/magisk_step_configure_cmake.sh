@@ -14,6 +14,7 @@ magisk_step_configure_cmake() {
 	else
 		MAKE_PROGRAM_PATH=$(which make)
 	fi
+	CCMAGISK_HOST_PLATFORM="aarch64-linux-android"
 	CFLAGS+=" --host=$CCMAGISK_HOST_PLATFORM --target=$CCMAGISK_HOST_PLATFORM -fno-addrsig"
 	CXXFLAGS+=" --host=$CCMAGISK_HOST_PLATFORM --target=$CCMAGISK_HOST_PLATFORM -fno-addrsig"
 	LDFLAGS+=" --host=$CCMAGISK_HOST_PLATFORM --target=$CCMAGISK_HOST_PLATFORM"

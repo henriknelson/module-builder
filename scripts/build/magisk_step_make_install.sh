@@ -5,9 +5,9 @@ magisk_step_make_install() {
 		: "${MAGISK_MODULE_MAKE_INSTALL_TARGET:="install"}"
 		# Some modules have problem with parallell install, and it does not buy much, so use -j 1.
 		if [ -z "$MAGISK_MODULE_EXTRA_MAKE_ARGS" ]; then
-			make -j 1 ${MAGISK_MODULE_MAKE_INSTALL_TARGET}
+			make V=1 -j 1 ${MAGISK_MODULE_MAKE_INSTALL_TARGET}
 		else
-			make -j 1 ${MAGISK_MODULE_EXTRA_MAKE_ARGS} ${MAGISK_MODULE_MAKE_INSTALL_TARGET}
+			make V=1 -j 1 ${MAGISK_MODULE_EXTRA_MAKE_ARGS} ${MAGISK_MODULE_MAKE_INSTALL_TARGET}
 		fi
 	elif test -f Cargo.toml; then
 		return

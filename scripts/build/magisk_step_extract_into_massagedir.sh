@@ -12,6 +12,5 @@ magisk_step_extract_into_massagedir() {
 	mkdir -p "$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX"
 	cd "$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX"
 	tar -xf "$TARBALL_ORIG"
-	tree $(pwd)
 	rm "$TARBALL_ORIG"
 }

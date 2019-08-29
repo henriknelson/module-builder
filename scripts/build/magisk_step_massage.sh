@@ -24,12 +24,12 @@ magisk_step_massage() {
 
 	# Remove static libraries:
 	#if [ $MAGISK_MODULE_KEEP_STATIC_LIBRARIES = "false" ]; then
-	#	find . -name '*.a' -delete
-	#	find . -name '*.la' -delete
+		#find . -name '*.a' -delete
+		#find . -name '*.so*' -delete
 	#fi
 
 	# Move over sbin to bin:
-	for file in sbin/*; do if test -f "$file"; then mv "$file" bin/; fi; done
+	for file in $(find sbin/ -type f -maxdepth 1); do if test -f "$file"; then mv "$file" bin/; fi; done
 
 	# Remove world permissions and add write permissions.
 	# The -f flag is used to suppress warnings about dangling symlinks (such
@@ -47,28 +47,28 @@ magisk_step_massage() {
 	#find . -type f -print0 | xargs -r -0 "$MAGISK_ELF_CLEANER"
 
 	# Fix shebang paths:
-	while IFS= read -r -d file
-	do
-		head -c 100 "$file" | grep -E "^#\!.*\\/bin\\/.*" | grep -q -E -v "^#\! ?\\/system" && sed --follow-symlinks -i -E "1 s@^#\!(.*)/bin/(.*)@#\!$MAGISK_PREFIX/bin/\2@" "$file"
-	done < <(find -L . -type f -print0)
+	#while IFS= read -r -d file
+	#do
+	#	head -c 100 "$file" | grep -E "^#\!.*\\/bin\\/.*" | grep -q -E -v "^#\! ?\\/system" && sed --follow-symlinks -i -E "1 s@^#\!(.*)/bin/(.*)@#\!$MAGISK_PREFIX/bin/\2@" "$file"
+	#done < <(find -L . -type f -print0)
 
 	test ! -z "$MAGISK_MODULE_RM_AFTER_INSTALL" && rm -Rf $MAGISK_MODULE_RM_AFTER_INSTALL
 
 	find . -type d -empty -delete # Remove empty directories
 
-	if [ -d sshare/man ]; then
-		# Compress man pages with gzip:
-		find usr/share/man -type f ! -iname \*.gz -print0 | xargs -r -0 gzip
+	#if [ -d sshare/man ]; then
+	#	# Compress man pages with gzip:
+	#	find usr/share/man -type f ! -iname \*.gz -print0 | xargs -r -0 gzip
 
 		# Update man page symlinks, e.g. unzstd.1 -> zstd.1:
-		while IFS= read -r -d '' file
-		do
-			local _link_value
-			_link_value=$(readlink $file)
-			rm $file
-			ln -s $_link_value.gz $file.gz
-		done < <(find usr/share/man -type l ! -iname \*.gz -print0)
-	fi
+	#	while IFS= read -r -d '' file
+	#	do
+	#		local _link_value
+	#		_link_value=$(readlink $file)
+	#		rm $file
+	#		ln -s $_link_value.gz $file.gz
+	#	done < <(find usr/share/man -type l ! -iname \*.gz -print0)
+	#fi
 
 	magisk_create_submodules
 

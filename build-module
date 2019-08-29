@@ -143,9 +143,26 @@ source scripts/build/magisk_step_make.sh
 # Make install, either with ninja, make of cargo
 source scripts/build/magisk_step_make_install.sh
 
+magisk_step_pre_make_install() {
+	if [[ -f "/tmp/snapshot1" ]]; then
+		rm /tmp/snapshot1;
+	fi
+	find /system | sort -u > /tmp/snapshot1
+}
+
+
 # Hook function for module scripts to override.
 magisk_step_post_make_install() {
-	return
+	if [[ -f "/tmp/snapshot2" ]]; then
+		rm /tmp/snapshot2;
+	fi
+	find /system | sort -u > /tmp/snapshot2;
+	if ! [[ /tmp/snapshot1 == /tmp/snapshot2 ]]; then
+		echo "New files installed:"
+	fi
+	for file in $(comm -3 /tmp/snapshot{1,2}); do
+		echo $file;
+	done
 }
 
 # Link/copy the LICENSE for the module to $MAGISK_PREFIX/share/$MAGISK_MODULE_NAME/
@@ -180,7 +197,7 @@ source scripts/build/magisk_step_finish_build.sh
 	if ! $MAGISK_BUILD_IGNORE_LOCK; then
 		flock -n 5 || magisk_error_exit "Another build is already running within same environment."
 	fi
-	setup_process_log
+	#setup_process_log
 	magisk_step_handle_arguments "$@"
 	magisk_step_setup_variables
 	magisk_step_handle_buildarch
@@ -203,6 +220,7 @@ source scripts/build/magisk_step_finish_build.sh
 	cd "$MAGISK_MODULE_BUILDDIR"
 	magisk_step_make
 	cd "$MAGISK_MODULE_BUILDDIR"
+	magisk_step_pre_make_install
 	magisk_step_make_install
 	cd "$MAGISK_MODULE_BUILDDIR"
 	magisk_step_post_make_install
