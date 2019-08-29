@@ -1,11 +1,12 @@
---- old/main.c	2019-03-10 09:56:43.000000000 +0000
-+++ m/main.c	2019-08-11 21:17:06.457765204 +0000
-@@ -1171,7 +1171,7 @@
+diff -u -r ../mandoc-1.14.4/main.c ./main.c
+--- ../mandoc-1.14.4/main.c	2018-08-08 14:51:51.000000000 +0000
++++ ./main.c	2018-08-11 09:58:01.245684598 +0000
+@@ -1187,7 +1187,7 @@
  	if (pager == NULL || *pager == '\0')
  		pager = getenv("PAGER");
  	if (pager == NULL || *pager == '\0')
 -		pager = "more -s";
-+		pager = "env TERMINFO=@MAGISK_PREFIX@/usr/share/terminfo less -s";
++		pager = "less -s";
  	cp = mandoc_strdup(pager);
  
  	/*

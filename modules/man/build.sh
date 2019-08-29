@@ -22,6 +22,7 @@ magisk_step_pre_configure() {
 	done
 	echo "HAVE_MANPATH=0" >> configure.local
 	echo "HAVE_SQLITE3=1" >> configure.local
+	printenv >> config.env
 }
 
 magisk_step_create_zipscripts() {
