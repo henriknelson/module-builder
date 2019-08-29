@@ -27,7 +27,7 @@ diff -u -r ../lua-5.3.4/Makefile ./Makefile
  PLATS= aix bsd c89 freebsd generic linux macosx mingw posix solaris
  
 +# Lua version and release.
-+V= 1
++V= 5.3
 +R= $V.5
 +
  # What to install.

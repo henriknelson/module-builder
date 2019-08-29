@@ -14,16 +14,16 @@ magisk_step_make() {
 
 	mkdir objects
 	for c_file in $(find src -type f -iname \*.c); do
-		$CC $CPPFLAGS $CFLAGS -std=c99 -DNULL=0 -fPIC -Iinclude \
+		$CC $CPPFLAGS $CFLAGS -static -std=c99 -DNULL=0 -fPIC -Iinclude \
 			-c $c_file -o ./objects/$(basename "$c_file").o
 	done
 
 	cd objects
 	ar rcu ../libandroid-support.a
-	$CC $LDFLAGS -shared -o ../libandroid-support.so *.o
+	#$CC $LDFLAGS -shared -o ../libandroid-support.so *.o
 }
 
 magisk_step_make_install() {
 	install -Dm600 libandroid-support.a $MAGISK_PREFIX/lib/libandroid-support.a
-	install -Dm600 libandroid-support.so $MAGISK_PREFIX/lib/libandroid-support.so
+	#install -Dm600 libandroid-support.so $MAGISK_PREFIX/lib/libandroid-support.so
 }

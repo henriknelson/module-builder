@@ -8,7 +8,7 @@ diff -u -r ../db-18.1.32/lang/sql/generated/sqlite3.c ./lang/sql/generated/sqlit
 -     "/var/tmp",
 -     "/usr/tmp",
 -     "/tmp",
-+     "@TERMUX_PREFIX@/tmp",
++     "@MAGISK_PREFIX@/tmp",
       "."
    };
    unsigned int i = 0;

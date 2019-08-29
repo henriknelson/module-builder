@@ -8,9 +8,9 @@ diff -uNr db-6.2.32/src/os/os_tmpdir.c db-6.2.32.mod/src/os/os_tmpdir.c
 -	DB_TEMP_DIRECTORY("/var/tmp");
 -	DB_TEMP_DIRECTORY("/usr/tmp");
 -	DB_TEMP_DIRECTORY("/tmp");
-+	DB_TEMP_DIRECTORY("@TERMUX_PREFIX@/var/tmp");
-+	DB_TEMP_DIRECTORY("@TERMUX_PREFIX@/usr/tmp");
-+	DB_TEMP_DIRECTORY("@TERMUX_PREFIX@/tmp");
++	DB_TEMP_DIRECTORY("@MAGISK_PREFIX@/var/tmp");
++	DB_TEMP_DIRECTORY("@MAGISK_PREFIX@/usr/tmp");
++	DB_TEMP_DIRECTORY("@MAGISK_PREFIX@/tmp");
  #if defined(ANDROID) || defined(DB_ANDROID)
  	DB_TEMP_DIRECTORY("/cache");
  #endif

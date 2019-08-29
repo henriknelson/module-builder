@@ -14,7 +14,7 @@ MAGISK_MODULE_BUILD_DEPENDS="readline"
 magisk_step_pre_configure() {
 	AR+=" rcu"
 	CFLAGS+=" -fPIC -DLUA_COMPAT_5_2 -DLUA_COMPAT_UNPACK"
-	export MYLDFLAGS="-lncurses $LDFLAGS"
+	export MYLDFLAGS=" -lncurses $LDFLAGS"
 }
 
 magisk_step_post_make_install() {
