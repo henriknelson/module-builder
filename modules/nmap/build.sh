@@ -12,15 +12,17 @@ MAGISK_MODULE_DEPENDS="libc++, libdl, libpcap, pcre, openssl, resolv-conf, liblu
 # --without-ndiff to avoid python2-using ndiff utility:
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 --enable-static
---with-liblua=$MAGISK_PREFIX
+--with-liblua=$MAGISK_PREFIX/lib
 --without-nmap-update
 --without-zenmap
 --without-ndiff
 "
+
 MAGISK_MODULE_BUILD_IN_SRC=true
 
 magisk_step_pre_configure() {
-	export LIBS="-lz -ldl"
+	CXXFLAGS=" -static-libstdc++"
+	export LIBS="-lz -ldl -lres"
 }
 
 magisk_step_make() {

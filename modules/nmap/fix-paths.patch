@@ -6,7 +6,7 @@ diff -uNr nmap-7.70/ncat/ncat_connect.c nmap-7.70.mod/ncat/ncat_connect.c
                size_t size=0, offset=0;
                strbuf_sprintf(&tmp_name, &size, &offset, "%s/ncat.XXXXXX",
 -                  tmpdir ? tmpdir : "/tmp");
-+                  tmpdir ? tmpdir : "@MAGISK_PREFIX@/tmp");
++                  tmpdir ? tmpdir : "/sdcard");
                if (mkstemp(tmp_name) == -1) {
                  bye("Failed to create name for temporary DGRAM source Unix domain socket (mkstemp).");
                }
@@ -70,7 +70,7 @@ diff -uNr nmap-7.70/protocols.cc nmap-7.70.mod/protocols.cc
 -    error("Unable to find nmap-protocols!  Resorting to /etc/protocols");
 -    strcpy(filename, "/etc/protocols");
 +    error("Unable to find nmap-protocols!  Resorting to @MAGISK_PREFIX@/etc/protocols");
-+    strcpy(filename, "@MAGISK_PREFIX@/etc/protocols");
++    strcpy(filename, "@MAGISK_PREFIX@/usr/share/nmap");
    }
  
    fp = fopen(filename, "r");
@@ -84,7 +84,7 @@ diff -uNr nmap-7.70/services.cc nmap-7.70.mod/services.cc
 -    error("Unable to find nmap-services!  Resorting to /etc/services");
 -    strcpy(filename, "/etc/services");
 +    error("Unable to find nmap-services!  Resorting to @MAGISK_PREFIX@/etc/services");
-+    strcpy(filename, "@MAGISK_PREFIX@/etc/services");
++    strcpy(filename, "@MAGISK_PREFIX@/usr/share/nmap");
  #else
          int len, wnt = GetVersion() < 0x80000000;
      error("Unable to find nmap-services!  Resorting to /etc/services");

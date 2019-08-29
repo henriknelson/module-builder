@@ -1,2 +1,2 @@
-TERMUX_SUBPKG_INCLUDE="lib/libpcreposix.so*"
-TERMUX_SUBPKG_DESCRIPTION="Posix-compatible runtime libraries for libpcre"
+MAGISK_SUBMODULE_INCLUDE="lib/libpcreposix.so* lib/libpcreposix.a"
+MAGISK_SUBMODULE_DESCRIPTION="Posix-compatible runtime libraries for libpcre"

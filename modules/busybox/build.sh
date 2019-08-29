@@ -56,8 +56,8 @@ magisk_step_post_make_install() {
 	ln -f -s busybox env
 
 	# Install busybox man page
-	#mkdir -p $MAGISK_PREFIX/share/man/man1
-	#cp $MAGISK_MODULE_SRCDIR/docs/busybox.1 $MAGISK_PREFIX/share/man/man1
+	mkdir -p $MAGISK_PREFIX/usr/share/man/man1
+	cp $MAGISK_MODULE_SRCDIR/docs/busybox.1 $MAGISK_PREFIX/share/man/man1
 
 	# Needed for 'crontab -e' to work out of the box:
 	local _CRONTABS=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/var/spool/cron/crontabs

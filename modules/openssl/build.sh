@@ -14,7 +14,7 @@ MAGISK_MODULE_BREAKS="openssl-tool (<< 1.1.1b-1)"
 MAGISK_MODULE_REPLACES="openssl-tool (<< 1.1.1b-1)"
 
 magisk_step_configure() {
-	CFLAGS+=" -DNO_SYSLOG"
+	CFLAGS+=" -static -DNO_SYSLOG"
 	if [ $MAGISK_ARCH = arm ]; then
 		CFLAGS+=" -fno-integrated-as"
 	fi
@@ -29,7 +29,7 @@ magisk_step_configure() {
 	#LDFLAGS="${LDFLAGS} --static"
 	#export PATH=/usr/local/musl/bin:$PATH
 	#export CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
-	./Configure $MAGISK_OPENSSL_PLATFORM --prefix=$MAGISK_PREFIX --openssldir=$MAGISK_PREFIX/etc/tls shared -fPIC zlib no-dso no-hw no-srp no-tests enable-md2 enable-rc5 enable-tls enable-tls1_3 enable-tls1_2 enable-tls1_1
+	./Configure $MAGISK_OPENSSL_PLATFORM --prefix=$MAGISK_PREFIX --openssldir=$MAGISK_PREFIX/etc/tls -static -fPIC zlib no-dso no-hw no-srp no-tests enable-md2 enable-rc5 enable-ecdsa enable-tls enable-tls1_3 enable-tls1_2 enable-tls1_1
 	#--openssldir=$MAGISK_PREFIX/etc/tls
 
 }

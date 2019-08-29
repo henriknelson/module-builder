@@ -30,7 +30,7 @@ usr/share/man/man1p/getconf.1p"
 magisk_step_pre_configure() {
 	# Bundle posix man pages in same package:
 	cd man-pages-posix-2013-a
-	make $MAGISK_MODULE_EXTRA_MAKE_ARGS install
+	LDFLAGS=" --static" CFLAGS=" -static" make $MAGISK_MODULE_EXTRA_MAKE_ARGS install
 }
 
 mmagisk_step_post_massage() {

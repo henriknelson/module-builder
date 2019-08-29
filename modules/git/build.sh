@@ -58,6 +58,8 @@ magisk_step_make() {
 magisk_step_make_install() {
 	make -j $(nproc) V=1 $MAGISK_MODULE_EXTRA_MAKE_ARGS install CFLAGS+=" -static"
 	make -j $(nproc) -C contrib/subtree V=1 $MAGISK_MODULE_EXTRA_MAKE_ARGS install CFLAGS+=" -static"
+	make -j $(nproc) install-man
+
 	#make -j $(nproc) -C contrib/subtree V=1 $MAGISK_MODULE_EXTRA_MAKE_ARGS install LDFLAGS+=" -L/system/lib"
 	mkdir -p $MAGISK_PREFIX/etc/bash_completion.d/
 	cp $MAGISK_MODULE_SRCDIR/contrib/completion/git-completion.bash $MAGISK_PREFIX/etc/bash_completion.d/

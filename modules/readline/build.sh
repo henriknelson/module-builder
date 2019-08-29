@@ -8,12 +8,14 @@ MAGISK_MODULE_VERSION="8.0.1"
 MAGISK_MODULE_REVISION=3
 MAGISK_MODULE_SHA256=e339f51971478d369f8a053a330a190781acb9864cf4c541060f12078948e461
 MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/readline/readline-8.0.tar.gz
-MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--with-curses --enable-multibyte bash_cv_wcwidth_broken=no"
-MAGISK_MODULE_EXTRA_MAKE_ARGS="SHLIB_LIBS=-lncursesw"
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--prefix=$MAGISK_PREFIX --host=aarch64-linux-android --with-curses --enable-multibyte bash_cv_wcwidth_broken=no --enable-static --disable-shared"
+MAGISK_MODULE_EXTRA_MAKE_ARGS="SHLIB_LIBS=-lncursesw -lncurses"
 MAGISK_MODULE_CONFFILES="etc/inputrc"
 
-magisk_step_pre_configure() {
-	CFLAGS+=" -fexceptions"
+mmagisk_step_pre_configure() {
+	CFLAGS+=" -static"
+	LDFLAGS+=" --static -landroid-support -ltinfo -ltermcap -lncurses"
+	#LDFLAGS+=" --static"
 }
 
 magisk_step_post_make_install() {

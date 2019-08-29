@@ -15,8 +15,10 @@ magisk_step_make() {
         make -f unix/Makefile clean
 	make -f unix/Makefile generic -j $(nproc) CC=$CC #LD=$LD
      	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
+     	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/usr/share/man/man1
 	cp $MAGISK_MODULE_SRCDIR/zip $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/zip
 	cp $MAGISK_MODULE_SRCDIR/zipcloak $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/zipcloak
 	cp $MAGISK_MODULE_SRCDIR/zipnote $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/zipnote
 	cp $MAGISK_MODULE_SRCDIR/zipsplit $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/zipsplit
+	cp $MAGISK_MODULE_SRCDIR/man/* $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/usr/share/man/man1
 }
