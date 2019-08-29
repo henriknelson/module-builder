@@ -1,0 +1,18 @@
+for i in @MAGISK_PREFIX@/etc/profile.d/*.sh; do
+	if [ -r $i ]; then
+		. $i
+	fi
+done
+unset i
+
+# Source etc/bash.bashrc and ~/.bashrc also for interactive bash login shells:
+if [ "$BASH" ]; then
+        if [[ "$-" == *"i"* ]]; then
+                if [ -r @MAGISK_PREFIX@/etc/bash.bashrc ]; then
+                        . @MAGISK_PREFIX@/etc/bash.bashrc
+                fi
+                if [ -r @MAGISK_HOME@/.bashrc ]; then
+                        . @MAGISK_HOME@/.bashrc
+                fi
+        fi
+fi

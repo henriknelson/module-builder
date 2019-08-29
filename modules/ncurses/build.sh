@@ -26,8 +26,6 @@ ac_cv_header_locale_h=no
 --enable-overwrite
 --enable-pc-files
 --enable-termcap
---enable-static
---enable-shared
 --enable-widec
 --mandir=$MAGISK_PREFIX/usr/share/man
 --without-ada
@@ -46,13 +44,7 @@ usr/share/man/man7
 "
 
 magisk_step_pre_configure() {
-	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" \
-		--prefix=$MAGISK_PREFIX \
-		--datarootdir=$MAGISK_PREFIX/usr/share \
-		--host=aarch64-linux-android \
-		--with-pkg-config-libdir=$PKG_CONFIG_LIBDIR \
-	"
-	#export LDFLAGS="$LDFLAGS --static"
+	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --prefix=$MAGISK_PREFIX --datarootdir=$MAGISK_PREFIX/usr/share --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
 }
 
 magisk_step_post_make_install() {

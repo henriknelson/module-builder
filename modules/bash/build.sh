@@ -7,14 +7,13 @@ MAGISK_MODULE_VERSION=${_MAIN_VERSION}.${_PATCH_VERSION}
 MAGISK_MODULE_REVISION=5
 MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/bash/bash-${_MAIN_VERSION}.tar.gz
 MAGISK_MODULE_SHA256=b4a80f2ac66170b2913efbfb9f2594f1f76c7b1afd11f799e22035d63077fb4d
-MAGISK_MODULE_DEPENDS="libandroid-support, ncurses, readline (>= 8.0)"
-MAGISK_MODULE_RECOMMENDS="command-not-found"
+MAGISK_MODULE_DEPENDS="libandroid-support, ncurses, readline (>= 8.0), command-not-found"
 MAGISK_MODULE_BREAKS="bash-dev"
 MAGISK_MODULE_REPLACES="bash-dev"
 MAGISK_MODULE_ESSENTIAL=true
 MAGISK_MODULE_BUILD_IN_SRC=true
 
-MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--enable-multibyte --without-bash-malloc --with-installed-readline --enable-static-link"
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--host=aarch64-linux-android --enable-multibyte --without-bash-malloc --with-installed-readline --enable-static-link"
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" bash_cv_job_control_missing=present"
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" bash_cv_sys_siglist=yes"
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" bash_cv_func_sigsetjmp=present"
@@ -68,3 +67,4 @@ magisk_step_post_make_install() {
 		-e "s|@MAGISK_HOME@|$MAGISK_ANDROID_HOME|" \
 		$MAGISK_MODULE_BUILDER_DIR/etc-bash.bashrc > $MAGISK_PREFIX/etc/bash.bashrc
 }
+
