@@ -1,7 +1,30 @@
-diff -u -r ../coreutils-8.31/configure ./configure
---- ../coreutils-8.31/configure	2019-03-10 23:35:43.000000000 +0000
-+++ ./configure	2019-04-18 14:08:40.316645642 +0000
-@@ -43326,7 +43326,7 @@
+--- coreutils-8.32/configure	2020-03-05 13:24:44.000000000 +0000
++++ ./configure	2020-04-13 06:01:49.510092029 +0000
+@@ -46107,22 +46107,10 @@
+ 
+ 
+ 
+-  WANT_MKTIME_INTERNAL=0
+-    ac_fn_c_check_func "$LINENO" "__mktime_internal" "ac_cv_func___mktime_internal"
+-if test "x$ac_cv_func___mktime_internal" = xyes; then :
+-
+-$as_echo "#define mktime_internal __mktime_internal" >>confdefs.h
+-
+-
+-else
+-            WANT_MKTIME_INTERNAL=1
+-
++WANT_MKTIME_INTERNAL=1
+ $as_echo "#define NEED_MKTIME_INTERNAL 1" >>confdefs.h
+ 
+ 
+-fi
+-
+-
+   if test $WANT_MKTIME_INTERNAL = 1; then
+ 
+ 
+@@ -46230,7 +46218,7 @@
  
  
    # Determine how to get the list of mounted file systems.

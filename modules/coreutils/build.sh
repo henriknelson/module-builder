@@ -1,94 +1,88 @@
 MAGISK_MODULE_HOMEPAGE=https://www.gnu.org/software/coreutils/
 MAGISK_MODULE_DESCRIPTION="Basic file, shell and text manipulation utilities from the GNU project"
 MAGISK_MODULE_LICENSE="GPL-3.0"
-MAGISK_MODULE_VERSION=8.31
-MAGISK_MODULE_REVISION=7
+MAGISK_MODULE_VERSION=8.32
 MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/coreutils/coreutils-${MAGISK_MODULE_VERSION}.tar.xz
-MAGISK_MODULE_SHA256=ff7a9c918edce6b4f4b2725e3f9b37b0c4d193531cac49a48b56c4d0d3a9e9fd
-MAGISK_MODULE_DEPENDS="libandroid-support, libiconv"
-MAGISK_MODULE_BREAKS="busybox (<< 1.30.1-4)"
-MAGISK_MODULE_REPLACES="busybox (<< 1.30.1-4)"
+MAGISK_MODULE_SHA256=4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa
+MAGISK_MODULE_DEPENDS="libandroid-support, libgmp, libiconv, openssl"
+MAGISK_MODULE_BREAKS="chroot, busybox (<< 1.30.1-4)"
+MAGISK_MODULE_REPLACES="chroot, busybox (<< 1.30.1-4)"
 MAGISK_MODULE_ESSENTIAL=true
-
+MAGISK_MODULE_BUILD_IN_SRC=true
 # pinky has no usage on Android.
 # df does not work either, let system binary prevail.
 # $PREFIX/bin/env is provided by busybox for shebangs to work directly.
 # users and who doesn't work and does not make much sense for Termux.
 # uptime is provided by procps.
-MMAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 gl_cv_host_operating_system=Android
 ac_cv_func_getpass=yes
---host=aarch64-linux-musl
---target=aarch64-linux-musl
 --enable-static
 --disable-shared
---disable-xattr
---enable-no-install-program=pinky,df,chroot,users,who,uptime
 --enable-single-binary=symlinks
---without-gmp
---with-static
---without-shared
---prefix=$MAGISK_PREFIX
---mandir=$MAGISK_PREFIX/usr/share
+--enable-single-binary-exceptions=sort,timeout
 "
+#MMT="
+#gl_cv_host_operating_system=Android
+#gl_cv_func_working_mktime=yes
+#ac_cv_func_getpass=yes
+#--enable-static
+#--disable-nls
+#--disable-shared
+#--disable-xattr
+#--enable-no-install-program=pinky,df,users,who,uptime,ls,stat,date
+#--enable-single-binary=symlinks
+#--without-gmp
+#--prefix=$MAGISK_PREFIX
+#--with-static
+#--without-shared
+#"
 
-mmagisk_step_pre_configure() {
-	MUSL_PATH=/usr/local/musl/bin
-	export CC="$MUSL_PATH/aarch64-linux-musl-cc"
-	export AR="$MUSL_PATH/aarch64-linux-musl-ar"
-	export LD="$MUSL_PATH/aarch64-linux-musl-ld"
-	export CPP="$MUSL_PATH/aarch64-linux-musl-cpp"
-	export RANLIB="$MUSL_PATH/aarch64-linux-musl-ranlib"
-	#CFLAGS+=" -static"
-	#CPPFLAGS+=" -DDEFAULT_TMPDIR=\\\"$MAGISK_PREFIX/tmp\\\""
-	#CPPFLAGS+=" -D__USE_FORTIFY_LEVEL=0"
-	#LDFLAGS+=" --static"
-	# On device build is unsupported as it removes utility 'ln' (and maybe
-	# something else) in the installation process.
-	#if $MAGISK_ON_DEVICE_BUILD; then
-	#	magisk_error_exit "Package '$MAGISK_MODULE_NAME' is not safe for on-device builds."
-	#fi
-}
-MMAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--enable-gold --enable-plugins --disable-werror --with-system-zlib --enable-new-dtags"
-MAGISK_MODULE_EXTRA_MAKE_ARGS="tooldir=$MAGISK_PREFIX"
-MMAGISK_MODULE_RM_AFTER_INSTALL="share/man/man1/windmc.1 share/man/man1/windres.1 bin/ld.bfd"
-MAGISK_MODULE_KEEP_STATIC_LIBRARIES=true
-MAGISK_MODULE_BUILD_IN_SRC=true
+magisk_step_pre_configure() {
+	echo "PreConfiguring";
+	LINKER=linker64;
+	LARCH=aarch64;
+	OSARCH=android-arm64;
+	export target_host=aarch64-linux-android;
 
-# Avoid linking against libfl.so from flex if available:
-export LEXLIB=
+	export AR=$target_host-ar;
+	export AS=$target_host-as;
+	export LD=$target_host-ld;
+	export RANLIB=$target_host-ranlib;
+	export STRIP=$target_host-strip;
+        export CC=$target_host-clang;
+        export GCC=$target_host-gcc;
+      	export CXX=$target_host-clang++;
+        export GXX=$target_host-g++;
 
-mmagisk_step_pre_configure() {
-	export CPPFLAGS="$CPPFLAGS -Wno-c++11-narrowing"
-	export LDFLAGs="$LDFLAGS --static"
-	export PREF=aarch64-linux-android
-	#/usr/local/musl/aarch64-linux-musl
-	if [ $MAGISK_ARCH_BITS = 32 ]; then
-		export LIB_PATH="${PREF}/lib:/system/lib"
-	else
-		export LIB_PATH="${PREF}/lib:/system/lib64"
-	fi
+	export CFLAGS=' -static -O3';
+	export LDFLAGS=' -static';
+
+	sed -i 's/#ifdef __linux__/#ifndef __linux__/g' src/ls.c;
+	sed -i "s/USE_FORTIFY_LEVEL/BIONIC_FORTIFY/g" lib/cdefs.h;
+	sed -i "s/USE_FORTIFY_LEVEL/BIONIC_FORTIFY/g" lib/stdio.in.h;
+	sed -i -e '/if (!num && negative)/d' -e "/return minus_zero/d" -e "/DOUBLE minus_zero = -0.0/d" lib/strtod.c;
+
 }
 
 magisk_step_configure() {
-	export PATH=/usr/local/musl/bin:$PATH
-	PRE=/usr/local/musl/bin/aarch64-linux-musl
-	STRIP=$PRE-strip CC=$PRE-gcc CXX=$PRE-c++ LD=$PRE-ld AR=$PRE-ar AS=$PRE-as LIB_PATH="/usr/local/musl/aarch64-linux-musl/lib" ./configure --host aarch64-linux-musl -with-lib-path=/usr/local/musl/aarch64-linux-musl/lib --host=aarch64-linux-musl --target=aarch64-linux-musl --disable-nls --disable-shared
+	echo "Configuring";
+	./configure $MAGISK_MODULE_EXTRA_CONFIGURE_ARGS \
+	--prefix=$MAGISK_PREFIX \
+	--disable-nls \
+	--with-openssl=yes \
+	--with-linux-crypto \
+	--enable-no-install-program=stdbuf \
+	--host=$target_host \
+	--target=$target_host \
+	CFLAGS=" -I$MAGISK_PREFIX/include $CFLAGS" \
+	LDFLAGS=" -L$MAGISK_PREFIX/lib $LDFLAGS";
+
+	#[ ! "$(grep '^LDFLAGS += -Wl,--unresolved-symbols=ignore-in-object-files' src/local.mk)" ] && sed -i '1iLDFLAGS += -Wl,--unresolved-symbols=ignore-in-object-files' src/local.mk;
+	#[ ! "$(grep '#define HAVE_MKFIFO 1' lib/config.h)" ] && echo "#define HAVE_MKFIFO 1" >> lib/config.h;
 }
 
-magisk_step_make() {
-	export PATH=/usr/local/musl/bin:$PATH
-	PRE=/usr/local/musl/bin/aarch64-linux-musl
-	make CC=$PRE-gcc CXX=$PRE-c++ LD=$PRE-ld AR=$PRE-ar AS=$PRE-as LIB_PATH="/usr/local/musl/lib" CFLAGS+="-I/usr/local/musl/aarch64-linux-musl/include -static" LDFLAGS+="-L/usr/local/musl/aarch64-linux-musl/lib  --static"
-}
-
-mmagisk_step_post_make_install() {
-	cp $MAGISK_MODULE_BUILDER_DIR/ldd $MAGISK_PREFIX/bin/ldd
-	cd $MAGISK_PREFIX/bin
-	# Setup symlinks as these are used when building, so used by
-	# system setup in e.g. python, perl and libtool:
-	for b in ar ld nm objdump ranlib readelf strip; do
-		ln -s -f $b $MAGISK_HOST_PLATFORM-$b
-	done
-	ln -sf ld.gold gold
+mmagisk_step_make(){
+	echo "Making";
+	make install;
 }

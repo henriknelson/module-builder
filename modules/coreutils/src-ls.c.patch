@@ -1,7 +1,6 @@
-diff -u -r ../coreutils-8.26/src/ls.c ./src/ls.c
---- ../coreutils-8.26/src/ls.c	2016-11-22 15:04:32.000000000 -0500
-+++ ./src/ls.c	2016-11-30 20:27:28.910732105 -0500
-@@ -1749,6 +1749,9 @@
+--- coreutils-8.32/src/ls.c	2020-03-01 12:30:46.000000000 +0000
++++ ./src/ls.c	2020-04-13 04:28:54.067642927 +0000
+@@ -1958,6 +1958,9 @@
        }
    }
  
@@ -11,3 +10,12 @@ diff -u -r ../coreutils-8.26/src/ls.c ./src/ls.c
    while (true)
      {
        int oi = -1;
+@@ -3023,7 +3026,7 @@
+         {
+           /* If readdir finds no directory entries at all, not even "." or
+              "..", then double check that the directory exists.  */
+-          if (syscall (SYS_getdents, dirfd (dirp), NULL, 0) == -1
++          if (syscall (SYS_getdents64, dirfd (dirp), NULL, 0) == -1
+               && errno != EINVAL)
+             {
+               /* We exclude EINVAL as that pertains to buffer handling,
