@@ -1,0 +1,22 @@
+MAGISK_MODULE_HOMEPAGE=https://github.com/westes/flex
+MAGISK_MODULE_DESCRIPTION="Fast lexical analyser generator"
+MAGISK_MODULE_LICENSE="BSD 2-Clause"
+MAGISK_MODULE_VERSION=2.6.4
+MAGISK_MODULE_REVISION=1
+MAGISK_MODULE_SRCURL=https://github.com/westes/flex/releases/download/v${MAGISK_MODULE_VERSION}/flex-${MAGISK_MODULE_VERSION}.tar.gz
+MAGISK_MODULE_SHA256=e87aae032bf07c26f85ac0ed3250998c37621d95f8bd748b31f15b33c45ee995
+MAGISK_MODULE_DEPENDS="m4"
+MAGISK_MODULE_HOSTBUILD=true
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+="ac_cv_path_M4=$MAGISK_PREFIX/bin/m4"
+MAGISK_MODULE_CONFLICTS="flex-dev"
+MAGISK_MODULE_REPLACES="flex-dev"
+
+# Work around https://github.com/westes/flex/issues/241 when building
+# under ubuntu 17.10:
+MAGISK_MODULE_EXTRA_HOSTBUILD_CONFIGURE_ARGS="CFLAGS=-D_GNU_SOURCE=1"
+
+magisk_step_pre_configure() {
+	mkdir -p $MAGISK_MODULE_BUILDDIR/src/
+	cp $MAGISK_MODULE_HOSTBUILD_DIR/src/stage1flex $MAGISK_MODULE_BUILDDIR/src/stage1flex
+	touch -d "next hour" $MAGISK_MODULE_BUILDDIR/src/stage1flex
+}
