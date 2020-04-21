@@ -1,10 +1,10 @@
 MAGISK_MODULE_HOMEPAGE=https://www.openssh.com/
 MAGISK_MODULE_DESCRIPTION="Secure shell for logging into a remote machine"
 MAGISK_MODULE_LICENSE="BSD"
-MAGISK_MODULE_VERSION=8.0p1
+MAGISK_MODULE_VERSION=8.2p1
 MAGISK_MODULE_REVISION=4
-MAGISK_MODULE_SHA256=bd943879e69498e8031eb6b7f44d08cdc37d59a7ab689aa0b437320c3481fd68
-MAGISK_MODULE_SRCURL=https://fastly.cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${MAGISK_MODULE_VERSION}.tar.gz
+MAGISK_MODULE_SHA256=43925151e6cf6cee1450190c0e9af4dc36b41c12737619edff8bcebdff64e671
+MAGISK_MODULE_SRCURL=https://fastly.cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.2p1.tar.gz
 MAGISK_MODULE_DEPENDS="libandroid-support, ldns, openssl, libedit, termux-auth, krb5, zlib"
 MAGISK_MODULE_CONFLICTS="dropbear"
 # --disable-strip to prevent host "install" command to use "-s", which won't work for target binaries:

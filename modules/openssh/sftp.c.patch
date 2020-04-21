@@ -1,0 +1,24 @@
+--- ../sftp.c	2019-09-23 08:54:12.912589363 +0000
++++ ./sftp.c	2019-09-23 08:56:35.680258953 +0000
+@@ -310,6 +310,12 @@
+ 	    "?                                  Synonym for help\n");
+ }
+ 
++static int
++android_mblen(const char *s, size_t n)
++{
++    return mbtowc(0, s, n);
++}
++
+ static void
+ local_do_shell(const char *args)
+ {
+@@ -2038,7 +2044,7 @@
+ 		len = strlen(tmp2);
+ 		/* quote argument on way out */
+ 		for (i = 0; i < len; i += clen) {
+-			if ((clen = mblen(tmp2 + i, len - i)) < 0 ||
++			if ((clen = android_mblen(tmp2 + i, len - i)) < 0 ||
+ 			    (size_t)clen > sizeof(ins) - 2)
+ 				fatal("invalid multibyte character");
+ 			ins[0] = '\\';
