@@ -40,9 +40,13 @@ for module in $(find "$module_path/" -maxdepth 1 -type d -name "*" -printf "%P\n
 		source "$module_build_path" 2>/dev/null;
 		new_module_version="$MAGISK_MODULE_VERSION";
 		if [[ "$new_module_version" == "$package_version" ]]; then
-			echo "Module $module updated to new version $new_module_version";
+			out="Module $module updated to new version $new_module_version";
+			echo $out;
+			echo $out >> update.log;
 		else
-			echo "Module $module encountered an error!";
+			out="Module $module encountered an error!";
+			echo $out;
+			echo $out >> update.log;
 			exit 0;
 		fi
 		
