@@ -1,10 +1,10 @@
 MAGISK_MODULE_HOMEPAGE=https://www.gnu.org/software/grep/
 MAGISK_MODULE_DESCRIPTION="Command which searches one or more input files for lines containing a match to a specified pattern"
 MAGISK_MODULE_LICENSE="GPL-3.0"
-MAGISK_MODULE_VERSION=3.3
+MAGISK_MODULE_VERSION=3.4
 MAGISK_MODULE_REVISION=2
-MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/grep/grep-${MAGISK_MODULE_VERSION}.tar.xz
-MAGISK_MODULE_SHA256=b960541c499619efd6afe1fa795402e4733c8e11ebf9fafccc0bb4bccdc5b514
+MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/grep/grep-3.4.tar.xz
+MAGISK_MODULE_SHA256=58e6751c41a7c25bfc6e9363a41786cff3ba5709cf11d5ad903cf7cce31cc3fb
 MAGISK_MODULE_DEPENDS="libandroid-support, pcre"
 MAGISK_MODULE_ESSENTIAL=yes
 
