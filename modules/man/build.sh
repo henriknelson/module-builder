@@ -10,13 +10,13 @@ MAGISK_MODULE_BUILD_IN_SRC=yes
 MAGISK_MODULE_RM_AFTER_INSTALL="usr/share/examples"
 
 magisk_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob -lc"
+	LDFLAGS+=" -static -landroid-glob -lz -lc"
 	echo "PREFIX=\"$MAGISK_PREFIX\"" > configure.local
 	echo "CC=\"$CC\"" >> configure.local
-	echo "MANDIR=\"$MAGISK_PREFIX/usr/share/man\"" >> configure.local
-	echo "CFLAGS=\"$CFLAGS -static -DNULL=0 $CPPFLAGS\"" >> configure.local
+	echo "MANDIR=\"/data/man\"" >> configure.local
+	echo "CFLAGS=\"$CFLAGS --static -DNULL=0 $CPPFLAGS\"" >> configure.local
 	echo "LDFLAGS=\"$LDFLAGS\"" >> configure.local
-	echo "LDADD=\" -lz --static\"" >> configure.local
+	#echo "LDADD=\" -lz -lc -landroid-glob\"" >> configure.local
 	for HAVING in HAVE_FGETLN HAVE_MMAP HAVE_STRLCAT HAVE_STRLCPY HAVE_SYS_ENDIAN HAVE_ENDIAN HAVE_NTOHL HAVE_NANOSLEEP HAVE_O_DIRECTORY; do
 		echo "$HAVING=1" >> configure.local
 	done
