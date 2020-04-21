@@ -1,0 +1,31 @@
+--- ../src/CMakeLists.txt	2020-01-02 23:43:22.000000000 +0000
++++ ./CMakeLists.txt	2020-04-04 00:56:19.287319369 +0000
+@@ -4,20 +4,22 @@
+ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+ include_directories(${PROJECT_SOURCE_DIR})
+ 
+-find_library(LIB_CRYPTO crypto)
++find_library(ZLIB libz.a)
++find_library(LIB_DL libdl.a)
++find_library(LIB_CRYPTO libcrypto.a)
+ 
+-add_library(termux-auth SHARED termux-auth.c)
+-target_link_libraries(termux-auth ${LIB_CRYPTO})
++add_library(termux-auth STATIC termux-auth.c)
++target_link_libraries(termux-auth ${LIB_CRYPTO} ${LIB_DL} ${ZLIB})
+ install(TARGETS termux-auth DESTINATION lib)
+ install(FILES ${PROJECT_SOURCE_DIR}/termux-auth.h DESTINATION include)
+ 
+ add_executable(passwd passwd.c)
+-target_link_libraries(passwd termux-auth)
++target_link_libraries(passwd -static termux-auth)
+ install(TARGETS passwd DESTINATION bin)
+ 
+ add_executable(pwlogin pwlogin.c)
+-target_link_libraries(pwlogin termux-auth)
++target_link_libraries(pwlogin -static termux-auth)
+ install(TARGETS pwlogin DESTINATION bin)
+ 
+ add_executable(testauth testauth.c)
+-target_link_libraries(testauth termux-auth)
++target_link_libraries(testauth -static termux-auth)
