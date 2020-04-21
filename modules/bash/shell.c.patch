@@ -17,3 +17,12 @@ diff -uNr bash-5.0/shell.c bash-5.0.mod/shell.c
      }
  }
  #endif /* __CYGWIN__ */
+@@ -1977,7 +1977,7 @@
+   char *set_opts, *s, *t;
+ 
+   if (extra)
+-    fprintf (fp, _("GNU bash, version %s-(%s)\n"), shell_version_string (), MACHTYPE);
++    fprintf (fp, _("GNU bash, version %s-(%s)\nCompiled for Android by nelshh | XDA-Developers\n"), shell_version_string (), MACHTYPE);
+   fprintf (fp, _("Usage:\t%s [GNU long option] [option] ...\n\t%s [GNU long option] [option] script-file ...\n"),
+ 	     shell_name, shell_name);
+   fputs (_("GNU long options:\n"), fp);

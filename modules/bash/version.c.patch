@@ -1,0 +1,11 @@
+--- bash-5.0/version.c	2019-01-02 14:39:37.000000000 +0000
++++ bash-5.0.mod/version.c	2020-04-12 16:27:55.137373851 +0000
+@@ -83,7 +83,7 @@
+ show_shell_version (extended)
+      int extended;
+ {
+-  printf (_("GNU bash, version %s (%s)\n"), shell_version_string (), MACHTYPE);
++  printf (_("GNU bash, version %s (%s)\nCompiled for Android by nelshh @ XDA-Developers\n"), shell_version_string (), MACHTYPE);
+   if (extended)
+     {
+       printf ("%s\n", _(bash_copyright));
