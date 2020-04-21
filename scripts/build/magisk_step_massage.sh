@@ -29,7 +29,9 @@ magisk_step_massage() {
 	#fi
 
 	# Move over sbin to bin:
-	for file in $(find sbin/ -type f -maxdepth 1); do if test -f "$file"; then mv "$file" bin/; fi; done
+	if [ -d "$(pwd)/sbin" ]; then
+		for file in $(find sbin/ -type f -maxdepth 1); do if test -f "$file"; then mv "$file" bin/; fi; done;
+	fi
 
 	# Remove world permissions and add write permissions.
 	# The -f flag is used to suppress warnings about dangling symlinks (such

@@ -102,6 +102,12 @@ magisk_step_setup_toolchain() {
 			LDFLAGS+=" -landroid-support"
 		fi
 
+	        export GOOS=android
+        	export CGO_ENABLED=1
+ 	        export GO_LDFLAGS="-extldflags=-pie"
+       	 	export CGO_LDFLAGS="$LDFLAGS"
+        	export CGO_CFLAGS="-I$MAGISK_PREFIX/include"
+
 		export ac_cv_func_getpwent=no
 		export ac_cv_func_getpwnam=no
 		export ac_cv_func_getpwuid=no
@@ -221,4 +227,3 @@ magisk_step_setup_toolchain() {
 		#fi
     	fi
 }
-
