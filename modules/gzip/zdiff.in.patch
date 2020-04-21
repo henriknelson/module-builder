@@ -6,7 +6,7 @@ diff -uNr gzip-1.10/zdiff.in gzip-1.10.mod/zdiff.in
                            / | /*/) ;;
                            /*) TMPDIR=$TMPDIR/;;
 -                          *) TMPDIR=/tmp/;;
-+                          *) TMPDIR=@TERMUX_PREFIX@/tmp/;;
++                          *) TMPDIR=@MAGISK_PREFIX@/tmp/;;
                          esac
                          if type mktemp >/dev/null 2>&1; then
                            tmp=`mktemp "${TMPDIR}zdiffXXXXXXXXX"` ||

@@ -6,7 +6,7 @@ diff -uNr gzip-1.10/zgrep.in gzip-1.10.mod/zgrep.in
          / | /*/) ;;
          /*) TMPDIR=$TMPDIR/;;
 -        *) TMPDIR=/tmp/;;
-+        *) TMPDIR=@TERMUX_PREFIX@/tmp/;;
++        *) TMPDIR=@MAGISK_PREFIX@/tmp/;;
        esac
        if type mktemp >/dev/null 2>&1; then
          pattmp=$(mktemp "${TMPDIR}zgrepXXXXXXXXX") || exit 2
