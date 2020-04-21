@@ -1,0 +1,9 @@
+--- ../Cargo.toml	2019-02-13 19:04:37.000000000 +0000
++++ ./Cargo.toml	2019-07-05 22:28:50.707173659 +0000
+@@ -59,3 +59,6 @@
+ [profile.release]
+ lto = true
+ codegen-units = 1
++
++[patch.crates-io]
++nix = { git = "https://github.com/nix-rust/nix", rev = "7f0fb19f21327e58faa71dace73c8b092c25c81b" }
