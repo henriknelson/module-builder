@@ -2,9 +2,9 @@
 MAGISK_MODULE_HOMEPAGE=https://git-scm.com/
 MAGISK_MODULE_DESCRIPTION="Fast, scalable, distributed revision control system"
 MAGISK_MODULE_LICENSE="GPL-2.0"
-MAGISK_MODULE_VERSION=2.23.0
-MAGISK_MODULE_SRCURL=https://www.kernel.org/pub/software/scm/git/git-${MAGISK_MODULE_VERSION}.tar.xz
-MAGISK_MODULE_SHA256=234fa05b6839e92dc300b2dd78c92ec9c0c8d439f65e1d430a7034f60af16067
+MAGISK_MODULE_VERSION=2.26.1
+MAGISK_MODULE_SRCURL=https://www.kernel.org/pub/software/scm/git/git-2.26.1.tar.xz
+MAGISK_MODULE_SHA256=888228408f254634330234df3cece734d190ef6381063821f31ec020538f0368
 MAGISK_MODULE_DEPENDS="zlib, pcre2, openssl, less, libcurl, libiconv"
 
 MAGISK_MODULE_EXTRA_MAKE_ARGS="
@@ -42,7 +42,7 @@ magisk_step_configure() {
 	#CXX=/home/builder/lib/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-cxx
 	#RANLIB=/home/builder/lib/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-ranlib
 	#export CPP=/home/builder/lib/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-cpp
-	./configure --prefix=$MAGISK_PREFIX --libexecdir=$MAGISK_PREFIX/usr/libexec --datarootdir=$MAGISK_PREFIX/usr/share --host=aarch64-linux-android --target=aarch64-linux-android --with-curl --with-zlib --with-ssl --libdir=/system/lib --includedir=/system/include  ac_cv_fread_reads_directories=yes ac_cv_header_libintl_h=no ac_cv_snprintf_returns_bogus=no CURL_CONFIG=/system/bin/curl-config
+	./configure --prefix=$MAGISK_PREFIX --libexecdir=$MAGISK_PREFIX/usr/libexec --datarootdir=$MAGISK_PREFIX/usr/share --host=aarch64-linux-android --target=aarch64-linux-android --with-curl --with-zlib --with-ssl --libdir=/system/lib --includedir=/system/include  ac_cv_fread_reads_directories=yes ac_cv_header_libintl_h=no ac_cv_iconv_omits_bom=no ac_cv_snprintf_returns_bogus=no CURL_CONFIG=/system/bin/curl-config
 }
 
 magisk_step_make() {
