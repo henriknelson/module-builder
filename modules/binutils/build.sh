@@ -1,10 +1,10 @@
 MAGISK_MODULE_HOMEPAGE=https://www.gnu.org/software/binutils/
 MAGISK_MODULE_DESCRIPTION="Collection of binary tools, the main ones being ld, the GNU linker, and as, the GNU assembler"
 MAGISK_MODULE_LICENSE="GPL-2.0"
-MAGISK_MODULE_VERSION=2.32
+MAGISK_MODULE_VERSION=2.34
 MAGISK_MODULE_REVISION=2
-MAGISK_MODULE_SHA256=9b0d97b3d30df184d302bced12f976aa1e5fbf4b0be696cdebc6cca30411a46e
-MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/binutils/binutils-${MAGISK_MODULE_VERSION}.tar.gz
+MAGISK_MODULE_SHA256=53537d334820be13eeb8acb326d01c7c81418772d626715c7ae927a7d401cab3
+MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/binutils/binutils-2.34.tar.gz
 MAGISK_MODULE_DEPENDS="zlib"
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--enable-gold --enable-plugins --disable-werror --with-system-zlib --enable-new-dtags"
 MAGISK_MODULE_EXTRA_MAKE_ARGS="tooldir=$MAGISK_PREFIX"
