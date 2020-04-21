@@ -224,7 +224,7 @@ source scripts/build/magisk_step_finish_build.sh
 	magisk_step_make_install
 	cd "$MAGISK_MODULE_BUILDDIR"
 	magisk_step_post_make_install
-	magisk_step_install_license
+	#magisk_step_install_license
 	cd "$MAGISK_MODULE_MASSAGEDIR"
 	magisk_step_extract_into_massagedir
 	cd "$MAGISK_MODULE_MASSAGEDIR"
