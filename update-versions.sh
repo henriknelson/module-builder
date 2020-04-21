@@ -1,6 +1,13 @@
 #/bin/bash
+
 module_path="modules";
-package_path="../termux-packages/packages";
+tmux_path="../termux-packages";
+package_path="$tmux_path/packages";
+
+mb_dir=$(pwd);
+cd $tmux_path;
+git pull;
+cd $mb_dir;
 
 function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
 
@@ -42,11 +49,11 @@ for module in $(find "$module_path/" -maxdepth 1 -type d -name "*" -printf "%P\n
 		if [[ "$new_module_version" == "$package_version" ]]; then
 			out="Module $module updated to new version $new_module_version";
 			echo $out;
-			echo $out >> update.log;
+			echo $out >> .update.log;
 		else
 			out="Module $module encountered an error!";
 			echo $out;
-			echo $out >> update.log;
+			echo $out >> .update.log;
 			exit 0;
 		fi
 		
