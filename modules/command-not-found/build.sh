@@ -1,7 +1,7 @@
 MAGISK_MODULE_HOMEPAGE=https://termux.com
 MAGISK_MODULE_DESCRIPTION="Suggest installation of packages in interactive shell sessions"
 MAGISK_MODULE_LICENSE="Apache-2.0"
-MAGISK_MODULE_VERSION=1.39
+MAGISK_MODULE_VERSION=1.49
 MAGISK_MODULE_SKIP_SRC_EXTRACT=true
 
 magisk_step_make_install() {
