@@ -18,15 +18,20 @@ magisk_step_post_extract_module() {
 	#if $MAGISK_ON_DEVICE_BUILD; then
 	#	MAGISK_error_exit "Package '$MAGISK_MODULE_NAME' is not safe for on-device builds."
 	#fi
-
+	#dir=$(pwd);
+	#cd $MAGISK_MODULE_SRCDIR
+	#make clean
+	#cd $dir
+	#sudo mkdir
+	#sudo chown -R builder:builder /data/perl
 	# This port uses perl-cross: http://arsv.github.io/perl-cross/
 	cp -rf perl-cross-${MAGISK_MODULE_VERSION[1]}/* .
 	sudo chown builder:builder -R $MAGISK_MODULE_SRCDIR;
 	sudo chmod 775 -R $MAGISK_MODULE_SRCDIR;
 	## Remove old installation to force fresh:
-	#rm -rf $MAGISK_PREFIX/lib/perl5
-	#rm -f $MAGISK_PREFIX/lib/libperl.so
-	#rm -f $MAGISK_PREFIX/include/perl
+	rm -rf /data/perl/lib/perl5
+	rm -f /data/perl/lib/libperl.a
+	rm -f /data/perl/include/perl
 }
 
 magisk_step_pre_configure() {
@@ -46,8 +51,9 @@ magisk_step_pre_configure() {
       	export CXX=$target_host-clang++;
         export GXX=$target_host-g++;
 
-	export CFLAGS=' -static -O3';
-	export LDFLAGS=' -static';
+	#export LINKTYPE=static
+	#export CFLAGS=' -static -O2';
+	#export LDFLAGS=' -static';
 }
 
 magisk_step_configure() {
@@ -72,16 +78,19 @@ magisk_step_configure() {
 
 	cd $MAGISK_MODULE_BUILDDIR
 	$MAGISK_MODULE_SRCDIR/configure \
-		--target=$MAGISK_HOST_PLATFORM \
-		--all-static \
-		--static \
+		--target=aarch64-linux-android \
+		--targetarch=aarch64-unknown-linux-android \
 		-Dosname=android \
+		-Darchname=aarch64-android \
 		-Dsysroot=$MAGISK_STANDALONE_TOOLCHAIN/sysroot \
-		-Dprefix=$MAGISK_PREFIX \
+		-Dprefix=/data/perl \
 		-Dsh=$MAGISK_PREFIX/bin/sh \
-		-Dcc="$ORIG_CC -Wl,-rpath=$MAGISK_PREFIX/lib:$MAGISK_PREFIX/lib/perl5/5.30.2/aarch64-android/CORE -Wl,--enable-new-dtags" \
-		-UUSE_DYNAMIC_LOADING;
+		-Dcc="$ORIG_CC -Wl,-rpath=/data/perl/lib:/data/perl/lib/perl5/5.30.2/aarch64-android/CORE -Wl,--enable-new-dtags" \
+		-Duseshrplib;
 }
+
+#-Ud_sem \
+#-Ud_shm \
 
 mmagisk_step_pre_configure() {
 	export PATH="$MAGISK_STANDALONE_TOOLCHAIN/bin:$PATH"
@@ -118,24 +127,32 @@ mmagisk_step_pre_configure() {
 
 magisk_step_post_make_install() {
 	# Replace hardlinks with symlinks:
-	cd $MAGISK_PREFIX/share/man/man1
-	rm perlbug.1
-	ln -s perlthanks.1 perlbug.1
+	#cd $MAGISK_PREFIX/share/man/man1
+	#rm perlbug.1
+	#ln -s perlthanks.1 perlbug.1
+
+	mkdir -p $MAGISK_PREFIX/data
+	cp -r /data/perl $MAGISK_PREFIX/data/
 
 	# Cleanup:
 	rm $MAGISK_PREFIX/bin/sh
 
-	cd $MAGISK_PREFIX/lib
-	ln -f -s perl5/${MAGISK_MODULE_VERSION}/${MAGISK_ARCH}-android/CORE/libperl.so libperl.so
+	cd $MAGISK_PREFIX/data/perl/lib
+	ln -f -s perl5/5.30.2/aarch64-android/CORE/libperl.so libperl.so
 
-	cd $MAGISK_PREFIX/include
-	ln -f -s $MAGISK_PREFIX/lib/perl5/${MAGISK_MODULE_VERSION}/${MAGISK_ARCH}-android/CORE perl
-	tree $MAGISK_PREFIX/lib/perl5/5.30.2/
-	cd $MAGISK_PREFIX/lib/perl5/${MAGISK_MODULE_VERSION}/${MAGISK_ARCH}-android/
+	mkdir -p $MAGISK_PREFIX/data/perl/include
+	cd $MAGISK_PREFIX/data/perl/include
+	ln -f -s $MAGISK_PREFIX/data/perl/lib/perl5/5.30.2/aarch64-android/CORE perl
+	#tree /data/perl/lib/perl5/5.30.2/
+	#fdfind -IH Config_heavy.pl $MAGISK_MODULE_SRCDIR/..
+	cd $MAGISK_MODULE_SRCDIR/lib
 	chmod +w Config_heavy.pl
 	sed 's',"--sysroot=$MAGISK_STANDALONE_TOOLCHAIN"/sysroot,"-I${MAGISK_PREFIX}/include",'g' Config_heavy.pl > Config_heavy.pl.new
         sed 's',"$MAGISK_STANDALONE_TOOLCHAIN"/sysroot,"-I${MAGISK_PREFIX%%/usr}",'g' Config_heavy.pl.new > Config_heavy.pl
 	rm Config_heavy.pl.new
+	sudo cp Config_heavy.pl $MAGISK_PREFIX/data/perl/lib/perl5/5.30.2/aarch64-android
+	sudo chown -R 0:0 $MAGISK_PREFIX/data/perl/lib
+	sudo chmod -R 755 $MAGISK_PREFIX/data/perl/lib
 }
 
 mmagisk_step_make(){

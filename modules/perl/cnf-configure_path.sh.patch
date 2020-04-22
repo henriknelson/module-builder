@@ -5,7 +5,7 @@
  define binexp "$bin"
  
 -define libpth "/lib /usr/lib /usr/local/lib"
-+define libpth "@MAGISK_PREFIX@/lib @MAGISK_PREFIX@/local/lib"
++define libpth "/data/perl/lib /data/perl/local/lib"
  define glibpth "$libpth"
  define plibpth
  
