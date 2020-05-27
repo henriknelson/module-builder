@@ -10,5 +10,5 @@ MAGISK_MODULE_DEVMODULE_REPLACES="ndk-sysroot (<< 19b-3)"
 MAGISK_MODULE_BUILD_IN_SRC=true
 
 magisk_step_configure() {
-	./configure --prefix=$MAGISK_PREFIX --static --archs="-arch aarch64"
+	./configure --prefix=$MAGISK_PREFIX --enable-shared --static --archs="-arch aarch64"
 }
