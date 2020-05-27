@@ -9,8 +9,8 @@ _PATCH_VERSION=4
 MAGISK_MODULE_VERSION=$_MAIN_VERSION.$_PATCH_VERSION
 MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/readline/readline-${_MAIN_VERSION}.tar.gz
 MAGISK_MODULE_SHA256=e339f51971478d369f8a053a330a190781acb9864cf4c541060f12078948e461
-MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--with-curses --enable-multibyte bash_cv_wcwidth_broken=no --enable-static --disable-shared"
-#MAGISK_MODULE_EXTRA_MAKE_ARGS="SHLIB_LIBS=-lncursesw"
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--with-curses --enable-multibyte bash_cv_wcwidth_broken=no --enable-shared"
+MAGISK_MODULE_EXTRA_MAKE_ARGS="SHLIB_LIBS=-lncursesw"
 MAGISK_MODULE_CONFFILES="etc/inputrc"
 
 magisk_step_pre_configure() {
@@ -28,12 +28,7 @@ magisk_step_pre_configure() {
 		patch -p0 -i $PATCHFILE
 	done
 
-	CFLAGS+=" -fexceptions -static"
-	LDFLAGS+=" --static"
-}
-
-mmagisk_step_pre_configure() {
-exit
+	CFLAGS+=" -fexceptions"
 }
 
 magisk_step_post_make_install() {
