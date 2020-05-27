@@ -1,42 +1,43 @@
-MAGISK_MODULE_HOMEPAGE=https://www.gnu.org/software/binutils/
+MAGISK_MODULE_HOMEPAGE=https://www.gnu.org/software/binutils
 MAGISK_MODULE_DESCRIPTION="Collection of binary tools, the main ones being ld, the GNU linker, and as, the GNU assembler"
 MAGISK_MODULE_LICENSE="GPL-2.0"
 MAGISK_MODULE_VERSION=2.34
-MAGISK_MODULE_REVISION=2
+MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/binutils/binutils-${MAGISK_MODULE_VERSION}.tar.gz
 MAGISK_MODULE_SHA256=53537d334820be13eeb8acb326d01c7c81418772d626715c7ae927a7d401cab3
-MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/binutils/binutils-2.34.tar.gz
-MAGISK_MODULE_DEPENDS="zlib"
-MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--enable-gold --enable-plugins --disable-werror --with-system-zlib --enable-new-dtags"
+MAGISK_MODULE_DEPENDS="libc++, zlib, libandroid-spawn, libandroid-glob"
+MAGISK_MODULE_BREAKS="binutils-dev"
+MAGISK_MODULE_REPLACES="binutils-dev"
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--enable-gold --enable-plugins --disable-werror --with-system-zlib --enable-new-dtags --enable-static --disable-shared"
 MAGISK_MODULE_EXTRA_MAKE_ARGS="tooldir=$MAGISK_PREFIX"
 MAGISK_MODULE_RM_AFTER_INSTALL="share/man/man1/windmc.1 share/man/man1/windres.1 bin/ld.bfd"
-MAGISK_MODULE_KEEP_STATIC_LIBRARIES=true
-MAGISK_MODULE_BUILD_IN_SRC=true
+MAGISK_MODULE_NO_STATICSPLIT=true
+MAGISK_MODULE_HAS_DEBUG=false
+# Debug build fails with:
+# ~/termux-build/binutils/src/binutils/readelf.c:19060:81: error: in call to 'fread', size * count is too large for the given buffer
+#     if (fread (ehdr32.e_type, sizeof (ehdr32) - EI_NIDENT, 1, filedata->handle) != 1)
+#                                                                               ^
+# ~/termux-build/_cache/19b-aarch64-24-v5/bin/../sysroot/usr/include/bits/fortify/stdio.h:107:9: note: from 'diagnose_if' attribute on 'fread':
+#        __clang_error_if(__bos(buf) != __BIONIC_FORTIFY_UNKNOWN_SIZE && size * count > __bos(buf),
+#        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~/termux-build/_cache/19b-aarch64-24-v5/bin/../sysroot/usr/include/sys/cdefs.h:163:52: note: expanded from macro '__clang_error_if'
+# #define __clang_error_if(cond, msg) __attribute__((diagnose_if(cond, msg, "error")))
+#                                                    ^           ~~~~
 
 # Avoid linking against libfl.so from flex if available:
 export LEXLIB=
 
 magisk_step_pre_configure() {
 	export CPPFLAGS="$CPPFLAGS -Wno-c++11-narrowing"
-	export LDFLAGs="$LDFLAGS --static"
-	export PREF=aarch64-linux-android
-	#/usr/local/musl/aarch64-linux-musl
+
 	if [ $MAGISK_ARCH_BITS = 32 ]; then
-		export LIB_PATH="${PREF}/lib:/system/lib"
+		export LIB_PATH="${MAGISK_PREFIX}/lib:/system/lib"
 	else
-		export LIB_PATH="${PREF}/lib:/system/lib64"
+		export LIB_PATH="${MAGISK_PREFIX}/lib:/system/lib64"
 	fi
-}
-
-mmagisk_step_configure() {
-	export PATH=/usr/local/musl/bin:$PATH
-	PRE=/usr/local/musl/bin/aarch64-linux-musl
-	CC=$PRE-gcc CXX=$PRE-c++ LD=$PRE-ld AR=$PRE-ar AS=$PRE-as LIB_PATH="/usr/local/musl/aarch64-linux-musl/lib" ./configure --host aarch64-linux-musl -with-lib-path=/usr/local/musl/aarch64-linux-musl/lib --disable-nls --disable-werror --disable-gdb --disable-libdecnumber --disable-readline --disable-sim --disable-shared
-}
-
-mmagisk_step_make() {
-	export PATH=/usr/local/musl/bin:$PATH
-	PRE=/usr/local/musl/bin/aarch64-linux-musl
-	make CC=$PRE-gcc CXX=$PRE-c++ LD=$PRE-ld AR=$PRE-ar AS=$PRE-as LIB_PATH="/usr/local/musl/lib" CFLAGS+="-I/usr/local/musl/aarch64-linux-musl/include -static" LDFLAGS+="-L/usr/local/musl/aarch64-linux-musl/lib  --static"
+	#export CFLAGS+=" -static -O2"
+	export LDFLAGS+=" --static"
+	export LIBS+=" -landroid-glob -landroid-spawn"
+	export CPPFLAGS+=" -I/$MAGISK_PREFIX/include"
 }
 
 magisk_step_post_make_install() {
