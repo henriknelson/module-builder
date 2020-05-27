@@ -1,11 +1,17 @@
---- ../src/clap_app.rs	2019-07-07 13:05:02.590686985 +0200
-+++ src/clap_app.rs	2019-07-07 13:06:12.392537180 +0200
-@@ -13,7 +13,7 @@
-     let arg_group_required = !Path::new("cache").exists();
+--- bat-0.15.2/src/bin/bat/clap_app.rs	2020-05-25 15:27:27.000000000 +0000
++++ ./src/bin/bat/clap_app.rs	2020-05-26 09:45:16.334866102 +0000
+@@ -1,4 +1,4 @@
+-use clap::{crate_name, crate_version, App as ClapApp, AppSettings, Arg, ArgGroup, SubCommand};
++use clap::{crate_name, App as ClapApp, AppSettings, Arg, ArgGroup, SubCommand};
+ use std::path::Path;
  
-     ClapApp::new(crate_name!())
+ pub fn build_app(interactive_output: bool) -> ClapApp<'static, 'static> {
+@@ -9,7 +9,7 @@
+     };
+ 
+     let mut app = ClapApp::new(crate_name!())
 -        .version(crate_version!())
-+        .version("0.11.0 - Compiled for Android by nelshh @ XDA")
++        .version("@MAGISK_MODULE_VERSION@ - Compiled for Android by nelshh @ XDA")
          .global_setting(clap_color_setting)
          .global_setting(AppSettings::DeriveDisplayOrder)
          .global_setting(AppSettings::UnifiedHelpMessage)
