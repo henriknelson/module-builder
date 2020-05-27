@@ -56,7 +56,7 @@ magisk_create_submodules() {
 		cd $SUB_MODULE_DIR/massage
 		local SUB_MODULE_INSTALLSIZE
 		SUB_MODULE_INSTALLSIZE=$(du -sk . | cut -f 1)
-		tar -chJf $SUB_MODULE_MODULE_DIR/data.tar.xz -C $(pwd)/ system
+		tar -chJf $SUB_MODULE_MODULE_DIR/data.tar.xz -C $(pwd)/ .
 
 		#mkdir -p DEBIAN
 		#cd DEBIAN
