@@ -10,6 +10,7 @@ magisk_step_patch_module() {
 		magisk_log "Applying patch file $patch.."
 		test -f "$patch" && sed "s%\@MAGISK_PREFIX\@%${MAGISK_PREFIX}%g" "$patch" | \
 			sed "s%\@MAGISK_HOME\@%${MAGISK_ANDROID_HOME}%g" | \
+			sed "s%\@MAGISK_MODULE_VERSION\@%${MAGISK_MODULE_VERSION}%g" | \
 			patch --silent -p1
 	done
 	shopt -u nullglob
