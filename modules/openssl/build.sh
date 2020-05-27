@@ -2,19 +2,20 @@ MAGISK_MODULE_HOMEPAGE=https://www.openssl.org/
 MAGISK_MODULE_DESCRIPTION="Library implementing the SSL and TLS protocols as well as general purpose cryptography functions"
 MAGISK_MODULE_LICENSE="BSD"
 MAGISK_MODULE_DEPENDS="ca-certificates, libdl, zlib"
-MAGISK_MODULE_VERSION=1.1.1f
+MAGISK_MODULE_VERSION=1.1.1g
 MAGISK_MODULE_REVISION=1
-MAGISK_MODULE_SHA256=186c6bfe6ecfba7a5b48c47f8a1673d0f3b0e5ba2e25602dd23b629975da3f35
-MAGISK_MODULE_SRCURL=https://www.openssl.org/source/openssl-1.1.1f.tar.gz
+MAGISK_MODULE_SHA256=ddb04774f1e32f0c49751e21b67216ac87852ceb056b75209af2443400636d46
+MAGISK_MODULE_SRCURL=https://www.openssl.org/source/openssl-${MAGISK_MODULE_VERSION}.tar.gz
 MAGISK_MODULE_CONFFILES="etc/tls/openssl.cnf"
-MAGISK_MODULE_RM_AFTER_INSTALL="bin/c_rehash etc/ssl/misc"
+#MAGISK_MODULE_RM_AFTER_INSTALL="bin/c_rehash etc/ssl/misc"
 MAGISK_MODULE_BUILD_IN_SRC=yes
 MAGISK_MODULE_CONFLICTS="libcurl (<< 7.61.0-1)"
 MAGISK_MODULE_BREAKS="openssl-tool (<< 1.1.1b-1)"
 MAGISK_MODULE_REPLACES="openssl-tool (<< 1.1.1b-1)"
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS=" --enable-shared"
 
 magisk_step_configure() {
-	CFLAGS+=" -static -DNO_SYSLOG"
+	CFLAGS+=" -DNO_SYSLOG"
 	if [ $MAGISK_ARCH = arm ]; then
 		CFLAGS+=" -fno-integrated-as"
 	fi
@@ -29,7 +30,7 @@ magisk_step_configure() {
 	#LDFLAGS="${LDFLAGS} --static"
 	#export PATH=/usr/local/musl/bin:$PATH
 	#export CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
-	./Configure $MAGISK_OPENSSL_PLATFORM --prefix=$MAGISK_PREFIX --openssldir=$MAGISK_PREFIX/etc/tls -static -fPIC zlib no-dso no-hw no-srp no-tests enable-md2 enable-rc5 enable-ecdsa enable-tls enable-tls1_3 enable-tls1_2 enable-tls1_1
+	./Configure $MAGISK_OPENSSL_PLATFORM --prefix=$MAGISK_PREFIX --openssldir=$MAGISK_PREFIX/etc/tls -fPIC zlib no-dso no-hw no-srp no-tests enable-md2 enable-rc5 enable-ecdsa enable-tls enable-tls1_3 enable-tls1_2 enable-tls1_1 shared enable-shared
 	#--openssldir=$MAGISK_PREFIX/etc/tls
 
 }
