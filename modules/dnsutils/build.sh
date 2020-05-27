@@ -1,13 +1,15 @@
 MAGISK_MODULE_HOMEPAGE=https://www.isc.org/downloads/bind/
 MAGISK_MODULE_DESCRIPTION="Clients provided with BIND"
 MAGISK_MODULE_LICENSE="MPL-2.0"
-MAGISK_MODULE_VERSION=9.16.2
+MAGISK_MODULE_VERSION=9.16.3
 MAGISK_MODULE_REVISION=1
-MAGISK_MODULE_SRCURL="ftp://ftp.isc.org/isc/bind9/9.16.2/bind-9.16.2.tar.xz"
-MAGISK_MODULE_SHA256=d9e5b77cfca5ccad97f19cddc87128758ec15c16e6585000c6b2f84fc225993f
-MAGISK_MODULE_DEPENDS="openssl, readline, resolv-conf, zlib"
+MAGISK_MODULE_SRCURL="ftp://ftp.isc.org/isc/bind9/9.16.3/bind-9.16.3.tar.xz"
+MAGISK_MODULE_SHA256=27ac6513de5f8d0db34b9f241da53baa15a14b2ad21338d0cde0826eaf564f7e
+MAGISK_MODULE_DEPENDS="openssl, readline, resolv-conf, zlib, libuv"
 MAGISK_MODULE_BREAKS="dnsutils-dev"
 MAGISK_MODULE_REPLACES="dnsutils-dev"
+MAGISK_MODULE_BUILD_IN_SRC=true
+
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 --disable-linux-caps
 --without-python
@@ -21,7 +23,7 @@ MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 --with-randomdev=/dev/random
 --with-readline=-lreadline
 --with-eddsa=no
---enable-static
+--enable-shared
 "
 
 magisk_step_pre_configure() {
@@ -34,7 +36,8 @@ magisk_step_pre_configure() {
 
 	_RESOLV_CONF=$MAGISK_PREFIX/etc/resolv.conf
 	CFLAGS+=" $CPPFLAGS -DRESOLV_CONF=\\\"$_RESOLV_CONF\\\""
-	LDFLAGS+=" -llog"
+	#export LD=$CC
+	LDFLAGS+=" -static -ldl -lreadline -lcrypto"
 }
 
 magisk_step_make() {
