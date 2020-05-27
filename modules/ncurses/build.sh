@@ -25,50 +25,41 @@ ac_cv_header_locale_h=no
 --enable-pc-files
 --enable-termcap
 --enable-widec
---enable-static
---enable-shared
 --mandir=$MAGISK_PREFIX/usr/share/man
---enable-tcap-names
---enable-sp-funcs
---enable-term-driver
 --without-ada
 --without-cxx-binding
 --without-debug
 --without-tests
 --with-normal
 --with-static
---with-termpath=$MAGISK_PREFIX/usr/share/terminfo
+--with-shared
+--with-termpath=$MAGISK_PREFIX/etc/termcap:$MAGISK_PREFIX/usr/share/termcap
 "
 
-MAGISK_MODULE_RM_AFTER_INSTALL="
-usr/share/man/man5
-usr/share/man/man7
-"
 
 magisk_step_pre_configure() {
-	export MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --prefix=$MAGISK_PREFIX --datarootdir=$MAGISK_PREFIX/usr/share --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
-	export CFLAGS+=" -static"
-	export LDFLAGS+=" -static"
+	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --prefix=$MAGISK_PREFIX --datarootdir=$MAGISK_PREFIX/usr/share --with-pkg-config-libdir=$PKG_CONFIG_LIBDIR"
 	export TERMINFO=$MAGISK_PREFIX/usr/share/terminfo
 }
 
 magisk_step_post_make_install() {
 	cd $MAGISK_PREFIX/lib
 
-	# Ncursesw/Ncurses compatibility symlinks.
+	# Ncursesw/Ncurses compatibility
+	# symlinks.
 	for lib in form menu ncurses panel; do
-		#ln -sfr lib${lib}w.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:3}
-		#ln -sfr lib${lib}w.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:1}
-		#ln -sfr lib${lib}w.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so
+		ln -sfr lib${lib}w.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:3}
+		ln -sfr lib${lib}w.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:1}
+		ln -sfr lib${lib}w.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so
 		ln -sfr lib${lib}w.a lib${lib}.a
 		(cd pkgconfig; ln -sf ${lib}w.pc $lib.pc)
 	done
 
 	# Legacy compatibility symlinks (libcurses, libtermcap, libtic, libtinfo).
 	for lib in curses termcap tic tinfo; do
-		#ln -sfr libncursesw.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:3}
-		#ln -sfr libncursesw.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:1}
-		#ln -sfr libncursesw.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so
+		ln -sfr libncursesw.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:3}
+		ln -sfr libncursesw.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so.${MAGISK_MODULE_VERSION:0:1}
+		ln -sfr libncursesw.so.${MAGISK_MODULE_VERSION:0:3} lib${lib}.so
 		ln -sfr libncursesw.a lib${lib}.a
 		(cd pkgconfig; ln -sfr ncursesw.pc ${lib}.pc)
 	done
@@ -100,5 +91,4 @@ magisk_step_post_massage() {
 
 	tic -x -o $TI $MAGISK_MODULE_SRCDIR/rxvt-unicode-${MAGISK_MODULE_VERSION[1]}/doc/etc/rxvt-unicode.terminfo
 	tic -x -o $TI $MAGISK_MODULE_SRCDIR/termite-${MAGISK_MODULE_VERSION[2]}/termite.terminfo
-	ln -sf $TI $MAGISK_PREFIX/lib/terminfo
 }

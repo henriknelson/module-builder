@@ -15,7 +15,7 @@ diff -uNr ncurses-6.1-20181117/progs/tic.c ncurses-6.1-20181117.mod/progs/tic.c
  	if (infodump == TRUE) {
  	    /* captoinfo's no-argument case */
 -	    source_file = "/etc/termcap";
-+	    source_file = "@MAGISK_PREFIX@/usr/share/terminfo";
++	    source_file = "@MAGISK_PREFIX@/etc/termcap";
  	    if ((termcap = getenv("TERMCAP")) != 0
  		&& (namelst = make_namelist(getenv("TERM"))) != 0) {
  		if (access(termcap, F_OK) == 0) {
