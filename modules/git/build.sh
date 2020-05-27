@@ -2,9 +2,9 @@
 MAGISK_MODULE_HOMEPAGE=https://git-scm.com/
 MAGISK_MODULE_DESCRIPTION="Fast, scalable, distributed revision control system"
 MAGISK_MODULE_LICENSE="GPL-2.0"
-MAGISK_MODULE_VERSION=2.26.1
-MAGISK_MODULE_SRCURL=https://www.kernel.org/pub/software/scm/git/git-2.26.1.tar.xz
-MAGISK_MODULE_SHA256=888228408f254634330234df3cece734d190ef6381063821f31ec020538f0368
+MAGISK_MODULE_VERSION=2.26.2
+MAGISK_MODULE_SRCURL=https://www.kernel.org/pub/software/scm/git/git-2.26.2.tar.xz
+MAGISK_MODULE_SHA256=6d65132471df9e531807cb2746f8be317e22a343b9385bbe11c9ce7f0d2fc848
 MAGISK_MODULE_DEPENDS="zlib, pcre2, openssl, less, libcurl, libiconv"
 
 MAGISK_MODULE_EXTRA_MAKE_ARGS="
