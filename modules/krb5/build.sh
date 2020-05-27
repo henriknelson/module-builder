@@ -1,10 +1,10 @@
 MAGISK_MODULE_HOMEPAGE=https://web.mit.edu/kerberos
 MAGISK_MODULE_DESCRIPTION="The Kerberos network authentication system"
 MAGISK_MODULE_LICENSE="MIT"
-MAGISK_MODULE_VERSION=1.18.1
+MAGISK_MODULE_VERSION=1.18.2
 MAGISK_MODULE_REVISION=1
-MAGISK_MODULE_SRCURL=https://fossies.org/linux/misc/krb5-1.18.1.tar.gz
-MAGISK_MODULE_SHA256=02a4e700f10936f937cd1a4c303cab8687a11abecc6107bd4b706b9329cd5400
+MAGISK_MODULE_SRCURL=https://fossies.org/linux/misc/krb5-1.18.2.tar.gz
+MAGISK_MODULE_SHA256=c6e4c9ec1a98141c3f5d66ddf1a135549050c9fab4e9a4620ee9b22085873ae0
 MAGISK_MODULE_DEPENDS="libandroid-support, libandroid-glob, readline, openssl, libdb"
 MAGISK_MODULE_BREAKS="krb5-dev"
 MAGISK_MODULE_REPLACES="krb5-dev"
