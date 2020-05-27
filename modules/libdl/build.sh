@@ -6,4 +6,5 @@ MAGISK_MODULE_ESSENTIAL=yes
 
 magisk_step_post_make_install() {
 	cp "$MAGISK_STANDALONE_TOOLCHAIN/sysroot/usr/lib/${MAGISK_HOST_PLATFORM}/libdl.a" $MAGISK_PREFIX/lib
+	cp "$MAGISK_STANDALONE_TOOLCHAIN/sysroot/usr/lib/${MAGISK_HOST_PLATFORM}/24/libdl.so" $MAGISK_PREFIX/lib
 }
