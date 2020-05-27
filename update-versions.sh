@@ -9,6 +9,12 @@ cd $tmux_path;
 git pull;
 cd $mb_dir;
 
+add_date() {
+    printf '%s %s\n' "$(date)" "$line";
+}
+
+add_date >> .update.log;
+
 function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
 
 for module in $(find "$module_path/" -maxdepth 1 -type d -name "*" -printf "%P\n"); do
@@ -17,7 +23,7 @@ for module in $(find "$module_path/" -maxdepth 1 -type d -name "*" -printf "%P\n
 		echo "Could not find package with name $module";
 		continue;
 	fi
-	
+
 	module_build_path="$module_path/$module/build.sh";
 
 	source "$module_build_path" 2>/dev/null;
@@ -27,7 +33,7 @@ for module in $(find "$module_path/" -maxdepth 1 -type d -name "*" -printf "%P\n
 	module_version="$MAGISK_MODULE_VERSION";
 	module_srcurl="$MAGISK_MODULE_SRCURL";
 	module_sha256="$MAGISK_MODULE_SHA256";
-	
+
 	source "$package_path/$module/build.sh" 2>/dev/null;
 	if [ -z "$TERMUX_PKG_VERSION" ]; then
 		continue;
@@ -41,7 +47,7 @@ for module in $(find "$module_path/" -maxdepth 1 -type d -name "*" -printf "%P\n
 		#perl -i.bak -pe "s/MAGISK_MODULE_VERSION=[\"]*"$module_version[\"]*"/MAGISK_MODULE_VERSION=\""$package_version\""/g" "$module_build_path";
 		#cat "$module_build_path";
 		perl -i.bak -pe 's|(MAGISK_MODULE_VERSION=[\"]*)[a-zA-Z0-9.]+([\"]*\n)|${1}'$package_version'\2|' "$module_build_path"
-		perl -i.bak -pe 's|(MAGISK_MODULE_SRCURL=[\"]*)[^\"]+([\"]*\n)|${1}'$package_srcurl'\2|' "$module_build_path";
+		#perl -i.bak -pe 's|(MAGISK_MODULE_SRCURL=[\"]*)[^\"]+([\"]*\n)|${1}'$package_srcurl'\2|' "$module_build_path";
 		perl -i.bak -pe 's|(MAGISK_MODULE_SHA256=[\"]*)[^\"]+([\"]*\n)|${1}'$package_sha256'\2|' "$module_build_path";	
 		#perl -i.bak -pe "s/MAGISK_MODULE_SHA256=[\"]*"$module_sha256[\"]*"/MAGISK_MODULE_SHA256=\""$package_sha256\""/g" "$module_build_path";
 		source "$module_build_path" 2>/dev/null;
@@ -56,7 +62,7 @@ for module in $(find "$module_path/" -maxdepth 1 -type d -name "*" -printf "%P\n
 			echo $out >> .update.log;
 			exit 0;
 		fi
-		
+
 	fi
 
 	#echo "perl -pe 's:(\bMAGISK_MODULE_VERSION=\s+)$module_version:$1$package_version:' $module_build_path;";
