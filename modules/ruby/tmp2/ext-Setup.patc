@@ -1,0 +1,11 @@
+--- ruby-2.5.1/ext/Setup	2017-04-20 08:21:24.000000000 +0000
++++ ./src/ext/Setup	2020-05-01 12:56:33.757478616 +0000
+@@ -31,7 +31,7 @@
+ #pty
+ #racc/cparse
+ #rbconfig/sizeof
+-#readline
++readline
+ #ripper
+ #sdbm
+ #socket

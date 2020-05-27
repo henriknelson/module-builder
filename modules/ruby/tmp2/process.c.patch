@@ -1,0 +1,44 @@
+--- /home/vagrant/ruby-2.5.0/process.c	2017-12-14 10:24:38.000000000 +0000
++++ src/process.c	2018-02-14 18:48:50.591627727 +0000
+@@ -1240,9 +1240,9 @@
+     *argv = (char *)prog;
+     *--argv = (char *)"sh";
+     if (envp)
+-        execve("/bin/sh", argv, envp); /* async-signal-safe */
++        execve("/usr/bin/sh", argv, envp); /* async-signal-safe */
+     else
+-        execv("/bin/sh", argv); /* async-signal-safe (since SUSv4) */
++        execv("/usr/bin/sh", argv); /* async-signal-safe (since SUSv4) */
+ }
+ 
+ #else
+@@ -1310,9 +1310,9 @@
+     }
+ #else
+     if (envp_str)
+-        execle("/bin/sh", "sh", "-c", str, (char *)NULL, (char **)RSTRING_PTR(envp_str)); /* async-signal-safe */
++        execle("/usr/bin/sh", "sh", "-c", str, (char *)NULL, (char **)RSTRING_PTR(envp_str)); /* async-signal-safe */
+     else
+-        execl("/bin/sh", "sh", "-c", str, (char *)NULL); /* async-signal-safe (since SUSv4) */
++        execl("/usr/bin/sh", "sh", "-c", str, (char *)NULL); /* async-signal-safe (since SUSv4) */
+ #endif	/* _WIN32 */
+     return errno;
+ }
+@@ -1415,7 +1415,7 @@
+     if (status == -1 && errno == ENOEXEC) {
+ 	*argv = (char *)prog;
+ 	*--argv = (char *)"sh";
+-	status = spawnv(P_NOWAIT, "/bin/sh", (const char **)argv);
++	status = spawnv(P_NOWAIT, "/usr/bin/sh", (const char **)argv);
+ 	after_exec();
+ 	if (status == -1) errno = ENOEXEC;
+     }
+@@ -1453,7 +1453,7 @@
+ 
+     char *shell = dln_find_exe_r("sh", 0, fbuf, sizeof(fbuf));
+     before_exec();
+-    status = spawnl(P_NOWAIT, (shell ? shell : "/bin/sh"), "sh", "-c", str, (char*)NULL);
++    status = spawnl(P_NOWAIT, (shell ? shell : "/usr/bin/sh"), "sh", "-c", str, (char*)NULL);
+     after_exec();
+     return status;
+ }

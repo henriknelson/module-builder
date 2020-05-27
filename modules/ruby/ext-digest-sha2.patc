@@ -1,0 +1,67 @@
+--- ruby-2.7.1/ext/digest/sha2/sha2.c	2020-03-31 10:44:55.000000000 +0000
++++ ./ext/digest/sha2/sha2.c	2020-05-02 10:04:53.873184874 +0000
+@@ -228,8 +228,8 @@
+  * only.
+  */
+ void SHA512_Last(SHA512_CTX*);
+-void SHA256_Transform(SHA256_CTX*, const sha2_word32*);
+-void SHA512_Transform(SHA512_CTX*, const sha2_word64*);
++void rb_SHA256_Transform(SHA256_CTX*, const sha2_word32*);
++void rb_SHA512_Transform(SHA512_CTX*, const sha2_word64*);
+ 
+ 
+ /*** SHA-XYZ INITIAL HASH VALUES AND CONSTANTS ************************/
+@@ -388,7 +388,7 @@
+ 	(h) = T1 + Sigma0_256(a) + Maj((a), (b), (c)); \
+ 	j++
+ 
+-void SHA256_Transform(SHA256_CTX* context, const sha2_word32* data) {
++void rb_SHA256_Transform(SHA256_CTX* context, const sha2_word32* data) {
+ 	sha2_word32	a, b, c, d, e, f, g, h, s0, s1;
+ 	sha2_word32	T1, *W256;
+ 	int		j;
+@@ -446,7 +446,7 @@
+ 
+ #else /* SHA2_UNROLL_TRANSFORM */
+ 
+-void SHA256_Transform(SHA256_CTX* context, const sha2_word32* data) {
++void rb_SHA256_Transform(SHA256_CTX* context, const sha2_word32* data) {
+ 	sha2_word32	a, b, c, d, e, f, g, h, s0, s1;
+ 	sha2_word32	T1, T2, *W256;
+ 	int		j;
+@@ -548,7 +548,7 @@
+ 			context->bitcount += freespace << 3;
+ 			len -= freespace;
+ 			data += freespace;
+-			SHA256_Transform(context, (sha2_word32*)context->buffer);
++			rb_SHA256_Transform(context, (sha2_word32*)context->buffer);
+ 		} else {
+ 			/* The buffer is not yet full */
+ 			MEMCPY_BCOPY(&context->buffer[usedspace], data, len);
+@@ -561,7 +561,7 @@
+ 	while (len >= SHA256_BLOCK_LENGTH) {
+ 		/* Process as many complete blocks as we can */
+ 		MEMCPY_BCOPY(context->buffer, data, SHA256_BLOCK_LENGTH);
+-		SHA256_Transform(context, (sha2_word32*)context->buffer);
++		rb_SHA256_Transform(context, (sha2_word32*)context->buffer);
+ 		context->bitcount += SHA256_BLOCK_LENGTH << 3;
+ 		len -= SHA256_BLOCK_LENGTH;
+ 		data += SHA256_BLOCK_LENGTH;
+@@ -601,7 +601,7 @@
+ 					MEMSET_BZERO(&context->buffer[usedspace], SHA256_BLOCK_LENGTH - usedspace);
+ 				}
+ 				/* Do second-to-last transform: */
+-				SHA256_Transform(context, (sha2_word32*)context->buffer);
++				rb_SHA256_Transform(context, (sha2_word32*)context->buffer);
+ 
+ 				/* And set-up for the last transform: */
+ 				MEMSET_BZERO(context->buffer, SHA256_SHORT_BLOCK_LENGTH);
+@@ -618,7 +618,7 @@
+ 			     sizeof(sha2_word64));
+ 
+ 		/* Final transform: */
+-		SHA256_Transform(context, (sha2_word32*)context->buffer);
++		rb_SHA256_Transform(context, (sha2_word32*)context->buffer);
+ 
+ #if BYTE_ORDER == LITTLE_ENDIAN
+ 		{

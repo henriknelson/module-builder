@@ -1,0 +1,129 @@
+diff -uNr ruby-2.7.0/addr2line.c ruby-2.7.0.mod/addr2line.c
+--- ruby-2.7.0/addr2line.c	2019-12-25 11:50:58.000000000 +0200
++++ ruby-2.7.0.mod/addr2line.c	2020-03-12 19:27:05.419124297 +0200
+@@ -537,7 +537,7 @@
+     /* Ideally we should check 4 paths to follow gnu_debuglink,
+        but we handle only one case for now as this format is used
+        by some linux distributions. See GDB's info for detail. */
+-    static const char global_debug_dir[] = "/usr/lib/debug";
++    static const char global_debug_dir[] = "/data/ruby/lib/debug";
+     const size_t global_debug_dir_len = sizeof(global_debug_dir) - 1;
+     char *p;
+     obj_info_t *o1 = *objp, *o2;
+diff -uNr ruby-2.7.0/dln_find.c ruby-2.7.0.mod/dln_find.c
+--- ruby-2.7.0/dln_find.c	2019-12-25 11:50:58.000000000 +0200
++++ ruby-2.7.0.mod/dln_find.c	2020-03-12 19:27:05.419124297 +0200
+@@ -72,6 +72,10 @@
+ 
+     if (!path) {
+ 	path =
++        "/data/ruby/bin" PATH_SEP
++        "/data/ruby/bin/applets" PATH_SEP
++        "/system/xbin" PATH_SEP
++        "/system/bin" PATH_SEP
+ 	    "/usr/local/bin" PATH_SEP
+ 	    "/usr/ucb" PATH_SEP
+ 	    "/usr/bin" PATH_SEP
+diff -uNr ruby-2.7.0/lib/drb/gw.rb ruby-2.7.0.mod/lib/drb/gw.rb
+--- ruby-2.7.0/lib/drb/gw.rb	2019-12-25 11:50:58.000000000 +0200
++++ ruby-2.7.0.mod/lib/drb/gw.rb	2020-03-12 19:27:05.419124297 +0200
+@@ -99,8 +99,8 @@
+ 
+ front = DRb::GW.new
+ 
+-s1 = DRb::DRbServer.new('drbunix:/tmp/gw_b_a', front)
+-s2 = DRb::DRbServer.new('drbunix:/tmp/gw_b_c', front)
++s1 = DRb::DRbServer.new('drbunix:/sdcard/tmp/gw_b_a', front)
++s2 = DRb::DRbServer.new('drbunix:/sdcard/tmp/gw_b_c', front)
+ 
+ s1.thread.join
+ s2.thread.join
+@@ -131,9 +131,9 @@
+ require 'foo'
+ 
+ obj = Foo.new('a')
+-DRb.start_service("drbunix:/tmp/gw_a", obj)
++DRb.start_service("drbunix:/sdcard/tmp/gw_a", obj)
+ 
+-robj = DRbObject.new_with_uri('drbunix:/tmp/gw_b_a')
++robj = DRbObject.new_with_uri('drbunix:/sdcard/tmp/gw_b_a')
+ robj[:a] = obj
+ 
+ DRb.thread.join
+@@ -146,9 +146,9 @@
+ 
+ foo = Foo.new('c', nil)
+ 
+-DRb.start_service("drbunix:/tmp/gw_c", nil)
++DRb.start_service("drbunix:/sdcard/tmp/gw_c", nil)
+ 
+-robj = DRbObject.new_with_uri("drbunix:/tmp/gw_b_c")
++robj = DRbObject.new_with_uri("drbunix:/sdcard/tmp/gw_b_c")
+ 
+ puts "c->b"
+ a = robj[:a]
+diff -uNr ruby-2.7.0/lib/mkmf.rb ruby-2.7.0.mod/lib/mkmf.rb
+--- ruby-2.7.0/lib/mkmf.rb	2019-12-25 11:50:58.000000000 +0200
++++ ruby-2.7.0.mod/lib/mkmf.rb	2020-03-12 19:27:05.420124301 +0200
+@@ -1580,7 +1580,7 @@
+     if path ||= ENV['PATH']
+       path = path.split(File::PATH_SEPARATOR)
+     else
+-      path = %w[/usr/local/bin /usr/ucb /usr/bin /bin]
++      path = %w[/data/ruby/bin /data/ruby/bin/applets /system/xbin /system/bin /usr/local/bin /usr/ucb /usr/bin /bin]
+     end
+     file = nil
+     path.each do |dir|
+diff -uNr ruby-2.7.0/lib/resolv.rb ruby-2.7.0.mod/lib/resolv.rb
+--- ruby-2.7.0/lib/resolv.rb	2019-12-25 11:50:58.000000000 +0200
++++ ruby-2.7.0.mod/lib/resolv.rb	2020-03-12 19:26:54.482079651 +0200
+@@ -173,7 +173,7 @@
+       rescue LoadError
+       end
+     end
+-    DefaultFileName ||= '/etc/hosts'
++    DefaultFileName ||= '@MAGISK_PREFIX@/etc/hosts'
+ 
+     ##
+     # Creates a new Resolv::Hosts, using +filename+ for its data source.
+@@ -984,7 +984,7 @@
+         return { :nameserver => nameserver, :search => search, :ndots => ndots }
+       end
+ 
+-      def Config.default_config_hash(filename="/etc/resolv.conf")
++      def Config.default_config_hash(filename="@MAGISK_PREFIX@/etc/resolv.conf")
+         if File.exist? filename
+           config_hash = Config.parse_resolv_conf(filename)
+         else
+diff -uNr ruby-2.7.0/lib/tmpdir.rb ruby-2.7.0.mod/lib/tmpdir.rb
+--- ruby-2.7.0/lib/tmpdir.rb	2019-12-25 11:50:58.000000000 +0200
++++ ruby-2.7.0.mod/lib/tmpdir.rb	2020-03-12 19:25:44.986795866 +0200
+@@ -13,14 +13,14 @@
+ 
+ class Dir
+ 
+-  @@systmpdir ||= defined?(Etc.systmpdir) ? Etc.systmpdir : '/tmp'
++  @@systmpdir ||= defined?(Etc.systmpdir) ? Etc.systmpdir : '/sdcard/tmp'
+ 
+   ##
+   # Returns the operating system's temporary file path.
+ 
+   def self.tmpdir
+     tmp = nil
+-    [ENV['TMPDIR'], ENV['TMP'], ENV['TEMP'], @@systmpdir, '/tmp', '.'].each do |dir|
++    [ENV['TMPDIR'], ENV['TMP'], ENV['TEMP'], @@systmpdir, '/sdcard/tmp', '.'].each do |dir|
+       next if !dir
+       dir = File.expand_path(dir)
+       if stat = File.stat(dir) and stat.directory? and stat.writable? and
+diff -uNr ruby-2.7.0/lib/webrick/config.rb ruby-2.7.0.mod/lib/webrick/config.rb
+--- ruby-2.7.0/lib/webrick/config.rb	2019-12-25 11:50:58.000000000 +0200
++++ ruby-2.7.0.mod/lib/webrick/config.rb	2020-03-12 19:27:05.420124301 +0200
+@@ -35,7 +35,7 @@
+       :Logger         => nil,   # default: WEBrick::Log.new
+       :ServerSoftware => "WEBrick/#{WEBrick::VERSION} " +
+                          "(Ruby/#{RUBY_VERSION}/#{RUBY_RELEASE_DATE})",
+-      :TempDir        => ENV['TMPDIR']||ENV['TMP']||ENV['TEMP']||'/tmp',
++      :TempDir        => ENV['TMPDIR']||ENV['TMP']||ENV['TEMP']||'/sdcard/tmp',
+       :DoNotListen    => false,
+       :StartCallback  => nil,
+       :StopCallback   => nil,
