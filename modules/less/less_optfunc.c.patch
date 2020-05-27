@@ -1,0 +1,12 @@
+--- less-561/optfunc.c	2020-05-11 21:36:18.000000000 +0000
++++ ./optfunc.c	2020-05-18 15:56:47.879166117 +0000
+@@ -513,7 +513,8 @@
+ 		putstr(" (");
+ 		putstr(pattern_lib_name());
+ 		putstr(" regular expressions)\n");
+-		putstr("Copyright (C) 1984-2020  Mark Nudelman\n\n");
++		putstr("Copyright (C) 1984-2020  Mark Nudelman\n\n\n");
++		putstr("Compiled for Android by nelshh @ XDA-Developers\n\n");
+ 		putstr("less comes with NO WARRANTY, to the extent permitted by law.\n");
+ 		putstr("For information about the terms of redistribution,\n");
+ 		putstr("see the file named README in the less distribution.\n");
