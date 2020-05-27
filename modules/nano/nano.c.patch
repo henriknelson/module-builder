@@ -5,8 +5,8 @@
  	printf(" --with-slang");
  #endif
 -	printf("\n");
-+	printf("\n\n");
-+	printf("Compiled for Android by nelshh @ xda-developers [henrik@cliffords.nu]\n");
++	printf("\n");
++	printf(" Compiled for Android by nelshh @ xda-developers [henrik@cliffords.nu]\n");
  }
  
  /* If the current file buffer has been modified, and the TEMP_FILE flag

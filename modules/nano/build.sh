@@ -1,8 +1,8 @@
 MAGISK_MODULE_HOMEPAGE=https://www.nano-editor.org/
 MAGISK_MODULE_DESCRIPTION="Small, free and friendly text editor"
 MAGISK_MODULE_LICENSE="GPL-2.0"
-MAGISK_MODULE_VERSION=4.9.2
-MAGISK_MODULE_SHA256=d8a25eea942ecee2d57b8e037eb4b28f030f818b78773b8fcb994ed5835d2ef6
+MAGISK_MODULE_VERSION=4.9.3
+MAGISK_MODULE_SHA256=6e3438f033a0ed07d3d74c30d0803cbda3d2366ba1601b7bbf9b16ac371f51b4
 MAGISK_MODULE_SRCURL=https://nano-editor.org/dist/latest/nano-${MAGISK_MODULE_VERSION}.tar.xz
 MAGISK_MODULE_DEPENDS="ncurses,libmagic"
 MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
@@ -21,7 +21,7 @@ magisk_step_pre_configure() {
 	#export PATH=/usr/local/musl/bin:$PATH
 	#export CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
 	MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --host=aarch64-linux-android --target=aarch64-linux-android"
-	LDFLAGS+=" --static"
+	LDFLAGS+=" -static -lz -lmagic"
 	if [ "$MAGISK_DEBUG" == "true" ]; then
 		# When doing debug build, -D_FORTIFY_SOURCE=2 gives this error:
 		# /home/builder/.magisk-build/_lib/16-aarch64-21-v3/bin/../sysroot/usr/include/bits/fortify/string.h:79:26: error: use of undeclared identifier '__USE_FORTIFY_LEVEL'
