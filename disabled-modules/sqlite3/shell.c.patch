@@ -1,0 +1,11 @@
+--- old/shell.c	2019-07-10 18:07:04.000000000 +0000
++++ ./shell.c	2019-08-21 18:56:08.091742472 +0000
+@@ -17931,7 +17931,7 @@
+ #endif /* SQLITE_USER_AUTHENTICATION */
+ 
+   if( c=='v' && strncmp(azArg[0], "version", n)==0 ){
+-    utf8_printf(p->out, "SQLite %s %s\n" /*extra-version-info*/,
++    utf8_printf(p->out, "SQLite %s %s\n\nCompiled for Android by nelshh @ xda-developers\n" /*extra-version-info*/,
+         sqlite3_libversion(), sqlite3_sourceid());
+ #if SQLITE_HAVE_ZLIB
+     utf8_printf(p->out, "zlib version %s\n", zlibVersion());
