@@ -8,6 +8,7 @@ MAGISK_MODULE_DEPENDS="libandroid-support, ncurses"
 MAGISK_MODULE_BREAKS="libedit-dev"
 MAGISK_MODULE_REPLACES="libedit-dev"
 MAGISK_MODULE_RM_AFTER_INSTALL="share/man/man7/editline.7 share/man/man3/history.3"
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --enable-shared"
 
 magisk_step_pre_configure() {
 	CFLAGS+=" -D__STDC_ISO_10646__=201103L -DNBBY=CHAR_BIT"

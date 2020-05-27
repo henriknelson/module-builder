@@ -6,7 +6,7 @@ diff -uNr libedit-20170329-3.1/src/readline.c libedit-20170329-3.1.mod/src/readl
  }
  
 -static const char _history_tmp_template[] = "/tmp/.historyXXXXXX";
-+static const char _history_tmp_template[] = "@MAGISK_PREFIX@/tmp/.historyXXXXXX";
++static const char _history_tmp_template[] = "/sdcard/tmp/.historyXXXXXX";
  
  int
  history_truncate_file (const char *filename, int nlines)

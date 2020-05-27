@@ -6,7 +6,7 @@ diff -uNr libedit-20170329-3.1/src/vi.c libedit-20170329-3.1.mod/src/vi.c
  	ssize_t st;
  	int status;
 -	char tempfile[] = "/tmp/histedit.XXXXXXXXXX";
-+	char tempfile[] = "@MAGISK_PREFIX@/tmp/histedit.XXXXXXXXXX";
++	char tempfile[] = "/sdcard/tmp/histedit.XXXXXXXXXX";
  	char *cp = NULL;
  	size_t len;
  	wchar_t *line = NULL;
