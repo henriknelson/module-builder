@@ -18,7 +18,7 @@ magisk_setup_golang() {
 		magisk_error_exit "Unsupported arch: $MAGISK_ARCH"
 	fi
 
-	local MAGISK_GO_VERSION=go1.12.6
+	local MAGISK_GO_VERSION=go1.14.3
 	local MAGISK_GO_PLATFORM=linux-amd64
 
 	local MAGISK_BUILDGO_FOLDER=$MAGISK_COMMON_CACHEDIR/${MAGISK_GO_VERSION}
@@ -31,7 +31,7 @@ magisk_setup_golang() {
 	rm -Rf "$MAGISK_COMMON_CACHEDIR/go" "$MAGISK_BUILDGO_FOLDER"
 	magisk_download https://storage.googleapis.com/golang/${MAGISK_GO_VERSION}.${MAGISK_GO_PLATFORM}.tar.gz \
 		"$MAGISK_BUILDGO_TAR" \
-		dbcf71a3c1ea53b8d54ef1b48c85a39a6c9a935d01fc8291ff2b92028e59913c
+		1c39eac4ae95781b066c144c58e45d6859652247f7515f0d2cba7be7d57d2226
 
 	( cd "$MAGISK_COMMON_CACHEDIR"; tar xf "$MAGISK_BUILDGO_TAR"; mv go "$MAGISK_BUILDGO_FOLDER"; rm "$MAGISK_BUILDGO_TAR" )
 }
