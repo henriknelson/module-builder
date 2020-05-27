@@ -18,7 +18,7 @@ diff -uNr m4-1.4.18/lib/tempname.c m4-1.4.18.mod/lib/tempname.c
  #include <stdio.h>
  #ifndef P_tmpdir
 -# define P_tmpdir "/tmp"
-+# define P_tmpdir "@MAGISK_PREFIX@/tmp"
++# define P_tmpdir "/sdcard/tmp"
  #endif
  #ifndef TMP_MAX
  # define TMP_MAX 238328
@@ -28,8 +28,8 @@ diff -uNr m4-1.4.18/lib/tempname.c m4-1.4.18.mod/lib/tempname.c
          dir = P_tmpdir;
 -      else if (strcmp (P_tmpdir, "/tmp") != 0 && direxists ("/tmp"))
 -        dir = "/tmp";
-+      else if (strcmp (P_tmpdir, "@MAGISK_PREFIX@/tmp") != 0 && direxists ("@MAGISK_PREFIX@/tmp"))
-+        dir = "@MAGISK_PREFIX@/tmp";
++      else if (strcmp (P_tmpdir, "/sdcard/tmp") != 0 && direxists ("/sdcard/tmp"))
++        dir = "/sdcard/tmp";
        else
          {
            __set_errno (ENOENT);
@@ -41,7 +41,7 @@ diff -uNr m4-1.4.18/lib/tmpdir.c m4-1.4.18.mod/lib/tmpdir.c
  #  define P_tmpdir _P_tmpdir
  # else
 -#  define P_tmpdir "/tmp"
-+#  define P_tmpdir "@MAGISK_PREFIX@/tmp"
++#  define P_tmpdir "/sdcard/tmp"
  # endif
  #endif
  
@@ -51,8 +51,8 @@ diff -uNr m4-1.4.18/lib/tmpdir.c m4-1.4.18.mod/lib/tmpdir.c
          dir = P_tmpdir;
 -      else if (strcmp (P_tmpdir, "/tmp") != 0 && direxists ("/tmp"))
 -        dir = "/tmp";
-+      else if (strcmp (P_tmpdir, "@MAGISK_PREFIX@/tmp") != 0 && direxists ("@MAGISK_PREFIX@/tmp"))
-+        dir = "@MAGISK_PREFIX@/tmp";
++      else if (strcmp (P_tmpdir, "/sdcard/tmp") != 0 && direxists ("/sdcard/tmp"))
++        dir = "/sdcard/tmp";
        else
          {
            __set_errno (ENOENT);
