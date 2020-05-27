@@ -18,6 +18,11 @@ magisk_step_configure_autotools() {
 		DISABLE_SHARED=""
 	fi
 
+	local ENABLE_DATAROOT="--datarootdir=$MAGISK_PREFIX/usr/share"
+	if [ "$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS" != "${MAGISK_MODULE_EXTRA_CONFIGURE_ARGS/--disable-dataroot/}" ]; then
+		ENABLE_DATAROOT=""
+	fi
+
 	local HOST_FLAG="--host=$MAGISK_HOST_PLATFORM"
 	if [ "$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS" != "${MAGISK_MODULE_EXTRA_CONFIGURE_ARGS/--host=/}" ]; then
 		HOST_FLAG=""
@@ -106,16 +111,17 @@ magisk_step_configure_autotools() {
 	# NOTE: We do not want to quote AVOID_GNULIB as we want word expansion.
 	# shellcheck disable=SC2086
 
+	{
 	magisk_log "running ./configure"
 	env $AVOID_GNULIB "$MAGISK_MODULE_SRCDIR/configure" \
 		--disable-dependency-tracking \
 		--prefix=$MAGISK_PREFIX \
-		--datarootdir=$MAGISK_PREFIX/usr/share \
 		--libdir=$MAGISK_PREFIX/lib \
 		--includedir=$MAGISK_PREFIX/include \
 		--disable-rpath --disable-rpath-hack \
 		$HOST_FLAG \
 		$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS \
+		$ENABLE_DATAROOT \
 		$DISABLE_NLS \
 		$ENABLE_STATIC \
 		$DISABLE_SHARED \
@@ -123,6 +129,9 @@ magisk_step_configure_autotools() {
 		$VERBOSE_BUILD \
 		#CFLAGS="${CFLAGS} -static" \
 		#LDFLAGS="${LDFLAGS} --static"
-
-	magisk_log "./configure completed!"
+	} && {
+		magisk_log "./configure completed!";
+	} || {
+		 [[ -f "$MAGISK_MODULE_SRCDIR/config.log" ]] && cp $MAGISK_MODULE_SRCDIR/config.log $MAGISK_SCRIPTDIR/modules/$MAGISK_MODULE_NAME/debug/config.log;
+	}
 }
