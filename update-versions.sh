@@ -13,7 +13,12 @@ add_date() {
     printf '%s %s\n' "$(date)" "$line";
 }
 
+add_divider() {
+    echo '-----------------------------';
+}
+
 add_date >> .update.log;
+add_divider >> .update.log;
 
 function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
 
@@ -73,5 +78,6 @@ for module in $(find "$module_path/" -maxdepth 1 -type d -name "*" -printf "%P\n
 	#		echo $version;
 	#	fi
 	#done
-   
 done
+
+echo "" >> .update.log;
