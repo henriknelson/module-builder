@@ -197,7 +197,7 @@ source scripts/build/magisk_step_finish_build.sh
 	if ! $MAGISK_BUILD_IGNORE_LOCK; then
 		flock -n 5 || magisk_error_exit "Another build is already running within same environment."
 	fi
-	#setup_process_log
+	setup_process_log
 	magisk_step_handle_arguments "$@"
 	magisk_step_setup_variables
 	magisk_step_handle_buildarch
