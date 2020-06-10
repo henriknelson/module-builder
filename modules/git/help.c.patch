@@ -1,12 +1,12 @@
---- ../help.c	2019-06-07 18:37:32.000000000 +0000
-+++ ./help.c	2019-07-18 12:50:43.690541292 +0000
-@@ -728,7 +728,8 @@
+--- git-2.27.0/help.c	2020-06-01 15:49:27.000000000 +0000
++++ ./help.c	2020-06-10 10:48:55.312093011 +0000
+@@ -630,7 +630,8 @@
  	 *
  	 * Always show the version, even if other options are given.
  	 */
--	printf("git version %s\n", git_version_string);
-+	printf("git - version %s\n", git_version_string);
-+	printf("compiled for Android by nelshh @ xda-developers\n\n");
+-	strbuf_addf(buf, "git version %s\n", git_version_string);
++	strbuf_addf(buf, "git - version %s\n", git_version_string);
++	strbuf_addf(buf, "Compiled for Android by nelshh @ xda-developers\n");
  
- 	if (build_options) {
- 		printf("cpu: %s\n", GIT_HOST_CPU);
+ 	if (show_build_options) {
+ 		strbuf_addf(buf, "cpu: %s\n", GIT_HOST_CPU);
