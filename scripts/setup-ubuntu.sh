@@ -57,6 +57,7 @@ PACKAGES+=" neofetch"
 PACKAGES+=" bash-completion"
 PACKAGES+=" mandoc"
 PACKAGES+=" libclang-dev"
+PACKAGES+=" autopoint"
 
 # Allow 32-bit packages.
 sudo dpkg --add-architecture i386
@@ -66,7 +67,7 @@ sudo DEBIAN_FRONTEND=noninteractive \
 	apt-get install -yq --no-install-recommends $PACKAGES
 
 mkdir ~/tmp
-curl -L --output ~/tmp/bat.deb "https://github.com/sharkdp/bat/releases/download/v0.11.0/bat-musl_0.11.0_amd64.deb"
+curl -L --output ~/tmp/bat.deb "https://github.com/sharkdp/bat/releases/download/v0.15.4/bat-musl_0.15.4_amd64.deb"
 sudo dpkg -i ~/tmp/bat.deb
 sudo rm -r ~/tmp
 
