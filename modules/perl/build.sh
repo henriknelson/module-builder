@@ -1,16 +1,15 @@
 MAGISK_MODULE_HOMEPAGE=https://www.perl.org/
 MAGISK_MODULE_DESCRIPTION="Capable, feature-rich programming language"
 MAGISK_MODULE_LICENSE="Artistic-License-2.0"
-MAGISK_MODULE_VERSION=(5.30.2
-                    1.3.2)
-MAGISK_MODULE_SHA256=(66db7df8a91979eb576fac91743644da878244cf8ee152f02cd6f5cd7a731689
-                   defa12f0ad7be0b6c48b4f76e2fb5b37c1b37fbeb6e9ebe938279cd539a0c20c)
+MAGISK_MODULE_VERSION=(5.30.3
+                    1.3.4)
+MAGISK_MODULE_REVISION=1
+MAGISK_MODULE_SHA256=(32e04c8bb7b1aecb2742a7f7ac0eabac100f38247352a73ad7fa104e39e7406f
+                   755aa0ca8141a942188a269564f86c3c82349f82c346ed5c992495d7f35138ba)
 MAGISK_MODULE_SRCURL=(http://www.cpan.org/src/5.0/perl-${MAGISK_MODULE_VERSION}.tar.gz
-		   https://github.com/arsv/perl-cross/releases/download/${MAGISK_MODULE_VERSION[1]}/perl-cross-${MAGISK_MODULE_VERSION[1]}.tar.gz)
+                   https://github.com/arsv/perl-cross/releases/download/${MAGISK_MODULE_VERSION[1]}/perl-cross-${MAGISK_MODULE_VERSION[1]}.tar.gz)
 MAGISK_MODULE_BUILD_IN_SRC=true
 MAGISK_MAKE_PROCESSES=1
-
-#MAGISK_MODULE_RM_AFTER_INSTALL="bin/perl${MAGISK_MODULE_VERSION}"
 
 magisk_step_post_extract_module() {
 	# Certain packages are not safe to build on device because their
@@ -85,43 +84,7 @@ magisk_step_configure() {
 		-Dsysroot=$MAGISK_STANDALONE_TOOLCHAIN/sysroot \
 		-Dprefix=/data/perl \
 		-Dsh=$MAGISK_PREFIX/bin/sh \
-		-Dcc="$ORIG_CC -Wl,-rpath=/data/perl/lib:/data/perl/lib/perl5/5.30.2/aarch64-android/CORE -Wl,--enable-new-dtags" \
-		-Duseshrplib;
-}
-
-#-Ud_sem \
-#-Ud_shm \
-
-mmagisk_step_pre_configure() {
-	export PATH="$MAGISK_STANDALONE_TOOLCHAIN/bin:$PATH"
-
-	ORIG_AR=$AR; unset AR
-	ORIG_AS=$AS; unset AS
-	ORIG_CC=$CC; unset CC
-	ORIG_CXX=$CXX; unset CXX
-	ORIG_CPP=$CPP; unset CPP
-	ORIG_CFLAGS=$CFLAGS; unset CFLAGS
-	ORIG_CPPFLAGS=$CPPFLAGS; unset CPPFLAGS
-	ORIG_CXXFLAGS=$CXXFLAGS; unset CXXFLAGS
-	ORIG_LDFLAGS=$LDFLAGS; unset LDFLAGS
-	ORIG_RANLIB=$RANLIB; unset RANLIB
-	ORIG_LD=$LD; unset LD
-
-	# Since we specify $MAGISK_PREFIX/bin/sh below for the shell
-	# it will be run during the build, so temporarily (removed in
-	# MAGISK_step_post_make_install below) setup symlink:
-	rm -f $MAGISK_PREFIX/bin/sh
-	ln -s /bin/sh $MAGISK_PREFIX/bin/sh
-
-	cd $MAGISK_MODULE_BUILDDIR
-	$MAGISK_MODULE_SRCDIR/configure \
-		--target=$MAGISK_HOST_PLATFORM \
-		-Dosname=android \
-		-Dusecrosscompile \
-		-Dsysroot=$MAGISK_STANDALONE_TOOLCHAIN/sysroot \
-		-Dprefix=$MAGISK_PREFIX \
-		-Dsh=$MAGISK_PREFIX/bin/sh \
-		-Dcc="$ORIG_CC -Wl,-rpath=\"$MAGISK_PREFIX/lib:/system/lib/perl5/5.30.2/aarch64-android/CORE\" -Wl,--enable-new-dtags" \
+		-Dcc="$ORIG_CC -Wl,-rpath=/data/perl/lib:/data/perl/lib/perl5/5.30.3/aarch64-android/CORE -Wl,--enable-new-dtags" \
 		-Duseshrplib;
 }
 
@@ -132,30 +95,27 @@ magisk_step_post_make_install() {
 	#ln -s perlthanks.1 perlbug.1
 
 	mkdir -p $MAGISK_PREFIX/data
-	cp -r /data/perl $MAGISK_PREFIX/data/
+	sudo cp -r /data/perl $MAGISK_PREFIX/data/
+
+	sudo chown -R builder:builder $MAGISK_PREFIX/data
 
 	# Cleanup:
 	rm $MAGISK_PREFIX/bin/sh
 
 	cd $MAGISK_PREFIX/data/perl/lib
-	ln -f -s perl5/5.30.2/aarch64-android/CORE/libperl.so libperl.so
+	ln -f -s perl5/5.30.3/aarch64-android/CORE/libperl.so libperl.so
 
 	mkdir -p $MAGISK_PREFIX/data/perl/include
 	cd $MAGISK_PREFIX/data/perl/include
-	ln -f -s $MAGISK_PREFIX/data/perl/lib/perl5/5.30.2/aarch64-android/CORE perl
-	#tree /data/perl/lib/perl5/5.30.2/
+	ln -f -s $MAGISK_PREFIX/data/perl/lib/perl5/5.30.3/aarch64-android/CORE perl
+	tree /data/perl/lib/perl5/5.30.3/
 	#fdfind -IH Config_heavy.pl $MAGISK_MODULE_SRCDIR/..
 	cd $MAGISK_MODULE_SRCDIR/lib
 	chmod +w Config_heavy.pl
 	sed 's',"--sysroot=$MAGISK_STANDALONE_TOOLCHAIN"/sysroot,"-I${MAGISK_PREFIX}/include",'g' Config_heavy.pl > Config_heavy.pl.new
         sed 's',"$MAGISK_STANDALONE_TOOLCHAIN"/sysroot,"-I${MAGISK_PREFIX%%/usr}",'g' Config_heavy.pl.new > Config_heavy.pl
 	rm Config_heavy.pl.new
-	sudo cp Config_heavy.pl $MAGISK_PREFIX/data/perl/lib/perl5/5.30.2/aarch64-android
+	sudo cp Config_heavy.pl $MAGISK_PREFIX/data/perl/lib/perl5/5.30.3/aarch64-android
 	sudo chown -R 0:0 $MAGISK_PREFIX/data/perl/lib
 	sudo chmod -R 755 $MAGISK_PREFIX/data/perl/lib
-}
-
-mmagisk_step_make(){
-	echo "Making";
-	make install;
 }
