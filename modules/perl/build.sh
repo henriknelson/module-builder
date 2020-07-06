@@ -1,10 +1,10 @@
 MAGISK_MODULE_HOMEPAGE=https://www.perl.org/
 MAGISK_MODULE_DESCRIPTION="Capable, feature-rich programming language"
 MAGISK_MODULE_LICENSE="Artistic-License-2.0"
-MAGISK_MODULE_VERSION=(5.30.3
+MAGISK_MODULE_VERSION=(5.32.0
                     1.3.4)
 MAGISK_MODULE_REVISION=1
-MAGISK_MODULE_SHA256=(32e04c8bb7b1aecb2742a7f7ac0eabac100f38247352a73ad7fa104e39e7406f
+MAGISK_MODULE_SHA256=(efeb1ce1f10824190ad1cadbcccf6fdb8a5d37007d0100d2d9ae5f2b5900c0b4
                    755aa0ca8141a942188a269564f86c3c82349f82c346ed5c992495d7f35138ba)
 MAGISK_MODULE_SRCURL=(http://www.cpan.org/src/5.0/perl-${MAGISK_MODULE_VERSION}.tar.gz
                    https://github.com/arsv/perl-cross/releases/download/${MAGISK_MODULE_VERSION[1]}/perl-cross-${MAGISK_MODULE_VERSION[1]}.tar.gz)
@@ -84,7 +84,7 @@ magisk_step_configure() {
 		-Dsysroot=$MAGISK_STANDALONE_TOOLCHAIN/sysroot \
 		-Dprefix=/data/perl \
 		-Dsh=$MAGISK_PREFIX/bin/sh \
-		-Dcc="$ORIG_CC -Wl,-rpath=/data/perl/lib:/data/perl/lib/perl5/5.30.3/aarch64-android/CORE -Wl,--enable-new-dtags" \
+		-Dcc="$ORIG_CC -Wl,-rpath=/data/perl/lib:/data/perl/lib/perl5/${MAGISK_MODULE_VERSION[0]}/aarch64-android/CORE -Wl,--enable-new-dtags" \
 		-Duseshrplib;
 }
 
@@ -103,19 +103,19 @@ magisk_step_post_make_install() {
 	rm $MAGISK_PREFIX/bin/sh
 
 	cd $MAGISK_PREFIX/data/perl/lib
-	ln -f -s perl5/5.30.3/aarch64-android/CORE/libperl.so libperl.so
+	ln -f -s perl5/${MAGISK_MODULE_VERSION[0]}/aarch64-android/CORE/libperl.so libperl.so
 
 	mkdir -p $MAGISK_PREFIX/data/perl/include
 	cd $MAGISK_PREFIX/data/perl/include
-	ln -f -s $MAGISK_PREFIX/data/perl/lib/perl5/5.30.3/aarch64-android/CORE perl
-	tree /data/perl/lib/perl5/5.30.3/
+	ln -f -s $MAGISK_PREFIX/data/perl/lib/perl5/${MAGISK_MODULE_VERSION[0]}/aarch64-android/CORE perl
+	tree /data/perl/lib/perl5/${MAGISK_MODULE_VERSION[0]}/
 	#fdfind -IH Config_heavy.pl $MAGISK_MODULE_SRCDIR/..
 	cd $MAGISK_MODULE_SRCDIR/lib
 	chmod +w Config_heavy.pl
 	sed 's',"--sysroot=$MAGISK_STANDALONE_TOOLCHAIN"/sysroot,"-I${MAGISK_PREFIX}/include",'g' Config_heavy.pl > Config_heavy.pl.new
         sed 's',"$MAGISK_STANDALONE_TOOLCHAIN"/sysroot,"-I${MAGISK_PREFIX%%/usr}",'g' Config_heavy.pl.new > Config_heavy.pl
 	rm Config_heavy.pl.new
-	sudo cp Config_heavy.pl $MAGISK_PREFIX/data/perl/lib/perl5/5.30.3/aarch64-android
+	sudo cp Config_heavy.pl $MAGISK_PREFIX/data/perl/lib/perl5/${MAGISK_MODULE_VERSION[0]}/aarch64-android
 	sudo chown -R 0:0 $MAGISK_PREFIX/data/perl/lib
 	sudo chmod -R 755 $MAGISK_PREFIX/data/perl/lib
 }
