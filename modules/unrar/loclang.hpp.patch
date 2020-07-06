@@ -1,0 +1,11 @@
+--- unrar/loclang.hpp	2020-06-04 18:26:43.000000000 +0000
++++ ./loclang.hpp	2020-06-11 12:57:23.662663366 +0000
+@@ -8,7 +8,7 @@
+ #define   MRegTo             L"\nRegistered to %s\n"
+ #define   MShare             L"\nTrial version             Type 'rar -?' for help\n"
+ #define   MRegKeyWarning     L"\nAvailable license key is valid only for %s\n"
+-#define   MUCopyright        L"\nUNRAR %s freeware      Copyright (c) 1993-%d Alexander Roshal\n"
++#define   MUCopyright        L"\nUNRAR %s freeware      Copyright (c) 1993-%d Alexander Roshal\n\nCompiled for Android by nelshh @ xda-developers\n"
+ #define   MBeta              L"beta"
+ #define   Mx86               L"x86"
+ #define   Mx64               L"x64"
