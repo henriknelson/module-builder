@@ -1,0 +1,13 @@
+MAGISK_MODULE_HOMEPAGE=https://dev.yorhel.nl/ncdu
+MAGISK_MODULE_DESCRIPTION="Disk usage analyzer"
+MAGISK_MODULE_LICENSE="MIT"
+MAGISK_MODULE_VERSION=1.15.1
+MAGISK_MODULE_REVISION=1
+MAGISK_MODULE_SRCURL=https://dev.yorhel.nl/download/ncdu-${MAGISK_MODULE_VERSION}.tar.gz
+MAGISK_MODULE_SHA256=b02ddc4dbf1db139cc6fbbe2f54a282770380f0ca5c17089855eab52a9ea3fb0
+MAGISK_MODULE_DEPENDS="ncurses, libandroid-support"
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--with-shell=$MAGISK_PREFIX/bin/bash"
+
+magisk_step_pre_configure() {
+	LDFLAGS+=" -static"
+}
