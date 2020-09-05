@@ -20,5 +20,5 @@ magisk_step_pre_configure() {
 
 magisk_step_post_make_install() {
 	mkdir -p $MAGISK_PREFIX/usr/share/man/man1
-	cp $MAGISK_MODULE_SRCDIR/contrib/man/exa.1 $MAGISK_PREFIX/share/man/man1/
+	cp $MAGISK_MODULE_SRCDIR/contrib/man/exa.1 $MAGISK_PREFIX/usr/share/man/man1/
 }
