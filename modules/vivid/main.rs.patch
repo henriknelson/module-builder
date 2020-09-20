@@ -1,0 +1,38 @@
+--- vivid-0.5.0/src/main.rs	2019-12-04 21:33:33.000000000 +0000
++++ ./src/main.rs	2020-09-19 23:54:38.111034029 +0000
+@@ -10,7 +10,7 @@
+ use std::process;
+ 
+ use clap::{
+-    crate_description, crate_name, crate_version, App, AppSettings, Arg, ArgMatches, SubCommand,
++    crate_description, crate_name, App, AppSettings, Arg, ArgMatches, SubCommand,
+ };
+ 
+ use crate::color::ColorMode;
+@@ -35,7 +35,7 @@
+     let database_path_env_s = env::var("VIVID_DATABASE").ok();
+     let database_path_env = database_path_env_s.as_ref().map(Path::new);
+ 
+-    let database_path_system = Path::new("/usr/share/vivid/filetypes.yml");
++    let database_path_system = Path::new("@MAGISK_PREFIX@/usr/share/vivid/filetypes.yml");
+ 
+     let database_path = database_path_from_arg
+         .or(database_path_env)
+@@ -64,7 +64,7 @@
+     theme_path_user.push(theme_file.clone());
+ 
+     let mut theme_path_system = PathBuf::new();
+-    theme_path_system.push("/usr/share/vivid/themes/");
++    theme_path_system.push("@MAGISK_PREFIX@/usr/share/vivid/themes/");
+     theme_path_system.push(theme_file);
+ 
+     let theme_path =
+@@ -75,7 +75,7 @@
+ 
+ fn run() -> Result<()> {
+     let app = App::new(crate_name!())
+-        .version(crate_version!())
++        .version("@MAGISK_MODULE_VERSION@ - Compiled for Android by nelshh @ XDA")
+         .about(crate_description!())
+         .global_setting(AppSettings::ColorAuto)
+         .global_setting(AppSettings::ColoredHelp)
