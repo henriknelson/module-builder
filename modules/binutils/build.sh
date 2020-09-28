@@ -1,9 +1,9 @@
 MAGISK_MODULE_HOMEPAGE=https://www.gnu.org/software/binutils
 MAGISK_MODULE_DESCRIPTION="Collection of binary tools, the main ones being ld, the GNU linker, and as, the GNU assembler"
 MAGISK_MODULE_LICENSE="GPL-2.0"
-MAGISK_MODULE_VERSION=2.35
+MAGISK_MODULE_VERSION=2.35.1
 MAGISK_MODULE_SRCURL=https://mirrors.kernel.org/gnu/binutils/binutils-${MAGISK_MODULE_VERSION}.tar.gz
-MAGISK_MODULE_SHA256=a3ac62bae4f339855b5449cfa9b49df90c635adbd67ecb8a0e7f3ae86a058da6
+MAGISK_MODULE_SHA256=a8dfaae8cbbbc260fc1737a326adca97b5d4f3c95a82f0af1f7455ed1da5e77b
 MAGISK_MODULE_DEPENDS="libc++, zlib, libandroid-spawn, libandroid-glob"
 MAGISK_MODULE_BREAKS="binutils-dev"
 MAGISK_MODULE_REPLACES="binutils-dev"
