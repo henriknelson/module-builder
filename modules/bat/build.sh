@@ -1,16 +1,17 @@
 MAGISK_MODULE_HOMEPAGE=https://github.com/sharkdp/bat
 MAGISK_MODULE_DESCRIPTION="A cat(1) clone with wings"
 MAGISK_MODULE_LICENSE="Apache-2.0"
-MAGISK_MODULE_VERSION=0.15.4
+MAGISK_MODULE_VERSION=0.16.0
 MAGISK_MODULE_SRCURL=https://github.com/sharkdp/bat/archive/v${MAGISK_MODULE_VERSION}.tar.gz
-MAGISK_MODULE_SHA256=03b7c8ad6221ca87cecd71f9e3e2167f04f750401e2d3dcc574183aabeb76a8b
+MAGISK_MODULE_SHA256=4db85abfaba94a5ff601d51b4da8759058c679a25b5ec6b45c4b2d85034a5ad3
 # bat calls less with '--RAW-CONTROL-CHARS' which busybox less does not support:
 MAGISK_MODULE_DEPENDS="less, zlib"
 MAGISK_MODULE_BUILD_IN_SRC=true
 
 magisk_step_pre_configure() {
+	cp /usr/local/musl/aarch64-linux-musl/lib/libc.a /system/lib
 	CFLAGS="$CFLAGS -I/system/include"
-	LDFLAGS="-lz $LDFLAGS -L/system/lib"
+	LDFLAGS="-lc -lz $LDFLAGS -L/system/lib"
 	# $CPPFLAGS"
 
 	# See https://github.com/nagisa/rust_libloading/issues/54
