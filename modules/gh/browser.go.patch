@@ -1,0 +1,38 @@
+--- cli-1.1.0/pkg/browser/browser.go	2020-10-06 13:04:06.000000000 +0000
++++ ./pkg/browser/browser.go	2020-10-14 18:52:35.380196040 +0000
+@@ -25,7 +25,7 @@
+ 
+ // ForOS produces an exec.Cmd to open the web browser for different OS
+ func ForOS(goos, url string) *exec.Cmd {
+-	exe := "open"
++	exe := "am"
+ 	var args []string
+ 	switch goos {
+ 	case "darwin":
+@@ -36,6 +36,7 @@
+ 		args = append(args, "/c", "start", r.Replace(url))
+ 	default:
+ 		exe = linuxExe()
++		args = append(args, "start", "--user", "0", "-a", "android.intent.action.VIEW", "-d")
+ 		args = append(args, url)
+ 	}
+ 
+@@ -58,17 +59,7 @@
+ }
+ 
+ func linuxExe() string {
+-	exe := "xdg-open"
+-
+-	_, err := lookPath(exe)
+-	if err != nil {
+-		_, err := lookPath("wslview")
+-		if err == nil {
+-			exe = "wslview"
+-		}
+-	}
+-
+-	return exe
++	return "am"
+ }
+ 
+ var lookPath = exec.LookPath
