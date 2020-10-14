@@ -96,7 +96,7 @@ magisk_step_start_build() {
 	fi
 
 	# Cleanup old state:
-	rm -Rf "$MAGISK_MODULE_BUILDDIR" \
+	sudo rm -Rf "$MAGISK_MODULE_BUILDDIR" \
 		"$MAGISK_MODULE_MODULEDIR" \
 		"$MAGISK_MODULE_SRCDIR" \
 		"$MAGISK_MODULE_TMPDIR" \
