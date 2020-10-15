@@ -1,11 +1,19 @@
 --- ncdu-1.15.1/src/util.c	2020-05-30 17:30:39.000000000 +0000
-+++ ./src/util.c	2020-10-15 22:24:56.392504797 +0000
-@@ -158,6 +158,8 @@
- 
- 
- int ncresize(int minrows, int mincols) {
-+  erase();
-+  return 1;
-   int ch;
- 
++++ ./src/util.c	2020-10-15 22:42:07.424228528 +0000
+@@ -163,12 +163,12 @@
    getmaxyx(stdscr, winrows, wincols);
+   while((minrows && winrows < minrows) || (mincols && wincols < mincols)) {
+     erase();
+-    mvaddstr(0, 0, "Warning: terminal too small,");
+-    mvaddstr(1, 1, "please either resize your terminal,");
+-    mvaddstr(2, 1, "press i to ignore, or press q to quit.");
++    //mvaddstr(0, 0, "Warning: terminal too small,");
++    //mvaddstr(1, 1, "please either resize your terminal,");
++    //mvaddstr(2, 1, "press i to ignore, or press q to quit.");
+     refresh();
+     nodelay(stdscr, 0);
+-    ch = getch();
++    ch = 'i';
+     getmaxyx(stdscr, winrows, wincols);
+     if(ch == 'q') {
+       erase();
