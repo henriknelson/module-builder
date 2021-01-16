@@ -6,7 +6,7 @@ diff -u -r ../Python-3.6.1/configure ./configure
  		 else CCSHARED="+z";
  		 fi;;
 -	Linux-android*) ;;
-+	Linux-android*) ;;
++	Linux-android*) CCSHARED="-fPIC";;
  	Linux*|GNU*) CCSHARED="-fPIC";;
  	BSD/OS*/4*) CCSHARED="-fpic";;
  	FreeBSD*|NetBSD*|OpenBSD*|DragonFly*) CCSHARED="-fPIC";;

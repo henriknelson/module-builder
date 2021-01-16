@@ -7,7 +7,7 @@ magisk_step_make() {
 	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
 
 	if test -f build.ninja; then
-		ninja -w dupbuild=warn -j $MAGISK_MAKE_PROCESSES
+		ninja --verbose -w dupbuild=warn -j $MAGISK_MAKE_PROCESSES
 	elif ls ./*akefile &> /dev/null || [ ! -z "$MAGISK_MODULE_EXTRA_MAKE_ARGS" ]; then
 		if [ -z "$MAGISK_MODULE_EXTRA_MAKE_ARGS" ]; then
 			make V=1 -j $MAGISK_MAKE_PROCESSES

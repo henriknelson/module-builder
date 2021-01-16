@@ -7,6 +7,6 @@ MAGISK_MODULE_SHA256=cdaba2785e92665cf090646cba6f94812760b9d7d8c8d0cfb07ac819377
 MAGISK_MODULE_BUILD_IN_SRC=true
 
 magisk_module_pre_configure() {
-	CFLAGS=" -static"
-	LDFLAGS=" --static"
+	#CFLAGS=" -static"
+	LDFLAGS+=" -static"
 }

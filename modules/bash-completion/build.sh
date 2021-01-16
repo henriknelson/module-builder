@@ -1,9 +1,9 @@
 MAGISK_MODULE_HOMEPAGE=https://github.com/scop/bash-completion
 MAGISK_MODULE_DESCRIPTION="Programmable completion for the bash shell"
 MAGISK_MODULE_LICENSE="GPL-2.0"
-MAGISK_MODULE_VERSION=2.10
-MAGISK_MODULE_SHA256=123c17998e34b937ce57bb1b111cd817bc369309e9a8047c0bcf06ead4a3ec92
-MAGISK_MODULE_SRCURL=https://github.com/scop/bash-completion/releases/download/2.10/bash-completion-2.10.tar.xz
+MAGISK_MODULE_VERSION=2.11
+MAGISK_MODULE_SHA256=73a8894bad94dee83ab468fa09f628daffd567e8bef1a24277f1e9a0daf911ac
+MAGISK_MODULE_SRCURL=https://github.com/scop/bash-completion/releases/download/${MAGISK_MODULE_VERSION}/bash-completion-${MAGISK_MODULE_VERSION}.tar.xz
 MAGISK_MODULE_DEPENDS="bash"
 MAGISK_MODULE_PLATFORM_INDEPENDENT=yes
 MAGISK_MODULE_BUILD_IN_SRC=yes

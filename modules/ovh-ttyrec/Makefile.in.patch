@@ -1,0 +1,13 @@
+--- Makefile.old	2020-10-31 11:52:19.954577310 +0000
++++ ./Makefile.in	2020-10-31 11:53:21.496874397 +0000
+@@ -1,7 +1,7 @@
+ CC = %CC%
+-CFLAGS = -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I/usr/local/include %CFLAGS%
+-LDFLAGS = -L/usr/local/lib
+-LDLIBS = %LDLIBS%
++CFLAGS = -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I@MAGISK_PREFIX@/include %CFLAGS%
++LDFLAGS = -L$MAGISK_PREFIX/lib -static
++LDLIBS = %LDLIBS% -lc -ldl
+ 
+ BINARIES = ttyrec ttyplay ttytime
+ 

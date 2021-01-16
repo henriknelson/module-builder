@@ -6,7 +6,7 @@ MAGISK_MODULE_VERSION=2.28.0
 MAGISK_MODULE_REVISION=3
 MAGISK_MODULE_SRCURL=https://www.kernel.org/pub/software/scm/git/git-${MAGISK_MODULE_VERSION}.tar.xz
 MAGISK_MODULE_SHA256=dfa5d1a253aa451465478fe45c6a40ab8605b340fdb4c4e80b16d7f87708439d
-MAGISK_MODULE_DEPENDS="zlib, pcre2, openssl, less, libcurl, libiconv"
+MAGISK_MODULE_DEPENDS="zlib, pcre2, openssl, less, libcurl, libiconv, zstd"
 
 MAGISK_MODULE_EXTRA_MAKE_ARGS="
 NO_NSEC=1
@@ -43,12 +43,13 @@ magisk_step_configure() {
 	#CXX=/home/builder/lib/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-cxx
 	#RANLIB=/home/builder/lib/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-ranlib
 	#export CPP=/home/builder/lib/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-cpp
-	./configure --prefix=$MAGISK_PREFIX --libexecdir=$MAGISK_PREFIX/usr/libexec --datarootdir=$MAGISK_PREFIX/usr/share --host=aarch64-linux-android --target=aarch64-linux-android --with-curl --with-zlib --with-ssl --libdir=/system/lib --includedir=/system/include  ac_cv_fread_reads_directories=yes ac_cv_header_libintl_h=no ac_cv_iconv_omits_bom=no ac_cv_snprintf_returns_bogus=no CURL_CONFIG=/system/bin/curl-config
+	./configure --prefix=$MAGISK_PREFIX --libexecdir=$MAGISK_PREFIX/usr/libexec --datarootdir=$MAGISK_PREFIX/usr/share --host=aarch64-linux-android --target=aarch64-linux-android --with-curl --with-zlib --with-ssl --libdir=/system/lib --includedir=/system/include  ac_cv_fread_reads_directories=yes ac_cv_header_libintl_h=no ac_cv_iconv_omits_bom=no ac_cv_snprintf_returns_bogus=no CURL_CONFIG=/system/bin/curl-config LDFLAGS=" -lzstd $LDFLAGS"
 }
 
 magisk_step_make() {
 	make -j $(nproc) V=1 $MAGISK_MODULE_EXTRA_MAKE_ARGS CFLAGS+=" -static"
 	make -j $(nproc) -C contrib/subtree V=1 $MAGISK_MODULE_EXTRA_MAKE_ARGS CFLAGS+=" -static"
+	LDFLAGS+=" -lzstd"
 	#LDFLAGS+=" -lcrypto -lssl -lcurl -ldl -lz -liconv -lcharset"
 	#LIBS="-ldl -lz -liconv -lcharset"
 	# -ldl -lcrypt -lssl -lcurl" EXTLIBS="-ldl -libcrypt -lssl -lcurl -lz -lc"

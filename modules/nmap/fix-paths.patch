@@ -6,7 +6,7 @@ diff -uNr nmap-7.70/ncat/ncat_connect.c nmap-7.70.mod/ncat/ncat_connect.c
                size_t size=0, offset=0;
                strbuf_sprintf(&tmp_name, &size, &offset, "%s/ncat.XXXXXX",
 -                  tmpdir ? tmpdir : "/tmp");
-+                  tmpdir ? tmpdir : "/sdcard");
++                  tmpdir ? tmpdir : "@TERMUX_PREFIX@/tmp");
                if (mkstemp(tmp_name) == -1) {
                  bye("Failed to create name for temporary DGRAM source Unix domain socket (mkstemp).");
                }
@@ -19,8 +19,8 @@ diff -uNr nmap-7.70/ncat/ncat_main.c nmap-7.70.mod/ncat/ncat_main.c
      /* See if the shell is executable before we get deep into this */
 -    if (o.execmode == EXEC_SHELL && access("/bin/sh", X_OK) == -1)
 -        bye("/bin/sh is not executable, so `-c' won't work.");
-+    if (o.execmode == EXEC_SHELL && access("@MAGISK_PREFIX@/bin/sh", X_OK) == -1)
-+        bye("@MAGISK_PREFIX@/bin/sh is not executable, so `-c' won't work.");
++    if (o.execmode == EXEC_SHELL && access("@TERMUX_PREFIX@/bin/sh", X_OK) == -1)
++        bye("@TERMUX_PREFIX@/bin/sh is not executable, so `-c' won't work.");
  #endif
  
      if (targetaddrs->addr.storage.ss_family != AF_UNSPEC) {
@@ -32,7 +32,7 @@ diff -uNr nmap-7.70/ncat/ncat_posix.c nmap-7.70.mod/ncat/ncat_posix.c
  
          case EXEC_SHELL:
 -            execl("/bin/sh", "sh", "-c", cmdexec, (void *) NULL);
-+            execl("@MAGISK_PREFIX@/bin/sh", "sh", "-c", cmdexec, (void *) NULL);
++            execl("@TERMUX_PREFIX@/bin/sh", "sh", "-c", cmdexec, (void *) NULL);
              break;
  #ifdef HAVE_LUA
          case EXEC_LUA:
@@ -44,7 +44,7 @@ diff -uNr nmap-7.70/nmap_dns.cc nmap-7.70.mod/nmap_dns.cc
    char ipaddr[INET6_ADDRSTRLEN+1];
  
 -  fp = fopen("/etc/resolv.conf", "r");
-+  fp = fopen("@MAGISK_PREFIX@/etc/resolv.conf", "r");
++  fp = fopen("@TERMUX_PREFIX@/etc/resolv.conf", "r");
    if (fp == NULL) {
 -    if (firstrun) error("mass_dns: warning: Unable to open /etc/resolv.conf. Try using --system-dns or specify valid servers with --dns-servers");
 +    if (firstrun) error("mass_dns: warning: Unable to open $PREFIX/etc/resolv.conf. Try using --system-dns or specify valid servers with --dns-servers");
@@ -56,7 +56,7 @@ diff -uNr nmap-7.70/nmap_dns.cc nmap-7.70.mod/nmap_dns.cc
  
  #else
 -  parse_etchosts("/etc/hosts");
-+  parse_etchosts("@MAGISK_PREFIX@/etc/hosts");
++  parse_etchosts("@TERMUX_PREFIX@/etc/hosts");
  #endif // WIN32
  }
  
@@ -69,8 +69,8 @@ diff -uNr nmap-7.70/protocols.cc nmap-7.70.mod/protocols.cc
    if (nmap_fetchfile(filename, sizeof(filename), "nmap-protocols") != 1) {
 -    error("Unable to find nmap-protocols!  Resorting to /etc/protocols");
 -    strcpy(filename, "/etc/protocols");
-+    error("Unable to find nmap-protocols!  Resorting to @MAGISK_PREFIX@/etc/protocols");
-+    strcpy(filename, "@MAGISK_PREFIX@/usr/share/nmap");
++    error("Unable to find nmap-protocols!  Resorting to @TERMUX_PREFIX@/etc/protocols");
++    strcpy(filename, "@TERMUX_PREFIX@/etc/protocols");
    }
  
    fp = fopen(filename, "r");
@@ -83,8 +83,8 @@ diff -uNr nmap-7.70/services.cc nmap-7.70.mod/services.cc
  #ifndef WIN32
 -    error("Unable to find nmap-services!  Resorting to /etc/services");
 -    strcpy(filename, "/etc/services");
-+    error("Unable to find nmap-services!  Resorting to @MAGISK_PREFIX@/etc/services");
-+    strcpy(filename, "@MAGISK_PREFIX@/usr/share/nmap");
++    error("Unable to find nmap-services!  Resorting to @TERMUX_PREFIX@/etc/services");
++    strcpy(filename, "@TERMUX_PREFIX@/etc/services");
  #else
          int len, wnt = GetVersion() < 0x80000000;
      error("Unable to find nmap-services!  Resorting to /etc/services");

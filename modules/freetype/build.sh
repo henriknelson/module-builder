@@ -1,10 +1,10 @@
 MAGISK_MODULE_HOMEPAGE=https://www.freetype.org
 MAGISK_MODULE_DESCRIPTION="Software font engine capable of producing high-quality output"
 MAGISK_MODULE_LICENSE="GPL-2.0"
-MAGISK_MODULE_VERSION=2.10.2
+MAGISK_MODULE_VERSION=2.10.3
 MAGISK_MODULE_REVISION=1
-MAGISK_MODULE_SRCURL=https://download.savannah.gnu.org/releases/freetype/freetype-2.10.2.tar.xz
-MAGISK_MODULE_SHA256=1543d61025d2e6312e0a1c563652555f17378a204a61e99928c9fcef030a2d8b
+MAGISK_MODULE_SRCURL=https://download.savannah.gnu.org/releases/freetype/freetype-${MAGISK_MODULE_VERSION}.tar.xz
+MAGISK_MODULE_SHA256=c22244bc766b2d8152f22db7370965431dcb1e408260428208c24984f78e6659
 MAGISK_MODULE_DEPENDS="libbz2, libpng, zlib"
 MAGISK_MODULE_BREAKS="freetype-dev"
 MAGISK_MODULE_REPLACES="freetype-dev"

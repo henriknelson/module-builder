@@ -15,7 +15,7 @@
 -CFLAGS        = -Wall -W -O2
 -LDFLAGS       = 
 +CFLAGS        ?= -Wall -W -O2
-+LDFLAGS       = -llog
++LDFLAGS       = -llog -static
  COPTS         = 
  RPM_OPT_FLAGS = 
  LIBS          = 

@@ -1,0 +1,11 @@
+--- Makefile.old	2020-10-30 00:02:03.428109909 +0000
++++ ./Makefile	2020-10-30 00:03:02.622319696 +0000
+@@ -1,7 +1,7 @@
+ EXE_NAME=ht
+ 
+ build:
+-	go build -o $(EXE_NAME) ./cmd/ht
++	go build -ldflags "-L /system/lib -linkmode external -extldflags \"-lc -ldl -llog -static\"" -o $(EXE_NAME) ./cmd/ht
+ 
+ install:
+ 	go install ./cmd/ht

@@ -1,0 +1,5 @@
+MAGISK_SUBMODULE_INCLUDE="bin/ share/man/man1/"
+MAGISK_SUBMODULE_DESCRIPTION="Simple, extensible, embeddable programming language"
+MAGISK_SUBMODULE_DEPENDS="readline"
+MAGISK_SUBMODULE_BREAKS="lua (<< 5.3.5-6)"
+MAGISK_SUBMODULE_REPLACES="lua (<< 5.3.5-6)"

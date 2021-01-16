@@ -6,7 +6,7 @@ diff -uNr dropbear-2018.76/svr-agentfwd.c dropbear-2018.76.mod/svr-agentfwd.c
  #include "auth.h"
  
 -#define AGENTDIRPREFIX "/tmp/dropbear-"
-+#define AGENTDIRPREFIX "@MAGISK_PREFIX@/tmp/dropbear-"
++#define AGENTDIRPREFIX "/sdcard/tmp/dropbear-"
  
  static int send_msg_channel_open_agent(int fd);
  static int bindagent(int fd, struct ChanSess * chansess);

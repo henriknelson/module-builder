@@ -1,76 +1,46 @@
 MAGISK_MODULE_HOMEPAGE=https://busybox.net/
 MAGISK_MODULE_DESCRIPTION="Tiny versions of many common UNIX utilities into a single small executable"
 MAGISK_MODULE_LICENSE="GPL-2.0"
-MAGISK_MODULE_ESSENTIAL=yes
-MAGISK_MODULE_VERSION=1.31.1
-MAGISK_MODULE_REVISION=1
-MAGISK_MODULE_SHA256=d0f940a72f648943c1f2211e0e3117387c31d765137d92bd8284a3fb9752a998
+MAGISK_MODULE_VERSION=1.32.0
+MAGISK_MODULE_REVISION=2
 MAGISK_MODULE_SRCURL=https://busybox.net/downloads/busybox-${MAGISK_MODULE_VERSION}.tar.bz2
-MAGISK_MODULE_BUILD_IN_SRC=yes
-MAGISK_MODULE_DEPENDS="libcares"
+MAGISK_MODULE_SHA256=c35d87f1d04b2b153d33c275c2632e40d388a88f19a9e71727e0bbbff51fe689
+MAGISK_MODULE_BUILD_IN_SRC=true
 
-# We replace env in the old coreutils package:
-MAGISK_MODULE_CONFLICTS="coreutils (<< 8.25-4)"
+MAGISK_MODULE_SERVICE_SCRIPT=(
+	"telnetd" 'exec busybox telnetd -F'
+	"ftpd" 'exec busybox tcpsvd -vE 0.0.0.0 8021 busybox ftpd -w $HOME'
+)
 
-#magisk_step_pre_configure() {
-#	export TARGET=aarch64-linux-musl
-#}
+mmagisk_step_pre_configure() {
+	# Certain packages are not safe to build on device because their
+	# build.sh script deletes specific files in $MAGISK_PREFIX.
+	if $MAGISK_ON_DEVICE_BUILD; then
+		magisk_error_exit "Package '$MAGISK_MODULE_NAME' is not safe for on-device builds."
+	fi
+}
 
 magisk_step_configure() {
-	make clean
-	cp -f $MAGISK_MODULE_BUILDER_DIR/busybox.config .config
-	echo "CONFIG_SYSROOT=\"$MAGISK_STANDALONE_TOOLCHAIN/sysroot\"" >> .config
-	echo "CONFIG_PREFIX=\"$MAGISK_PREFIX\"" >> .config
-	echo "CONFIG_CROSS_COMPILER_PREFIX=\"$MAGISK_HOST_PLATFORM-\"" >> .config
-	echo "CONFIG_FEATURE_CROND_DIR=\"$MAGISK_PREFIX/var/spool/cron\"" >> .config
-	echo "CONFIG_SV_DEFAULT_SERVICE_DIR=\"$MAGISK_PREFIX/var/service\"" >> .config
+	# Prevent spamming logs with useless warnings to make them more readable.
+	CFLAGS+=" -Wno-ignored-optimization-argument -Wno-unused-command-line-argument"
+
+	sed -e "s|@MAGISK_PREFIX@|$MAGISK_PREFIX|g" \
+		-e "s|@MAGISK_SYSROOT@|$MAGISK_STANDALONE_TOOLCHAIN/sysroot|g" \
+		-e "s|@MAGISK_HOST_PLATFORM@|${MAGISK_HOST_PLATFORM}|g" \
+		-e "s|@MAGISK_CFLAGS@|$CFLAGS|g" \
+		-e "s|@MAGISK_LDFLAGS@|$LDFLAGS|g" \
+		-e "s|@MAGISK_LDLIBS@|log|g" \
+		$MAGISK_MODULE_BUILDER_DIR/busybox.config > .config
+
+	unset CFLAGS LDFLAGS
 	make oldconfig
 }
 
-mmagisk_step_make() {
-	MUSL_PATH=/usr/local/musl/bin
-	export PATH=$MUSL_PATH:$PATH
-	export CC=$MUSL_PATH/${TARGET}-gcc
-	export CFLAGS=" -g -O0"
-	CC=$CC make
-
-	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
-	tree "$MAGISK_MODULE_MASSAGEDIR" > ~/out.log
-	cp $MAGISK_MODULE_SRCDIR/busybox $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/
-	#for f in $(cat $MAGISK_MODULE_SRCDIR/busybox.links); do ln -s ../busybox $(basename $f); done
-}
-
 magisk_step_post_make_install() {
-	if [ "$MAGISK_DEBUG" == "true" ]; then
-		install busybox_unstripped $MAGISK_PREFIX/bin/busybox
+	if $MAGISK_DEBUG; then
+		install -Dm700 busybox_unstripped $PREFIX/bin/busybox
 	fi
 
-	# Create symlinks in $PREFIX/bin/applets to $PREFIX/bin/busybox
-	rm -Rf $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/applets
-	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/applets
-	cd $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/applets
-	for f in $(cat $MAGISK_MODULE_SRCDIR/busybox.links); do ln -s ../busybox $(basename $f); done
-
-	# The 'env' applet is special in that it go into $PREFIX/bin:
-	cd $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
-	ln -f -s busybox env
-
-	# Install busybox man page
-	mkdir -p $MAGISK_PREFIX/usr/share/man/man1
-	cp $MAGISK_MODULE_SRCDIR/docs/busybox.1 $MAGISK_PREFIX/share/man/man1
-
-	# Needed for 'crontab -e' to work out of the box:
-	local _CRONTABS=$MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/var/spool/cron/crontabs
-	mkdir -p $_CRONTABS
-	echo "Used by the busybox crontab and crond tools" > $_CRONTABS/README.magisk
-
-	# Setup some services
-	mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/var/service
-	cd $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/var/service
-	mkdir -p ftpd telnetd
-	echo '#!/bin/sh' > ftpd/run
-	echo 'exec tcpsvd -vE 0.0.0.0 8021 ftpd /data/data/com.magisk/files/home' >> ftpd/run
-	echo '#!/bin/sh' > telnetd/run
-	echo 'exec telnetd -F' >> telnetd/run
-	chmod +x */run
+	# Install busybox man page.
+	install -Dm600 -t $MAGISK_PREFIX/share/man/man1 $MAGISK_MODULE_SRCDIR/docs/busybox.1
 }

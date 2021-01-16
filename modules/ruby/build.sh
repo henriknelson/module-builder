@@ -1,9 +1,9 @@
 MAGISK_MODULE_HOMEPAGE=https://www.ruby-lang.org/
 MAGISK_MODULE_DESCRIPTION="Dynamic programming language with a focus on simplicity and productivity"
 MAGISK_MODULE_LICENSE="BSD 2-Clause"
-MAGISK_MODULE_VERSION=2.7.1
+MAGISK_MODULE_VERSION=2.7.2
 MAGISK_MODULE_SRCURL=https://cache.ruby-lang.org/pub/ruby/${MAGISK_MODULE_VERSION:0:3}/ruby-${MAGISK_MODULE_VERSION}.tar.xz
-MAGISK_MODULE_SHA256=b224f9844646cc92765df8288a46838511c1cec5b550d8874bd4686a904fcee7
+MAGISK_MODULE_SHA256=1b95ab193cc8f5b5e59d2686cb3d5dcf1ddf2a86cb6950e0b4bdaae5040ec0d6
 # libbffi is used by the fiddle extension module:
 MAGISK_MODULE_DEPENDS="gdbm, libandroid-support, libffi, libgmp, readline, openssl, libyaml, zlib"
 MAGISK_MODULE_BREAKS="ruby-dev"

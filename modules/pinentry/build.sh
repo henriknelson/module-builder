@@ -1,0 +1,10 @@
+MAGISK_MODULE_HOMEPAGE=https://www.gnupg.org/related_software/pinentry/index.html
+MAGISK_MODULE_DESCRIPTION="Dialog allowing secure password entry"
+MAGISK_MODULE_LICENSE="GPL-2.0"
+MAGISK_MODULE_VERSION=1.1.0
+MAGISK_MODULE_REVISION=4
+MAGISK_MODULE_SRCURL=https://www.gnupg.org/ftp/gcrypt/pinentry/pinentry-${MAGISK_MODULE_VERSION}.tar.bz2
+MAGISK_MODULE_SHA256=68076686fa724a290ea49cdf0d1c0c1500907d1b759a3bcbfbec0293e8f56570
+MAGISK_MODULE_DEPENDS="libandroid-support, libassuan, libiconv, ncurses"
+MAGISK_MODULE_BUILD_DEPENDS="libgpg-error"
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="--disable-pinentry-fltk --without-libcap --enable-static --disable-shared"

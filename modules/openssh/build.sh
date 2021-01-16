@@ -1,9 +1,9 @@
 MAGISK_MODULE_HOMEPAGE=https://www.openssh.com/
 MAGISK_MODULE_DESCRIPTION="Secure shell for logging into a remote machine"
 MAGISK_MODULE_LICENSE="BSD"
-MAGISK_MODULE_VERSION=8.2p1
+MAGISK_MODULE_VERSION=8.4p1
 MAGISK_MODULE_REVISION=4
-MAGISK_MODULE_SHA256=43925151e6cf6cee1450190c0e9af4dc36b41c12737619edff8bcebdff64e671
+MAGISK_MODULE_SHA256=5a01d22e407eb1c05ba8a8f7c654d388a13e9f226e4ed33bd38748dafa1d2b24
 MAGISK_MODULE_SRCURL=https://fastly.cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${MAGISK_MODULE_VERSION}.tar.gz
 MAGISK_MODULE_DEPENDS="libandroid-support, ldns, openssl, libedit, termux-auth, krb5, zlib"
 MAGISK_MODULE_CONFLICTS="dropbear"

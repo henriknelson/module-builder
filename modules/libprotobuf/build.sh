@@ -1,0 +1,19 @@
+MAGISK_MODULE_HOMEPAGE=https://github.com/google/protobuf
+MAGISK_MODULE_DESCRIPTION="Protocol buffers C++ library"
+MAGISK_MODULE_LICENSE="BSD 3-Clause"
+MAGISK_MODULE_VERSION=2:3.13.0
+MAGISK_MODULE_SRCURL=https://github.com/google/protobuf/archive/v${MAGISK_MODULE_VERSION:2}.tar.gz
+MAGISK_MODULE_SHA256=9b4ee22c250fe31b16f1a24d61467e40780a3fbb9b91c3b65be2a376ed913a1a
+MAGISK_MODULE_DEPENDS="libc++, zlib"
+MAGISK_MODULE_BREAKS="libprotobuf-dev"
+MAGISK_MODULE_REPLACES="libprotobuf-dev"
+MAGISK_MODULE_FORCE_CMAKE=true
+MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
+-Dprotobuf_BUILD_TESTS=OFF
+-DBUILD_SHARED_LIBS=OFF
+"
+
+magisk_step_pre_configure() {
+	export LDFLAGS="$LDFLAGS -lz -ldl -static"
+	MAGISK_MODULE_SRCDIR+="/cmake/"
+}

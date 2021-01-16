@@ -1,8 +1,10 @@
 MAGISK_MODULE_HOMEPAGE=https://github.com/apple/swift-corelibs-libdspatch
 MAGISK_MODULE_DESCRIPTION="The libdispatch project, for concurrency on multicore hardware"
 MAGISK_MODULE_LICENSE="Apache-2.0"
-_VERSION=5.2
+_VERSION=5.3
 MAGISK_MODULE_VERSION=1:${_VERSION}
+MAGISK_MODULE_REVISION=1
 MAGISK_MODULE_SRCURL=https://github.com/apple/swift-corelibs-libdispatch/archive/swift-${_VERSION}-RELEASE.tar.gz
-MAGISK_MODULE_SHA256=11797a43c509a603434c64c1041f208f0f25c3233d6c6493d53704e682634edb
-MAGISK_MODULE_DEPENDS="libc++"
+MAGISK_MODULE_SHA256=6805b555aab65d740fccaa99570fd29b32efa6c310fd42524913e44509dc4969
+MAGISK_MODULE_DEPENDS="libc++, libblocksruntime"
+#MAGISK_MODULE_EXTRA_CONFIGURE_ARGS+=" --disable-shared"

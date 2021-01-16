@@ -1,0 +1,19 @@
+--- hyperfine-1.10.0/src/hyperfine/app.rs	2020-05-25 14:19:34.000000000 +0000
++++ ./src/hyperfine/app.rs	2020-05-26 11:01:00.774803260 +0000
+@@ -1,6 +1,6 @@
+ use atty;
+ use atty::Stream;
+-use clap::{crate_version, App, AppSettings, Arg, ArgMatches};
++use clap::{App, AppSettings, Arg, ArgMatches};
+ use std::ffi::OsString;
+ 
+ pub fn get_arg_matches<T>(args: T) -> ArgMatches<'static>
+@@ -20,7 +20,7 @@
+     };
+ 
+     App::new("hyperfine")
+-        .version(crate_version!())
++        .version("@MAGISK_MODULE_VERSION@ - Compiled for Android by nelshh @ XDA")
+         .setting(clap_color_setting)
+         .setting(AppSettings::DeriveDisplayOrder)
+         .setting(AppSettings::UnifiedHelpMessage)

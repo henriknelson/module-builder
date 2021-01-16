@@ -71,7 +71,6 @@ magisk_step_massage() {
 	#		ln -s $_link_value.gz $file.gz
 	#	done < <(find usr/share/man -type l ! -iname \*.gz -print0)
 	#fi
-
 	magisk_create_submodules
 
 	# .. remove empty directories (NOTE: keep this last):

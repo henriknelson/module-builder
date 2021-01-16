@@ -1,7 +1,9 @@
 # Utility function for golang-using packages to setup a go toolchain.
 magisk_setup_golang() {
-	export GOOS=android
+	export GOOS=linux
 	export CGO_ENABLED=1
+	export PATH="/usr/local/musl/bin:$PATH"
+	export CC=aarch64-linux-musl-gcc
 	export GO_LDFLAGS="-extldflags=-pie"
 	export CGO_LDFLAGS="$LDFLAGS"
 	if [ "$MAGISK_ARCH" = "arm" ]; then

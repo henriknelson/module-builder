@@ -1,12 +1,12 @@
 MAGISK_MODULE_HOMEPAGE=https://nmap.org/
 MAGISK_MODULE_DESCRIPTION="Utility for network discovery and security auditing"
 MAGISK_MODULE_LICENSE="GPL-2.0"
-MAGISK_MODULE_VERSION=7.80
+MAGISK_MODULE_VERSION=7.91
 MAGISK_MODULE_SRCURL=https://nmap.org/dist/nmap-${MAGISK_MODULE_VERSION}.tar.bz2
-MAGISK_MODULE_SHA256=fcfa5a0e42099e12e4bf7a68ebe6fde05553383a682e816a7ec9256ab4773faa
+MAGISK_MODULE_SHA256=18cc4b5070511c51eb243cdd2b0b30ff9b2c4dc4544c6312f75ce3a67a593300
 # Depend on netcat so that it gets installed automatically when installing
 # nmap, since the ncat program is usually distributed as part of nmap.
-MAGISK_MODULE_DEPENDS="libc++, libdl, libpcap, pcre, openssl, resolv-conf, liblua, libssh2, zlib"
+MAGISK_MODULE_DEPENDS="libc++, libdl, libpcap, pcre, openssl, resolv-conf, liblua53, libssh2, zlib"
 # --without-nmap-update to avoid linking against libsvn_client:
 # --without-zenmap to avoid python scripts for graphical gtk frontend:
 # --without-ndiff to avoid python2-using ndiff utility:

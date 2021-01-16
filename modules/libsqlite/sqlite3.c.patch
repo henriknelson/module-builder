@@ -8,8 +8,8 @@ diff -uNr sqlite-autoconf-3240000/sqlite3.c sqlite-autoconf-3240000.mod/sqlite3.
 -     "/var/tmp",
 -     "/usr/tmp",
 -     "/tmp",
-+     "@MAGISK_PREFIX@/var/tmp",
-+     "@MAGISK_PREFIX@/tmp",
++     "/sdcard/var/tmp",
++     "/sdcard/tmp",
       "."
    };
    unsigned int i = 0;

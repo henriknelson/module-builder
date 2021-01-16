@@ -1,3 +1,3 @@
-#!@MAGISK_PREFIX@/bin/sh
-rm -f "@MAGISK_PREFIX@/share/glib-2.0/schemas/gschemas.compiled"
+#!@TERMUX_PREFIX@/bin/sh
+rm -f "@TERMUX_PREFIX@/share/glib-2.0/schemas/gschemas.compiled"
 exit 0

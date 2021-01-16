@@ -1,0 +1,3 @@
+MAGISK_SUBMODULE_DESCRIPTION="developer compiler libs"
+INCLUDED=$(sed 's/^.....//' $MAGISK_MODULE_BUILDDIR/rustc-dev-$MAGISK_MODULE_VERSION-$CARGO_TARGET_NAME/rustc-dev-$CARGO_TARGET_NAME/manifest.in | grep -v '\.so$' )
+MAGISK_SUBMODULE_INCLUDE="$INCLUDED"

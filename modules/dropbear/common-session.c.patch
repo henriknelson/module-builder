@@ -27,3 +27,4 @@ diff -u -r ../dropbear-2019.77/common-session.c ./common-session.c
  	} else {
  		return ses.authstate.pw_shell;
  	}
+

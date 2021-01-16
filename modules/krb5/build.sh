@@ -19,6 +19,8 @@ MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 --sbindir=$MAGISK_PREFIX/bin
 --with-size-optimizations
 --with-system-db
+--with-system-et
+--with-system-ss
 DEFCCNAME=$MAGISK_PREFIX/tmp/krb5cc_%{uid}
 DEFKTNAME=$MAGISK_PREFIX/etc/krb5.keytab
 DEFCKTNAME=$MAGISK_PREFIX/var/krb5/user/%{euid}/client.keytab
@@ -54,4 +56,6 @@ magisk_step_post_make_install() {
 
 	install -dm 700 $MAGISK_PREFIX/share/aclocal
 	install -m 600 $MAGISK_MODULE_SRCDIR/src/util/ac_check_krb5.m4 $MAGISK_PREFIX/share/aclocal
+
+	cp -r $MAGISK_MODULE_SRCDIR/src/util/et $MAGISK_PREFIX/include;
 }

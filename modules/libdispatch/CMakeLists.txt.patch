@@ -1,0 +1,11 @@
+--- swift-corelibs-libdispatch-swift-5.2-RELEASE/CMakeLists.txt	2019-10-01 15:57:33.000000000 +0000
++++ ./CMakeLists.txt	2020-06-24 04:59:30.550083810 +0000
+@@ -62,7 +62,7 @@
+ # NOTE(abdulras) this is the CMake supported way to control whether we generate
+ # shared or static libraries.  This impacts the behaviour of `add_library` in
+ # what type of library it generates.
+-option(BUILD_SHARED_LIBS "build shared libraries" ON)
++option(BUILD_SHARED_LIBS "build shared libraries" OFF)
+ 
+ option(DISPATCH_ENABLE_ASSERTS "enable debug assertions" FALSE)
+ 

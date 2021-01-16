@@ -1,8 +1,0 @@
---- ../../bat-0.12.1/assets/create.sh	2019-09-03 06:07:42.000000000 +0000
-+++ ./assets/create.sh	2019-09-23 13:16:41.601565774 +0000
-@@ -1,4 +1,4 @@
--#!/bin/bash
-+#!/system/bin/bash
- set -euo pipefail
- 
- ASSET_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

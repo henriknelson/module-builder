@@ -1,0 +1,10 @@
+MAGISK_MODULE_HOMEPAGE=https://www.gnupg.org/related_software/libassuan/
+MAGISK_MODULE_DESCRIPTION="Library implementing the Assuan IPC protocol used between most newer GnuPG components"
+MAGISK_MODULE_LICENSE="GPL-2.0"
+MAGISK_MODULE_VERSION=2.5.3
+MAGISK_MODULE_REVISION=1
+MAGISK_MODULE_SRCURL=https://www.gnupg.org/ftp/gcrypt/libassuan/libassuan-${MAGISK_MODULE_VERSION}.tar.bz2
+MAGISK_MODULE_SHA256=91bcb0403866b4e7c4bc1cc52ed4c364a9b5414b3994f718c70303f7f765e702
+MAGISK_MODULE_DEPENDS="libgpg-error"
+MAGISK_MODULE_BREAKS="libassuan-dev"
+MAGISK_MODULE_REPLACES="libassuan-dev"

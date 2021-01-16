@@ -1,61 +1,55 @@
 MAGISK_MODULE_HOMEPAGE=https://www.openssl.org/
 MAGISK_MODULE_DESCRIPTION="Library implementing the SSL and TLS protocols as well as general purpose cryptography functions"
 MAGISK_MODULE_LICENSE="BSD"
-MAGISK_MODULE_DEPENDS="ca-certificates, libdl, zlib"
-MAGISK_MODULE_VERSION=1.1.1g
-MAGISK_MODULE_REVISION=1
-MAGISK_MODULE_SHA256=ddb04774f1e32f0c49751e21b67216ac87852ceb056b75209af2443400636d46
-MAGISK_MODULE_SRCURL=https://www.openssl.org/source/openssl-${MAGISK_MODULE_VERSION}.tar.gz
+MAGISK_MODULE_VERSION=1.1.1h
+MAGISK_MODULE_SRCURL=https://www.openssl.org/source/openssl-${MAGISK_MODULE_VERSION/\~/-}.tar.gz
+MAGISK_MODULE_SHA256=5c9ca8774bd7b03e5784f26ae9e9e6d749c9da2438545077e6b3d755a06595d9
+MAGISK_MODULE_DEPENDS="libandroid-support, ca-certificates, zlib"
 MAGISK_MODULE_CONFFILES="etc/tls/openssl.cnf"
-#MAGISK_MODULE_RM_AFTER_INSTALL="bin/c_rehash etc/ssl/misc"
-MAGISK_MODULE_BUILD_IN_SRC=yes
+MAGISK_MODULE_BUILD_IN_SRC=true
 MAGISK_MODULE_CONFLICTS="libcurl (<< 7.61.0-1)"
-MAGISK_MODULE_BREAKS="openssl-tool (<< 1.1.1b-1)"
-MAGISK_MODULE_REPLACES="openssl-tool (<< 1.1.1b-1)"
-MAGISK_MODULE_EXTRA_CONFIGURE_ARGS=" --enable-shared"
+MAGISK_MODULE_BREAKS="openssl-tool (<< 1.1.1b-1), openssl-dev"
+MAGISK_MODULE_REPLACES="openssl-tool (<< 1.1.1b-1), openssl-dev"
 
 magisk_step_configure() {
 	CFLAGS+=" -DNO_SYSLOG"
-	if [ $MAGISK_ARCH = arm ]; then
-		CFLAGS+=" -fno-integrated-as"
-	fi
-
+	LDFLAGS+=" -ldl"
 	perl -p -i -e "s@MAGISK_CFLAGS@$CFLAGS@g" Configure
 	rm -Rf $MAGISK_PREFIX/lib/libcrypto.* $MAGISK_PREFIX/lib/libssl.*
 	test $MAGISK_ARCH = "arm" && MAGISK_OPENSSL_PLATFORM="android-arm"
 	test $MAGISK_ARCH = "aarch64" && MAGISK_OPENSSL_PLATFORM="android-arm64"
 	test $MAGISK_ARCH = "i686" && MAGISK_OPENSSL_PLATFORM="android-x86"
 	test $MAGISK_ARCH = "x86_64" && MAGISK_OPENSSL_PLATFORM="android-x86_64"
-	# If enabling zlib-dynamic we need "zlib-dynamic" instead of "no-comp no-dso":
-	#LDFLAGS="${LDFLAGS} --static"
-	#export PATH=/usr/local/musl/bin:$PATH
-	#export CC=/usr/local/musl/bin/aarch64-linux-musl-gcc
-	./Configure $MAGISK_OPENSSL_PLATFORM --prefix=$MAGISK_PREFIX --openssldir=$MAGISK_PREFIX/etc/tls -fPIC zlib no-dso no-hw no-srp no-tests enable-md2 enable-rc5 enable-ecdsa enable-tls enable-tls1_3 enable-tls1_2 enable-tls1_1 shared enable-shared
-	#--openssldir=$MAGISK_PREFIX/etc/tls
 
-}
-
-mmagisk_step_post_configure() {
-	patch -p0 -i $MAGISK_MODULE_BUILDER_DIR/makefile_patch
+	LIBS='-ldl -lpthread' ./Configure $MAGISK_OPENSSL_PLATFORM \
+		--prefix=$MAGISK_PREFIX \
+		--openssldir=$MAGISK_PREFIX/etc/tls \
+		no-shared \
+		no-ssl \
+		no-hw \
+		no-srp \
+		no-tests
 }
 
 magisk_step_make() {
-	make depend
-	make -j $MAGISK_MAKE_PROCESSES all
+	make V=1 depend
+	make V=1 -j $MAGISK_MAKE_PROCESSES all
 }
 
 magisk_step_make_install() {
-	#"install_sw" instead of "install" to not install man pages:
-	make -j $(nproc) install_sw
-	#MANDIR=$MAGISK_PREFIX/share/man MANSUFFIX=.ssl
+	# "install_sw" instead of "install" to not install man pages:
+	make V=1 -j 1 install_sw MANDIR=$MAGISK_PREFIX/usr/share/man MANSUFFIX=.ssl
 
 	mkdir -p $MAGISK_PREFIX/etc/tls/
+
 	cp apps/openssl.cnf $MAGISK_PREFIX/etc/tls/openssl.cnf
-	cp apps/openssl $MAGISK_PREFIX/bin/openssl
+
+	sed "s|@MAGISK_PREFIX@|$MAGISK_PREFIX|g" \
+		$MAGISK_MODULE_BUILDER_DIR/add-trusted-certificate \
+		> $MAGISK_PREFIX/bin/add-trusted-certificate
+	chmod 700 $MAGISK_PREFIX/bin/add-trusted-certificate
 }
 
-#mmagisk_step_post_make_install() {
-#        mkdir -p $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin
-#        cp $MAGISK_MODULE_SRCDIR/apps/openssl $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/bin/openssl
-#       	rm -Rf $MAGISK_MODULE_MASSAGEDIR/$MAGISK_PREFIX/share
-#}
+#export PATH=/usr/local/musl/bin:$PATH
+#export PREFIX=/usr/local/musl/bin/aarch64-linux-musl
+#env CC=${PREFIX}-gcc AR=${PREFIX}-ar RANLIB=${PREFIX}-ranlib C_INCLUDE_PATH=/usr/local/musl/aarch64-linux-musl/include

@@ -1,10 +1,11 @@
 MAGISK_MODULE_HOMEPAGE=https://python.org/
 MAGISK_MODULE_DESCRIPTION="Python 3 programming language intended to enable clear programs"
 MAGISK_MODULE_LICENSE="PythonPL"
-_MAJOR_VERSION=3.8
-MAGISK_MODULE_VERSION=${_MAJOR_VERSION}.3
+_MAJOR_VERSION=3.9
+_MINOR_VERSION=0
+MAGISK_MODULE_VERSION=${_MAJOR_VERSION}.${_MINOR_VERSION}
 MAGISK_MODULE_SRCURL=https://www.python.org/ftp/python/${MAGISK_MODULE_VERSION}/Python-${MAGISK_MODULE_VERSION}.tar.xz
-MAGISK_MODULE_SHA256=dfab5ec723c218082fe3d5d7ae17ecbdebffa9a1aea4d64aa3a2ecdd2e795864
+MAGISK_MODULE_SHA256=9c73e63c99855709b9be0b3cc9e5b072cb60f37311e8c4e50f15576a0bf82854
 MAGISK_MODULE_DEPENDS="gdbm, libandroid-support, libbz2, libcrypt, libffi, liblzma, libsqlite, ncurses, ncurses-ui-libs, openssl, readline, zlib"
 MAGISK_MODULE_RECOMMENDS="clang"
 MAGISK_MODULE_SUGGESTS="python-tkinter"

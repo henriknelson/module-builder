@@ -1,0 +1,19 @@
+--- Makefile.old	2020-10-31 18:43:54.156705310 +0000
++++ ./Makefile	2020-10-31 18:44:25.845617241 +0000
+@@ -6,14 +6,14 @@
+ INSTALL_FILES=`find $(DIRS) -type f 2>/dev/null`
+ DOC_FILES=*.md LICENSE
+ 
+-PREFIX?=/usr/local
++PREFIX?=@MAGISK_PREFIX@
+ DOC_DIR=$(PREFIX)/share/doc/$(NAME)
+ 
+ .PHONY: all build test fmt fmtdiff travis gox tag push release install uninstall binary-tarballs os-arch-tgz
+ 
+ all: build
+ 
+-build: test
++build:
+ 	go build -o bin/asciinema
+ 
+ test:

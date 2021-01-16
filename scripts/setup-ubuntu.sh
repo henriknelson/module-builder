@@ -58,6 +58,7 @@ PACKAGES+=" bash-completion"
 PACKAGES+=" mandoc"
 PACKAGES+=" libclang-dev"
 PACKAGES+=" autopoint"
+PACKAGES+=" lsb-release"
 
 # Allow 32-bit packages.
 sudo dpkg --add-architecture i386

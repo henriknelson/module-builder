@@ -6,5 +6,5 @@ MAGISK_MODULE_BUILD_IN_SRC=yes
 magisk_step_make_install () {
 	CPPFLAGS+=" -std=c11 -Wall -Werror"
 	$CC $CPPFLAGS $CFLAGS -c -fPIC $MAGISK_MODULE_BUILDER_DIR/pty.c -o pty.o
-	$CC -shared -fPIC $LDFLAGS -o $MAGISK_PREFIX/lib/libutil.so pty.o
+	$CC -fPIC $LDFLAGS -static -o $MAGISK_PREFIX/lib/libutil.a pty.o
 }

@@ -1,0 +1,54 @@
+diff -u -r ../tmux-3.1b/tmux.1 ./tmux.1
+--- ../tmux-3.1b/tmux.1	2020-05-04 10:06:57.000000000 +0200
++++ ./tmux.1	2020-08-06 10:59:21.812427968 +0200
+@@ -90,7 +90,7 @@
+ .Em server .
+ The server and each client are separate processes which communicate through a
+ socket in
+-.Pa /tmp .
++.Pa /sdcard/.tmux .
+ .Pp
+ The options are as follows:
+ .Bl -tag -width "XXXXXXXXXXXX"
+@@ -145,7 +145,7 @@
+ stores the server socket in a directory under
+ .Ev TMUX_TMPDIR
+ or
+-.Pa /tmp
++.Pa /sdcard/.tmux
+ if it is unset.
+ The default socket is named
+ .Em default .
+diff -u -r ../tmux-3.1b/tmux.c ./tmux.c
+--- tmux-3.1b/tmux.c	2020-05-04 08:06:57.000000000 +0000
++++ ./tmux.c	2020-09-22 12:45:26.736932270 +0000
+@@ -119,9 +119,9 @@
+ 	uid = getuid();
+ 
+ 	if ((s = getenv("TMUX_TMPDIR")) != NULL && *s != '\0')
+-		xasprintf(&base, "%s/tmux-%ld", s, (long)uid);
++		xasprintf(&base, "%s/tmux_%ld", s, (long)uid);
+ 	else
+-		xasprintf(&base, "%s/tmux-%ld", _PATH_TMP, (long)uid);
++		xasprintf(&base, "%s/tmux_%ld", "/sdcard/.tmux", (long)uid);
+ 	if (realpath(base, resolved) == NULL &&
+ 	    strlcpy(resolved, base, sizeof resolved) >= sizeof resolved) {
+ 		errno = ERANGE;
+@@ -130,7 +130,7 @@
+ 	}
+ 	free(base);
+ 
+-	if (mkdir(resolved, S_IRWXU) != 0 && errno != EEXIST)
++	if (mkdir(resolved, 00771) != 0 && errno != EEXIST)
+ 		goto fail;
+ 	if (lstat(resolved, &sb) != 0)
+ 		goto fail;
+@@ -138,7 +138,7 @@
+ 		errno = ENOTDIR;
+ 		goto fail;
+ 	}
+-	if (sb.st_uid != uid || (sb.st_mode & S_IRWXO) != 0) {
++	if (sb.st_uid != uid) {
+ 		errno = EACCES;
+ 		goto fail;
+ 	}

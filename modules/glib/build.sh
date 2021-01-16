@@ -1,9 +1,9 @@
 MAGISK_MODULE_HOMEPAGE=https://developer.gnome.org/glib/
 MAGISK_MODULE_DESCRIPTION="Library providing core building blocks for libraries and applications written in C"
 MAGISK_MODULE_LICENSE="LGPL-2.1"
-MAGISK_MODULE_VERSION=2.64.3
-MAGISK_MODULE_SRCURL=https://ftp.gnome.org/pub/gnome/sources/glib/2.64/glib-2.64.3.tar.xz
-MAGISK_MODULE_SHA256=fe9cbc97925d14c804935f067a3ad77ef55c0bbe9befe68962318f5a767ceb22
+MAGISK_MODULE_VERSION=2.66.1
+MAGISK_MODULE_SRCURL=https://ftp.gnome.org/pub/gnome/sources/glib/${MAGISK_MODULE_VERSION:0:4}/glib-${MAGISK_MODULE_VERSION}.tar.xz
+MAGISK_MODULE_SHA256=a269ffe69fbcc3a21ff1acb1b6146b2a5723499d6e2de33ae16ccb6d2438ef60
 # libandroid-support to get langinfo.h in include path.
 MAGISK_MODULE_DEPENDS="libffi, libiconv, pcre, libandroid-support, zlib"
 MAGISK_MODULE_BREAKS="glib-dev"

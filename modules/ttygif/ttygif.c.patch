@@ -1,0 +1,11 @@
+--- ttygif.old	2020-10-31 01:11:35.887992842 +0000
++++ ./ttygif.c	2020-10-31 01:11:58.596969722 +0000
+@@ -294,7 +294,7 @@
+     options.debug = getenv("TTYGIF_DEBUG") != NULL;
+     options.out_file = "tty.gif";
+ 
+-    char dir_template[] = "/tmp/ttygif.XXXXXX";
++    char dir_template[] = "/sdcard/tmp/ttygif.XXXXXX";
+     options.img_dir = mkdtemp(dir_template);
+     if (options.img_dir == NULL) {
+         fatalf("Error: Failed to create tmp directory.");

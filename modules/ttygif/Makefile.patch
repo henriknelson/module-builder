@@ -1,0 +1,13 @@
+--- Makefile.old	2020-10-31 01:03:58.624971132 +0000
++++ ./Makefile	2020-10-31 01:04:58.540463177 +0000
+@@ -1,7 +1,7 @@
+-CC = gcc
++CC = $(GCC)
+ VERSION = '"1.4.0"'
+-CFLAGS = -O2 -Wall -DVERSION=$(VERSION)
+-PREFIX ?= /usr/local
++CFLAGS = -O2 -Wall -DVERSION=$(VERSION) -static
++PREFIX ?= /system/bin
+ 
+ UNAME := $(shell uname)
+ ifeq ($(UNAME), Darwin)

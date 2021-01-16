@@ -1,0 +1,31 @@
+--- Godeps/_workspace/src/github.com/kr/pty/pty_linux.go	2020-10-31 19:13:43.161457142 +0000
++++ ./Godeps/_workspace/src/github.com/kr/pty/pty_linux.go	2020-10-31 19:14:06.398143487 +0000
+@@ -8,8 +8,8 @@
+ )
+ 
+ var (
+-	ioctl_TIOCGPTN   = _IOR('T', 0x30, unsafe.Sizeof(_C_uint(0))) /* Get Pty Number (of pty-mux device) */
+-	ioctl_TIOCSPTLCK = _IOW('T', 0x31, unsafe.Sizeof(_C_int(0)))  /* Lock/unlock Pty */
++	ioctl_TIOCGPTN   = _IOR('T', 0x30, unsafe.Sizeof(uint(0))) /* Get Pty Number (of pty-mux device) */
++	ioctl_TIOCSPTLCK = _IOW('T', 0x31, unsafe.Sizeof(int(0)))  /* Lock/unlock Pty */
+ )
+ 
+ func open() (pty, tty *os.File, err error) {
+@@ -36,7 +36,7 @@
+ }
+ 
+ func ptsname(f *os.File) (string, error) {
+-	var n _C_uint
++	var n int
+ 	err := ioctl(f.Fd(), ioctl_TIOCGPTN, uintptr(unsafe.Pointer(&n)))
+ 	if err != nil {
+ 		return "", err
+@@ -45,7 +45,7 @@
+ }
+ 
+ func unlockpt(f *os.File) error {
+-	var u _C_int
++	var u int
+ 	// use TIOCSPTLCK with a zero valued arg to clear the slave pty lock
+ 	return ioctl(f.Fd(), ioctl_TIOCSPTLCK, uintptr(unsafe.Pointer(&u)))
+ }

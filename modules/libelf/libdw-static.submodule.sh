@@ -1,0 +1,3 @@
+MAGISK_SUBMODULE_INCLUDE="lib/libdw.a"
+MAGISK_SUBMODULE_DESCRIPTION="Static library to read DWARF information"
+MAGISK_SUBMODULE_DEPENDS="libdw"

@@ -9,6 +9,19 @@ MAGISK_MODULE_DEVMODULE_BREAKS="ndk-sysroot (<< 19b-3)"
 MAGISK_MODULE_DEVMODULE_REPLACES="ndk-sysroot (<< 19b-3)"
 MAGISK_MODULE_BUILD_IN_SRC=true
 
+magisk_step_pre_configure() {
+	export LDFLAGS="$LDFLAGS -static"
+}
+
 magisk_step_configure() {
-	./configure --prefix=$MAGISK_PREFIX --enable-shared --static --archs="-arch aarch64"
+	export PATH=/usr/local/musl/bin:$PATH
+        TARGET=aarch64-linux-musl
+	export CC=${TARGET}-gcc
+	export GCC=${TARGET}-gcc
+	export LD=${TARGET}-ld
+	export AR=${TARGET}-ar
+	export RANLIB=${TARGET}-ranlib
+	export CFLAGS=" -z execstack"
+	C_INCLUDE_PATH=/usr/local/musl/aarch64-linux-musl/include
+	./configure --prefix=$MAGISK_PREFIX --static
 }
