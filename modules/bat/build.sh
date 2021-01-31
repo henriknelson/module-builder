@@ -5,13 +5,13 @@ MAGISK_MODULE_VERSION=0.17.1
 MAGISK_MODULE_SRCURL=https://github.com/sharkdp/bat/archive/v${MAGISK_MODULE_VERSION}.tar.gz
 MAGISK_MODULE_SHA256=16d39414e8a3b80d890cfdbca6c0e6ff280058397f4a3066c37e0998985d87c4
 # bat calls less with '--RAW-CONTROL-CHARS' which busybox less does not support:
-MAGISK_MODULE_DEPENDS="less"
+MAGISK_MODULE_DEPENDS="less, zlib-musl"
 MAGISK_MODULE_BUILD_IN_SRC=true
 
 magisk_step_pre_configure() {
-	cp /usr/local/musl/aarch64-linux-musl/lib/libc.a /system/lib
+	#cp /usr/local/musl/aarch64-linux-musl/lib/libc.a /system/lib
 	CFLAGS="$CFLAGS -I/system/include"
-	LDFLAGS="-lc $LDFLAGS -L/system/lib"
+	LDFLAGS="-L /usr/local/musl/aarch64-linux-musl/lib -lc $LDFLAGS -L/system/lib"
 
 	# See https://github.com/nagisa/rust_libloading/issues/54
 	export CC_x86_64_unknown_linux_gnu=gcc

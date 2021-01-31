@@ -1,0 +1,78 @@
+--- zlib-1.2.11/configure	2016-12-31 18:06:40.000000000 +0000
++++ ./configure	2021-01-31 12:10:44.976881354 +0000
+@@ -37,7 +37,7 @@
+ fi
+ 
+ # destination name for static library
+-STATICLIB=libz.a
++STATICLIB=libz-musl.a
+ 
+ # extract zlib version numbers from zlib.h
+ VER=`sed -n -e '/VERSION "/s/.*"\(.*\)".*/\1/p' < ${SRCDIR}zlib.h`
+@@ -208,9 +208,9 @@
+   fi
+   case "$uname" in
+   Linux* | linux* | GNU | GNU/* | solaris*)
+-        LDSHARED=${LDSHARED-"$cc -shared -Wl,-soname,libz.so.1,--version-script,${SRCDIR}zlib.map"} ;;
++        LDSHARED=${LDSHARED-"$cc -shared -Wl,-soname,libz-musl.so.1,--version-script,${SRCDIR}zlib.map"} ;;
+   *BSD | *bsd* | DragonFly)
+-        LDSHARED=${LDSHARED-"$cc -shared -Wl,-soname,libz.so.1,--version-script,${SRCDIR}zlib.map"}
++        LDSHARED=${LDSHARED-"$cc -shared -Wl,-soname,libz-musl.so.1,--version-script,${SRCDIR}zlib.map"}
+         LDCONFIG="ldconfig -m" ;;
+   CYGWIN* | Cygwin* | cygwin* | OS/2*)
+         EXE='.exe' ;;
+@@ -224,22 +224,22 @@
+         EXE='.exe' ;;
+   QNX*)  # This is for QNX6. I suppose that the QNX rule below is for QNX2,QNX4
+          # (alain.bonnefoy@icbt.com)
+-                 LDSHARED=${LDSHARED-"$cc -shared -Wl,-hlibz.so.1"} ;;
++                 LDSHARED=${LDSHARED-"$cc -shared -Wl,-hlibz-musl.so.1"} ;;
+   HP-UX*)
+          LDSHARED=${LDSHARED-"$cc -shared $SFLAGS"}
+          case `(uname -m || echo unknown) 2>/dev/null` in
+          ia64)
+                  shared_ext='.so'
+-                 SHAREDLIB='libz.so' ;;
++                 SHAREDLIB='libz-musl.so' ;;
+          *)
+                  shared_ext='.sl'
+-                 SHAREDLIB='libz.sl' ;;
++                 SHAREDLIB='libz-musl.sl' ;;
+          esac ;;
+   Darwin* | darwin*)
+              shared_ext='.dylib'
+              SHAREDLIB=libz$shared_ext
+-             SHAREDLIBV=libz.$VER$shared_ext
+-             SHAREDLIBM=libz.$VER1$shared_ext
++             SHAREDLIBV=libz-musl.$VER$shared_ext
++             SHAREDLIBM=libz-musl.$VER1$shared_ext
+              LDSHARED=${LDSHARED-"$cc -dynamiclib -install_name $libdir/$SHAREDLIBM -compatibility_version $VER1 -current_version $VER3"}
+              if libtool -V 2>&1 | grep Apple > /dev/null; then
+                  AR="libtool"
+@@ -265,21 +265,21 @@
+          case `(uname -m || echo unknown) 2>/dev/null` in
+          ia64)
+              shared_ext='.so'
+-             SHAREDLIB='libz.so' ;;
++             SHAREDLIB='libz-musl.so' ;;
+          *)
+              shared_ext='.sl'
+-             SHAREDLIB='libz.sl' ;;
++             SHAREDLIB='libz-musl.sl' ;;
+          esac ;;
+   IRIX*)     SFLAGS=${CFLAGS-"-ansi -O2 -rpath ."}
+              CFLAGS=${CFLAGS-"-ansi -O2"}
+-             LDSHARED=${LDSHARED-"cc -shared -Wl,-soname,libz.so.1"} ;;
++             LDSHARED=${LDSHARED-"cc -shared -Wl,-soname,libz-musl.so.1"} ;;
+   OSF1\ V4*) SFLAGS=${CFLAGS-"-O -std1"}
+              CFLAGS=${CFLAGS-"-O -std1"}
+              LDFLAGS="${LDFLAGS} -Wl,-rpath,."
+-             LDSHARED=${LDSHARED-"cc -shared  -Wl,-soname,libz.so -Wl,-msym -Wl,-rpath,$(libdir) -Wl,-set_version,${VER}:1.0"} ;;
++             LDSHARED=${LDSHARED-"cc -shared  -Wl,-soname,libz-musl.so -Wl,-msym -Wl,-rpath,$(libdir) -Wl,-set_version,${VER}:1.0"} ;;
+   OSF1*)     SFLAGS=${CFLAGS-"-O -std1"}
+              CFLAGS=${CFLAGS-"-O -std1"}
+-             LDSHARED=${LDSHARED-"cc -shared -Wl,-soname,libz.so.1"} ;;
++             LDSHARED=${LDSHARED-"cc -shared -Wl,-soname,libz-musl.so.1"} ;;
+   QNX*)      SFLAGS=${CFLAGS-"-4 -O"}
+              CFLAGS=${CFLAGS-"-4 -O"}
+              LDSHARED=${LDSHARED-"cc"}
