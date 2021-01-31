@@ -14,14 +14,14 @@ magisk_step_pre_configure() {
 }
 
 magisk_step_configure() {
-	export PATH=/usr/local/musl/bin:$PATH
-        TARGET=aarch64-linux-musl
-	export CC=${TARGET}-gcc
-	export GCC=${TARGET}-gcc
-	export LD=${TARGET}-ld
-	export AR=${TARGET}-ar
-	export RANLIB=${TARGET}-ranlib
-	export CFLAGS=" -z execstack"
-	C_INCLUDE_PATH=/usr/local/musl/aarch64-linux-musl/include
+	#export PATH=/usr/local/musl/bin:$PATH
+        #TARGET=aarch64-linux-musl
+	#export CC=${TARGET}-gcc
+	#export GCC=${TARGET}-gcc
+	#export LD=${TARGET}-ld
+	#export AR=${TARGET}-ar
+	#export RANLIB=${TARGET}-ranlib
+	#export CFLAGS=" -z execstack"
+	#C_INCLUDE_PATH=/usr/local/musl/aarch64-linux-musl/include
 	./configure --prefix=$MAGISK_PREFIX --static
 }
