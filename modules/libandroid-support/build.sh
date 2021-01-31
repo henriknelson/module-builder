@@ -9,6 +9,23 @@ MAGISK_MODULE_PRE_DEPENDS="dpkg (>= 1.19.4-3)"
 MAGISK_MODULE_BUILD_IN_SRC=true
 MAGISK_MODULE_ESSENTIAL=true
 
+magisk_step_pre_configure() {
+	export LDFLAGS="$LDFLAGS -static"
+}
+
+magisk_step_configure() {
+	export PATH=/usr/local/musl/bin:$PATH
+        TARGET=aarch64-linux-musl
+	export CC=${TARGET}-gcc
+	export GCC=${TARGET}-gcc
+	export LD=${TARGET}-ld
+	export AR=${TARGET}-ar
+	export RANLIB=${TARGET}-ranlib
+	export CFLAGS=" -z execstack"
+	C_INCLUDE_PATH=/usr/local/musl/aarch64-linux-musl/include
+	#./configure --prefix=$MAGISK_PREFIX --static
+}
+
 magisk_step_make() {
 	local c_file
 
