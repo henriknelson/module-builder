@@ -4,7 +4,7 @@
 #	docker push nelshh/module-builder
 # This is done after changing this file or any of the
 # scripts/setup-{ubuntu,android-sdk}.sh setup scripts.
-FROM ubuntu:19.10
+FROM ubuntu:20.04
 
 # Fix locale to avoid warnings:
 ENV LANG C.UTF-8
@@ -39,4 +39,4 @@ WORKDIR /home/builder/magisk-modules
 
 # Copy customisations
 COPY ./.bashrc ./.aliases ./.motd /home/builder/
- 
+

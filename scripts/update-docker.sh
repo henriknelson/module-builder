@@ -2,7 +2,7 @@
 set -e -u
 
 CONTAINER=nelshh-module-builder
-IMAGE=nelshh/module-builder
+IMAGE=nelshh/module-builder:latest
 
 docker pull $IMAGE
 

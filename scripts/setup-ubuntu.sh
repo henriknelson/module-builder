@@ -5,6 +5,7 @@ PACKAGES=""
 PACKAGES+=" asciidoc"
 PACKAGES+=" asciidoctor" # Used by weechat for man pages.
 PACKAGES+=" automake"
+PACKAGES+=" autopoint"
 PACKAGES+=" bison"
 PACKAGES+=" curl" # Used for fetching sources.
 PACKAGES+=" ed" # Used by bc
@@ -20,7 +21,7 @@ PACKAGES+=" libglib2.0-dev" # Provides 'glib-genmarshal' which the glib build us
 PACKAGES+=" libtool-bin"
 PACKAGES+=" libncurses5-dev" # Used by mariadb for host build part.
 PACKAGES+=" lzip"
-PACKAGES+=" python3.7"
+PACKAGES+=" python3"
 PACKAGES+=" tar"
 PACKAGES+=" unzip"
 PACKAGES+=" m4"
@@ -58,7 +59,8 @@ PACKAGES+=" bash-completion"
 PACKAGES+=" mandoc"
 PACKAGES+=" libclang-dev"
 PACKAGES+=" autopoint"
-PACKAGES+=" lsb-release"
+PACKAGES+=" openjdk-8-jdk"
+
 
 # Allow 32-bit packages.
 sudo dpkg --add-architecture i386
@@ -73,23 +75,23 @@ sudo dpkg -i ~/tmp/bat.deb
 sudo rm -r ~/tmp
 
 # Find and assign UBUNTU_VERSION
-if [[ `lsb_release -rs` == "19.04" ]]; then
-	UBUNTU_VERSION="19.04.2"
-else
-	UBUNTU_VERSION="18.10.1"
-fi
+#if [[ `lsb_release -rs` == "19.04" ]]; then
+#	UBUNTU_VERSION="19.04.2"
+#else
+#	UBUNTU_VERSION="18.10.1"
+#fi
 
 # Make openjdk 8 available:
 #curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jdk-headless_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb
-curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jdk-headless_8u242-b08-0ubuntu3~19.10_amd64.deb
+#curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jdk-headless_8u242-b08-0ubuntu3~19.10_amd64.deb
 #curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jdk_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb
-curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jdk_8u242-b08-0ubuntu3~19.10_amd64.deb
+#curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jdk_8u242-b08-0ubuntu3~19.10_amd64.deb
 #curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jre_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb
-curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jre_8u242-b08-0ubuntu3~19.10_amd64.deb
+#curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jre_8u242-b08-0ubuntu3~19.10_amd64.deb
 #curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jre-headless_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb
-curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jre-headless_8u242-b08-0ubuntu3~19.10_amd64.deb
+#curl -O http://security.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/openjdk-8-jre-headless_8u242-b08-0ubuntu3~19.10_amd64.deb
 #sudo dpkg -i openjdk-8-jre-headless_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb openjdk-8-jre_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb openjdk-8-jdk_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb openjdk-8-jdk-headless_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb || sudo apt install -f -y
-sudo dpkg -i openjdk-8-jdk-headless_8u242-b08-0ubuntu3~19.10_amd64.deb openjdk-8-jdk_8u242-b08-0ubuntu3~19.10_amd64.deb openjdk-8-jre_8u242-b08-0ubuntu3~19.10_amd64.deb openjdk-8-jre-headless_8u242-b08-0ubuntu3~19.10_amd64.deb || sudo apt install -f -y
+#sudo dpkg -i openjdk-8-jdk-headless_8u242-b08-0ubuntu3~19.10_amd64.deb openjdk-8-jdk_8u242-b08-0ubuntu3~19.10_amd64.deb openjdk-8-jre_8u242-b08-0ubuntu3~19.10_amd64.deb openjdk-8-jre-headless_8u242-b08-0ubuntu3~19.10_amd64.deb || sudo apt install -f -y
 #rm openjdk-8-jre-headless_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb openjdk-8-jre_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb openjdk-8-jdk_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb openjdk-8-jdk-headless_8u212-b03-0ubuntu1."$UBUNTU_VERSION"_amd64.deb
 
 sudo mkdir -p /system
