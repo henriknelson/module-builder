@@ -1,9 +1,10 @@
 MAGISK_MODULE_HOMEPAGE=https://github.com/junegunn/fzf
 MAGISK_MODULE_DESCRIPTION="Command-line fuzzy finder"
 MAGISK_MODULE_LICENSE="MIT"
-MAGISK_MODULE_VERSION=0.24.1
+MAGISK_MODULE_VERSION=0.25.1
 MAGISK_MODULE_SRCURL=https://github.com/junegunn/fzf/archive/${MAGISK_MODULE_VERSION}.tar.gz
-MAGISK_MODULE_SHA256=35e8f57319d4b0ad3297251f4487b15203d288a081c1019d67f80758264b9d45
+MAGISK_MODULE_SHA256=b97cf9ab528391a49dfa45b459c767fb2626ade9f3a3f99d0108d7274f2eca8b
+
 # Depend on findutils as fzf uses the -fstype option, which busybox
 # find does not support, when invoking find:
 MAGISK_MODULE_DEPENDS="bash, findutils"
