@@ -1,13 +1,7 @@
 #!/bin/sh
 # source-ssh-agent: Script to source for ssh-agent to work.
 
-# Check if accidentaly executed instead of sourced:
-if echo "$0" | grep -q source-ssh-agent; then
-	echo "source-ssh-agent: Do not execute directly - source me instead!"
-	exit 1
-fi
-
-export SSH_AUTH_SOCK=$PREFIX/tmp/ssh-agent
+export SSH_AUTH_SOCK=$PREFIX/var/run/ssh-agent
 
 start_agent() {
 	rm -f $SSH_AUTH_SOCK
