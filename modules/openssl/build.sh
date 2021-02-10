@@ -1,9 +1,9 @@
 MAGISK_MODULE_HOMEPAGE=https://www.openssl.org/
 MAGISK_MODULE_DESCRIPTION="Library implementing the SSL and TLS protocols as well as general purpose cryptography functions"
 MAGISK_MODULE_LICENSE="BSD"
-MAGISK_MODULE_VERSION=1.1.1h
+MAGISK_MODULE_VERSION=1.1.1i
 MAGISK_MODULE_SRCURL=https://www.openssl.org/source/openssl-${MAGISK_MODULE_VERSION/\~/-}.tar.gz
-MAGISK_MODULE_SHA256=5c9ca8774bd7b03e5784f26ae9e9e6d749c9da2438545077e6b3d755a06595d9
+MAGISK_MODULE_SHA256=e8be6a35fe41d10603c3cc635e93289ed00bf34b79671a3a4de64fcee00d5242
 MAGISK_MODULE_DEPENDS="libandroid-support, ca-certificates, zlib"
 MAGISK_MODULE_CONFFILES="etc/tls/openssl.cnf"
 MAGISK_MODULE_BUILD_IN_SRC=true
@@ -13,18 +13,18 @@ MAGISK_MODULE_REPLACES="openssl-tool (<< 1.1.1b-1), openssl-dev"
 
 magisk_step_configure() {
 	CFLAGS+=" -DNO_SYSLOG"
-	LDFLAGS+=" -ldl"
+	#LDFLAGS+=" -landroid-shmem -ldl -static"
 	perl -p -i -e "s@MAGISK_CFLAGS@$CFLAGS@g" Configure
 	rm -Rf $MAGISK_PREFIX/lib/libcrypto.* $MAGISK_PREFIX/lib/libssl.*
 	test $MAGISK_ARCH = "arm" && MAGISK_OPENSSL_PLATFORM="android-arm"
 	test $MAGISK_ARCH = "aarch64" && MAGISK_OPENSSL_PLATFORM="android-arm64"
 	test $MAGISK_ARCH = "i686" && MAGISK_OPENSSL_PLATFORM="android-x86"
 	test $MAGISK_ARCH = "x86_64" && MAGISK_OPENSSL_PLATFORM="android-x86_64"
-
 	LIBS='-ldl -lpthread' ./Configure $MAGISK_OPENSSL_PLATFORM \
 		--prefix=$MAGISK_PREFIX \
 		--openssldir=$MAGISK_PREFIX/etc/tls \
-		no-shared \
+		shared \
+		zlib-dynamic \
 		no-ssl \
 		no-hw \
 		no-srp \
@@ -53,3 +53,17 @@ magisk_step_make_install() {
 #export PATH=/usr/local/musl/bin:$PATH
 #export PREFIX=/usr/local/musl/bin/aarch64-linux-musl
 #env CC=${PREFIX}-gcc AR=${PREFIX}-ar RANLIB=${PREFIX}-ranlib C_INCLUDE_PATH=/usr/local/musl/aarch64-linux-musl/include
+
+mmagisk_step_pre_configure() {
+	export PATH=/usr/local/musl/bin:$PATH
+        TARGET=aarch64-linux-musl
+	export CC=${TARGET}-gcc
+	export GCC=${TARGET}-gcc
+	export LD=${TARGET}-ld
+	export AR=${TARGET}-ar
+	export RANLIB=${TARGET}-ranlib
+	export CFLAGS=" -z execstack"
+	C_INCLUDE_PATH=/usr/local/musl/aarch64-linux-musl/include
+	export CFLAGS="$C_INCLUDE_PATH $CFLAGS"
+	#./configure --prefix=$MAGISK_PREFIX --static
+}

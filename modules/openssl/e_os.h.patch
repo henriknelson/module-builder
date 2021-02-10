@@ -6,7 +6,7 @@ diff -u -r ../openssl-1.1.1c/e_os.h ./e_os.h
   * files listed in DEVRANDOM did not return enough randomness.
   */
 -#  define DEVRANDOM_EGD "/var/run/egd-pool", "/dev/egd-pool", "/etc/egd-pool", "/etc/entropy"
-+#  	define DEVRANDOM_EGD "@MAGISK_PREFIX@/var/run/egd-pool", "/dev/egd-pool", "@MAGISK_PREFIX@/etc/egd-pool", "@MAGISK_PREFIX@/etc/entropy"
++#  define DEVRANDOM_EGD "@MAGISK_PREFIX@/var/run/egd-pool", "/dev/egd-pool", "@MAGISK_PREFIX@/etc/egd-pool", "@MAGISK_PREFIX@/etc/entropy"
  # endif
  
  # if defined(OPENSSL_SYS_VXWORKS) || defined(OPENSSL_SYS_UEFI)
