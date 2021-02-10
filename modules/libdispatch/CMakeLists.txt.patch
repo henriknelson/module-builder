@@ -1,5 +1,5 @@
---- swift-corelibs-libdispatch-swift-5.2-RELEASE/CMakeLists.txt	2019-10-01 15:57:33.000000000 +0000
-+++ ./CMakeLists.txt	2020-06-24 04:59:30.550083810 +0000
+--- swift-corelibs-libdispatch-swift-5.3.3-RELEASE/CMakeLists.txt	2020-09-02 07:28:48.000000000 +0000
++++ ./CMakeLists.txt	2021-02-10 01:20:11.108747828 +0000
 @@ -62,7 +62,7 @@
  # NOTE(abdulras) this is the CMake supported way to control whether we generate
  # shared or static libraries.  This impacts the behaviour of `add_library` in
