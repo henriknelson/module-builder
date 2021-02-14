@@ -10,10 +10,5 @@ MAGISK_MODULE_EXTRA_CONFIGURE_ARGS="
 --enable-static
 "
 
-magisk_step_pre_configure() {
-	export CFLAGS=" $CFLAGS -static"
-	export LDFLAGS=" $LDFLAGS -static"
-}
-
 # The tools are not built due to --enable-lib-only:
 MAGISK_MODULE_RM_AFTER_INSTALL="share/man/man1 share/nghttp2/fetch-ocsp-response"
