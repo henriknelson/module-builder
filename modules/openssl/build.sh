@@ -12,21 +12,21 @@ MAGISK_MODULE_BREAKS="openssl-tool (<< 1.1.1b-1), openssl-dev"
 MAGISK_MODULE_REPLACES="openssl-tool (<< 1.1.1b-1), openssl-dev"
 
 magisk_step_configure() {
-	CFLAGS+=" -DNO_SYSLOG"
-	#LDFLAGS+=" -landroid-shmem -ldl -static"
+	CFLAGS+=" -DNO_SYSLOG -static"
+	LDFLAGS+=" -L/system/lib -static"
 	perl -p -i -e "s@MAGISK_CFLAGS@$CFLAGS@g" Configure
 	rm -Rf $MAGISK_PREFIX/lib/libcrypto.* $MAGISK_PREFIX/lib/libssl.*
 	test $MAGISK_ARCH = "arm" && MAGISK_OPENSSL_PLATFORM="android-arm"
 	test $MAGISK_ARCH = "aarch64" && MAGISK_OPENSSL_PLATFORM="android-arm64"
 	test $MAGISK_ARCH = "i686" && MAGISK_OPENSSL_PLATFORM="android-x86"
 	test $MAGISK_ARCH = "x86_64" && MAGISK_OPENSSL_PLATFORM="android-x86_64"
-	LIBS='-ldl -lpthread' ./Configure $MAGISK_OPENSSL_PLATFORM \
+	LIBS='-lz -ldl -lpthread' ./Configure $MAGISK_OPENSSL_PLATFORM \
 		--prefix=$MAGISK_PREFIX \
 		--openssldir=$MAGISK_PREFIX/etc/tls \
-		shared \
-		zlib-dynamic \
-		no-ssl \
+		no-shared \
+		zlib \
 		no-hw \
+		no-asm \
 		no-srp \
 		no-tests
 }
