@@ -10,7 +10,7 @@ diff -u -r ../git-2.19.0/config.c ./config.c
 + * not possible on a shared file system on Android, which on an unpatched
 + * git causes operations such as clone to fail with an error message.
 + *
-+ * For the magisk-modules git package we introduce a warning about the configuration
++ * For the Termux git package we introduce a warning about the configuration
 + * file being unprotected, but proceed in order to allow git repositories
 + * to be cloned to shared storage accessible to other apps.
 + */
