@@ -60,7 +60,7 @@ PACKAGES+=" mandoc"
 PACKAGES+=" libclang-dev"
 PACKAGES+=" autopoint"
 PACKAGES+=" openjdk-8-jdk"
-
+PACKAGES+=" libldns-dev"
 
 # Allow 32-bit packages.
 sudo dpkg --add-architecture i386

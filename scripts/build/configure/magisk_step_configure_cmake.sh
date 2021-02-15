@@ -21,7 +21,7 @@ mmagisk_step_configure_cmake() {
 
 	# XXX: CMAKE_{AR,RANLIB} needed for at least jsoncpp build to not
 	# pick up cross compiled binutils tool in $PREFIX/bin:
-	cmake -G "$MAGISK_CMAKE_BUILD" "$MAGISK_MODULE_SRCDIR" \
+	cmake VERBOSE=1 -G "$MAGISK_CMAKE_BUILD" "$MAGISK_MODULE_SRCDIR" \
 		-DCMAKE_AR="$(which $AR)" \
 		-DCMAKE_UNAME="$(which uname)" \
 		-DCMAKE_RANLIB="$(which $RANLIB)" \
@@ -84,7 +84,6 @@ magisk_step_configure_cmake() {
 	# XXX: CMAKE_{AR,RANLIB} needed for at least jsoncpp build to not
 	# pick up cross compiled binutils tool in $MAGISK_PREFIX/bin:
 		cmake -G "$MAGISK_CMAKE_BUILD" "$MAGISK_MODULE_SRCDIR" \
-		--log-level=debug \
 		-DCMAKE_AR="$(command -v $AR)" \
 		-DCMAKE_UNAME="$(command -v uname)" \
 		-DCMAKE_RANLIB="$(command -v $RANLIB)" \
