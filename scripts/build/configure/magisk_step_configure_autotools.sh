@@ -3,13 +3,11 @@ magisk_step_configure_autotools() {
 
 	local ENABLE_STATIC="--enable-static"
 	if [ "$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS" != "${MAGISK_MODULE_EXTRA_CONFIGURE_ARGS/--disable-static/}" ]; then
-		# Do not --enable-static if module explicitly enables it (e.g. a module needs disable-static to build)
 		ENABLE_STATIC=""
 	fi
 
 	local DISABLE_NLS="--disable-nls"
 	if [ "$MAGISK_MODULE_EXTRA_CONFIGURE_ARGS" != "${MAGISK_MODULE_EXTRA_CONFIGURE_ARGS/--enable-nls/}" ]; then
-		# Do not --disable-nls if module explicitly enables it (for gettext itself)
 		DISABLE_NLS=""
 	fi
 
